@@ -2,10 +2,10 @@
   <div id="outermost">
     <div id="horizontalMiddle">
       <div class="shipBuilderContainer">
-      <ship-builder> </ship-builder>
+      <ship-builder :numSegsInShip="numSegsInShip"> </ship-builder>
       </div>
       <div class="shipBuilderContainer">
-      <ship-builder> </ship-builder>
+      <ship-builder :numSegsInShip="numSegsInShip"> </ship-builder>
       </div>
     </div>
   </div>
@@ -19,6 +19,11 @@ export default {
   components: {
     "ship-builder": shipBuilder,
   },
+  data(){
+    return{
+      numSegsInShip: 9,
+    }
+  }
 };
 </script>
 
