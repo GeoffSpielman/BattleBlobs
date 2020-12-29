@@ -7,8 +7,8 @@
         class="rowDiv"
       >
         <button
-          v-for="(btn, colIdx) in rowArray"
-          :key="btn"
+          v-for="(val, colIdx) in rowArray"
+          :key="colIdx"
           @click="gridButtonClicked(rowIdx, colIdx)"
           :class="{
             gridBtn: true,

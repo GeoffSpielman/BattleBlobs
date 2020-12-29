@@ -2,28 +2,26 @@
   <div id="outermostShipBuilder">
     <div id="topMainRow">
       <div id="leftInfoCol">
-          <h4>ID: </h4>
-          <p> 4/9 </p>
-          <p> rowMin: 4</p>
-          <p> rowMax: 23</p>
-          <p> colMin: 42</p>
-          <p> colMax: 4</p>
+        <h4>ID: {{ ID }}</h4>
+        <p :class="{invalidNumSegs: offsets.length !== 9}">segs: {{ offsets.length }}/9</p>
+        <p>rowMin: {{ rowMin }}</p>
+        <p>rowMax: {{ rowMax }}</p>
+        <p>colMin: {{ colMin }}</p>
+        <p>colMax: {{ colMax }}</p>
       </div>
       <div id="rightGridCol">
         <div id="buttonGrid">
           <div
-            v-for="(rowArray, rowIdx) in canvasGrid"
-            :key="rowIdx"
+            v-for="(rowArray, rowIdx) in gridVals"
+            :key="'ship' + ID + '-row' + rowIdx"
             class="rowDiv"
           >
             <button
-              v-for="(btn, colIdx) in rowArray"
-              :key="btn"
+              v-for="(value, colIdx) in rowArray"
+              :key="'ship' + ID + '-row' + rowIdx + '-col' + colIdx"
               @click="gridButtonClicked(rowIdx, colIdx)"
-              :class="{
-                gridBtn: true,
-                selectedGridBtn: canvasGrid[rowIdx][colIdx],
-              }"
+              class="gridBtn"
+              :style="{backgroundColor: gridVals[rowIdx][colIdx] ? shipColour: '#EFEFEF'}"
             >
               {{ rowIdx + ", " + colIdx }}
             </button>
@@ -32,7 +30,7 @@
       </div>
     </div>
     <div id="bottomOffsetRow">
-      [0,0], [0,1] ...
+      {{ offsets }}
     </div>
   </div>
 </template>
@@ -44,7 +42,7 @@ export default {
       type: Number,
       required: true,
     },
-    colour: {
+    shipColour: {
       type: String,
       required: true,
     },
@@ -67,172 +65,151 @@ export default {
     colMax: {
       type: Number,
       required: true,
+    },
+    numRows: {
+      type: Number,
+      required: true,
+    },
+    numCols: {
+      type: Number,
+      required: true
     }
   },
+  emits: [
+    "updateShipOffsets",  //(shipID, newOffsets)
+    "updateShipRanges",   //(shipID, newRowMin, newRowMax, newColMin, newColMax)
+  ],
+
   data() {
     return {
-      canvasGrid: [
+      gridVals: [
         [false, false, false, false],
         [false, false, false, false],
         [false, false, false, false],
         [false, false, false, false],
       ],
-      shipOffsets: [],
     };
   },
   methods: {
     gridButtonClicked(rowIdx, colIdx) {
-      this.canvasGrid[rowIdx][colIdx] = !this.canvasGrid[rowIdx][colIdx];
+      this.gridVals[rowIdx][colIdx] = !this.gridVals[rowIdx][colIdx];
 
-      const entryInOffsets = this.shipOffsets.some(
-        (entry) => entry[0] === rowIdx && entry[1] === colIdx
-      );
+      var newOffsets = [];
 
-      if (this.canvasGrid[rowIdx][colIdx] && !entryInOffsets) {
-        this.shipOffsets.push([rowIdx, colIdx]);
-      } else if (!this.canvasGrid[rowIdx][colIdx] && entryInOffsets) {
-        this.shipOffsets = this.shipOffsets.filter(
+      //grid square turned on
+      if (
+        this.gridVals[rowIdx][colIdx] &&
+        !this.offsets.some(
+          (entry) => entry[0] === rowIdx && entry[1] === colIdx
+        )
+      ) {
+        newOffsets = this.offsets;
+        newOffsets.push([rowIdx, colIdx]);
+      }
+      //grid square turned off
+      else if (
+        !this.gridVals[rowIdx][colIdx] &&
+        this.offsets.some((entry) => entry[0] === rowIdx && entry[1] === colIdx)
+      ) {
+        newOffsets = this.offsets.filter(
           (entry) => !(entry[0] === rowIdx && entry[1] === colIdx)
         );
       } else {
         console.log(
-          "ERROR: shipOffsets is out of sync with canvasGrid. Are both being re-initialized properly?"
+          "Logic Error: removing something from offsets that isn't there OR adding something to offsets that is already present"
         );
         return;
       }
+      this.$emit('updateShipOffsets', this.ID, newOffsets)
+      this.calculateNewRanges();
+    },
 
-      if (this.shipOffsets.length < this.numSegsInShip) {
-        this.shipStatement = 
-          this.shipOffsets.length +
-          "/" +
-          this.numSegsInShip +
-          " segments built";
-      } else if (this.shipOffsets.length > this.numSegsInShip) {
-        this.shipStatement =
-          "Ship it too big! Please remove " +
-          (this.shipOffsets.length - this.numSegsInShip) +
-          " segments";
-      } else {
-        //'traversed index' and 'traversed segments of ship'
-        let travIdx = 0;
-        let travSegs = [this.shipOffsets[0]];
-
-        while (travIdx < travSegs.length) {
-          let curSeg = travSegs[travIdx];
-
-          //possible to go 'up'  AND 'up' isin't already in the travSegs list AND 'up' is part of the ship
-          if (
-            curSeg[0] > 0 &&
-            !travSegs.some(
-              (entry) => entry[0] === curSeg[0] - 1 && entry[1] === curSeg[1]
-            ) &&
-            this.shipOffsets.some(
-              (entry) => entry[0] === curSeg[0] - 1 && entry[1] === curSeg[1]
-            )
-          ) {
-            travSegs.push([curSeg[0] - 1, curSeg[1]]);
-          }
-          //possible to go 'down'  AND 'down' isin't already in the travSegs list AND 'down' is part of the ship
-          if (
-            curSeg[0] < 3 &&
-            !travSegs.some(
-              (entry) => entry[0] === curSeg[0] + 1 && entry[1] === curSeg[1]
-            ) &&
-            this.shipOffsets.some(
-              (entry) => entry[0] === curSeg[0] + 1 && entry[1] === curSeg[1]
-            )
-          ) {
-            travSegs.push([curSeg[0] + 1, curSeg[1]]);
-          }
-          //possible to go 'left'  AND 'left' isin't already in the travSegs list AND 'left' is part of the ship
-          if (
-            curSeg[1] > 0 &&
-            !travSegs.some(
-              (entry) => entry[0] === curSeg[0] && entry[1] === curSeg[1] - 1
-            ) &&
-            this.shipOffsets.some(
-              (entry) => entry[0] === curSeg[0] && entry[1] === curSeg[1] - 1
-            )
-          ) {
-            travSegs.push([curSeg[0], curSeg[1] - 1]);
-          }
-          if (
-            curSeg[1] < 3 &&
-            !travSegs.some(
-              (entry) => entry[0] === curSeg[0] && entry[1] === curSeg[1] + 1
-            ) &&
-            this.shipOffsets.some(
-              (entry) => entry[0] === curSeg[0] && entry[1] === curSeg[1] + 1
-            )
-          ) {
-            travSegs.push([curSeg[0], curSeg[1] + 1]);
-          }
-          travIdx++;
-        }
-
-        if (travIdx === this.numSegsInShip) {
-          this.shipStatement = "Looks good";
-        } else {
-          this.shipStatement = "All segments must be connected by shared edges";
+    initializeGrid() {
+      let row;
+      let col;
+      for (row = 0; row < this.gridVals.length; row++) {
+        for (col = 0; col < this.gridVals[0].length; col++) {
+          this.gridVals[row][col] = this.offsets.some(
+            (entry) => entry[0] === row && entry[1] === col
+          );
         }
       }
+      this.calculateNewRanges();
     },
-    prettyCoordList(recArray) {
-      let listString = "";
-      let i;
-      for (i = 0; i < recArray.length; i++) {
-        listString += "[" + recArray[i][0] + ", " + recArray[i][1] + "], ";
+    calculateNewRanges() {
+      let rowMin = 0
+      let rowMax = this.numRows - 4;
+      let colMin = 0
+      let colMax = this.numCols - 4;
+
+      //top row is empty
+      if (this.gridVals[0].every((val) => val === false)){
+        rowMin = -1;
       }
-      return listString;
+      //bottom row is empty
+      else if (this.gridVals[3].every((val) => val === false)){
+        rowMax = this.numRows - 3;
+      }
+
+      //left column is empty
+      if (this.gridVals.every((rowArray) => rowArray[0] === false)){
+        colMin = -1
+      }
+      //right column is empty
+      else if (this.gridVals.every((rowArray) => rowArray[3] === false)){
+        colMax = this.numCols - 3;
+      }
+      this.$emit('updateShipRanges', this.ID, rowMin, rowMax, colMin, colMax);
     },
-    validateShip(){
-        console.log("I should compute the min/max columns and rows")
-    }
   },
-  mounted(){
-      this.validateShip()
-  }
+
+  mounted() {
+    this.initializeGrid();
+  },
 };
 </script>
 
 <style scoped>
 #outermostShipBuilder {
   display: flex;
-  flex-grow: 1;
+  width: 30%;
   flex-direction: column;
   justify-content: center;
 }
 
-#topMainRow{
+#topMainRow {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-#bottomOffsetRow{
+#bottomOffsetRow {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin: 5px 0px;
+  margin: 3px 18px;
+  text-align: center;
+  font-size: 10pt;
 }
 
-#leftInfoCol{
+#leftInfoCol {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items:flex-start;
-  margin-right: 3px;
+  align-items: flex-start;
+  margin-right: 5px;
 }
 
-#leftInfoCol > p{
+#leftInfoCol > p {
   margin: 2px 1px;
+  font-size: 11pt;
 }
 #leftInfoCol > h4 {
   margin: 5px 2px;
 }
 
-#rightGridCol{
+#rightGridCol {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -245,8 +222,8 @@ export default {
 }
 
 .gridBtn {
-  height: 35px;
-  width: 35px;
+  height: 32px;
+  width: 32px;
   font-size: 10pt;
   padding: 1pt;
 }
@@ -255,7 +232,7 @@ export default {
   background-color: yellow;
 }
 
-#outputStatement {
-  text-align: center;
+.invalidNumSegs{
+  color: red
 }
 </style>
