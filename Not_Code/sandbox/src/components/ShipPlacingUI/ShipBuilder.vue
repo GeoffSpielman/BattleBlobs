@@ -203,7 +203,7 @@ export default {
 
 #leftInfoCol > p {
   margin: 2px 1px;
-  font-size: 11pt;
+  font-size: 10.5pt;
 }
 #leftInfoCol > h4 {
   margin: 5px 2px;
@@ -222,9 +222,9 @@ export default {
 }
 
 .gridBtn {
-  height: 32px;
-  width: 32px;
-  font-size: 10pt;
+  height: 30px;
+  width: 30px;
+  font-size: 9pt;
   padding: 1pt;
 }
 
