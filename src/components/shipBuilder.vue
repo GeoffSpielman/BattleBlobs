@@ -25,14 +25,9 @@
 
 <script>
 export default {
-  props: {
-    numSegsInShip: {
-      type: Number,
-      required: true,
-    },
-  },
   data() {
     return {
+      numSegsInShip: 9,
       canvasGrid: [
         [false, false, false, false],
         [false, false, false, false],
@@ -65,7 +60,7 @@ export default {
       }
 
       if (this.shipOffsets.length < this.numSegsInShip) {
-        this.shipStatement = 
+        this.shipStatement =
           this.shipOffsets.length +
           "/" +
           this.numSegsInShip +
