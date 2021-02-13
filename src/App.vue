@@ -1,17 +1,17 @@
 <template>
-  <main>
-    <router-view> </router-view>
-  </main>
+    <router-view> </router-view>    
 </template>
+
 
 <script>
 
 export default {
-  name: "App",
   data(){
   }
 };
 </script>
+
+
 
 
 <style>
@@ -24,6 +24,7 @@ main{
   height: 100%;
   width: 100%;
 }
+
 .container{
   display: flex;
   height: 100%;
