@@ -1,17 +1,40 @@
 <template>
-  <h1> I am the Home page</h1>
+  <div class="outermostDiv">
+    <div id="headerRow">
+      <h1>I am the header row</h1>
+    </div>
+    <div id="buttonsRow">
+      <h3> I am the buttons row </h3>
+    </div>
+    <home-footer></home-footer>
+  </div>
 </template>
 
 
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { Component, Vue } from "vue-property-decorator";
+import HomeFooter from "@/components/HomeFooter.vue";
 
 @Component({
   components: {
-    HelloWorld,
+    HomeFooter,
   },
 })
 export default class Home extends Vue {}
 </script>
+
+<style scoped>
+
+#headerRow{
+  display: flex;
+  flex-grow: 1;
+}
+
+#buttonsRow{
+  display: flex;
+  flex-grow: 2;
+}
+
+
+</style>
