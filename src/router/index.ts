@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
+
 import HomePage from '../pages/Home.vue'
 import InstructionsPage from '../pages/Instructions.vue'
 import LobbyPage from '../pages/Lobby.vue'

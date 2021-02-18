@@ -1,5 +1,3 @@
-# clusterfuck
-
 ## Project setup
 ```
 npm install
