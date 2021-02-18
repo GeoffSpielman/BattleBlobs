@@ -1,10 +1,9 @@
 <template>
   <div class="outermostDiv">
-    <div id="headerRow">
-      <h1>I am the header row</h1>
-    </div>
+    <home-title></home-title>
     <div id="buttonsRow">
-      <h3> I am the buttons row </h3>
+      <v-btn x-large color="primary" class="mx-5 px-5"><v-icon class="px-2"> mdi-information-outline</v-icon>Learn How To Play</v-btn>
+      <v-btn x-large color="primary" class="mx-5 px-5"><v-icon class="px-2" > mdi-fast-forward</v-icon>Skip To Lobby</v-btn>
     </div>
     <home-footer></home-footer>
   </div>
@@ -14,11 +13,13 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import HomeTitle from "@/components/HomeTitle.vue"
 import HomeFooter from "@/components/HomeFooter.vue";
 
 @Component({
   components: {
     HomeFooter,
+    HomeTitle
   },
 })
 export default class Home extends Vue {}
@@ -26,15 +27,14 @@ export default class Home extends Vue {}
 
 <style scoped>
 
-#headerRow{
-  display: flex;
-  flex-grow: 1;
-}
-
 #buttonsRow{
   display: flex;
-  flex-grow: 2;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  background-image: url("../assets/Home/homepage.jpg");
+  background-repeat: no-repeat;
+  background-size: contain;
 }
-
-
+  
 </style>
