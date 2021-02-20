@@ -1,42 +1,67 @@
 <template>
   <div id="titleOuterDiv">
-    <h2>Welcome to</h2>
-      <transition name="titleFade" appear>
-        <h1 id="titleDiv"> CLUSTERFUCK </h1>
-      </transition>
+    <transition name="welcomeFade" appear> 
+    <h2 id="welcomeDiv">Welcome to</h2>
+    </transition>
+    <transition name="titleFade" appear>
+      <h1 id="titleDiv">CLUSTERFUCK</h1>
+    </transition>
   </div>
 </template>
 
 <style scoped>
-
-#titleOuterDiv{
+#titleOuterDiv {
   display: flex;
   align-items: center;
   flex-direction: column;
 
   height: 180px;
-  background-color: #0D47A1;
+  background-color: #0d47a1;
   color: white;
 }
 
-#titleDiv{
-  width: 220px;
-  overflow:hidden;
+#welcomeDiv {
+  margin-top: 15px;
+  font-size: 26pt;
+  font-family: Georgia, Helvetica, Tahoma, Geneva, sans-serif;
 }
 
-
-.titleFade-enter-active{
-  animation: fade-in 3s ease-out forwards;
+#titleDiv {
+  font-size: 65pt;
+  width: 750px;
+  text-align: center;
+  overflow: hidden;
+  font-family: Copperplate Gothic, Tahoma, sans-serif;
+  margin-top: -12px;
 }
 
+.welcomeFade-enter-active{
+  animation: fade-in-welcome 2s linear;
+  animation-delay: 0.5s;
+  animation-fill-mode: backwards;
+}
 
-@keyframes fade-in {
+.titleFade-enter-active {
+  animation: fade-in-title 3s ease-out;
+  animation-delay: 1.5s;
+  animation-fill-mode: backwards;
+}
+
+@keyframes fade-in-welcome{
   from {
-    width: 0px
+    opacity: 0%;
   }
   to {
-    width: 220px
+    opacity: 100%;
   }
-  
+}
+
+@keyframes fade-in-title {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 750px;
+  }
 }
 </style>

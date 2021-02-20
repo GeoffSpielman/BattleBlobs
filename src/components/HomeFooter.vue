@@ -53,7 +53,7 @@
 }
 .linkImage{
   height: 31px;
-  border-radius: 10px;
+  border-radius: 15px;
   background-color: #E3F2FD;
   padding: 2px 8px;
   margin: 3px 0px 3px 10px;
