@@ -1,6 +1,6 @@
 <template>
   <div id="titleOuterDiv">
-    <transition name="welcomeFade" appear> 
+    <transition name="welcomeFade" appear :duration="2200"> 
     <h2 id="welcomeDiv">Welcome to</h2>
     </transition>
     <transition name="titleFade" appear>
@@ -35,21 +35,24 @@
   margin-top: -12px;
 }
 
+.welcomeFade.enter{
+  opacity: 0;
+}
 .welcomeFade-enter-active{
-  animation: fade-in-welcome 2s linear;
-  animation-delay: 0.5s;
+  animation: fade-in-welcome 2s linear forwards;
+  animation-delay: 0.2s;
   animation-fill-mode: backwards;
 }
 
-.titleFade-enter-active {
-  animation: fade-in-title 3s ease-out;
-  animation-delay: 1.5s;
+#titleDiv.titleFade-enter-active {
+  animation: fade-in-title 2.5s ease-out;
+  animation-delay: 1.2s;
   animation-fill-mode: backwards;
 }
 
 @keyframes fade-in-welcome{
   from {
-    opacity: 0%;
+    opacity: 0;
   }
   to {
     opacity: 100%;

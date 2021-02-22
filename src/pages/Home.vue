@@ -2,7 +2,7 @@
   <div class="outermostDiv">
     <home-title></home-title>
     <div id="buttonsRow">
-      <transition-group name="buttonsFade" appear>
+      <transition-group name="buttonsFade" appear :duration="4500">
         <v-btn key="instructionsBtn" x-large color="primary" class="mx-10 px-5"
           ><v-icon class="pr-3"> mdi-information-outline</v-icon>Learn How To
           Play</v-btn
@@ -55,14 +55,14 @@ export default class Home extends Vue {}
 }
 
 .buttonsFade-enter-active {
-  animation: fade-in-buttons 1s linear;
-  animation-delay: 4.5s;
+  animation: fade-in-buttons 1s linear forwards;
+  animation-delay: 3.5s;
   animation-fill-mode: backwards;
 }
 
 @keyframes fade-in-buttons {
   from {
-    opacity: 0%;
+    opacity: 0;
   }
   to {
     opacity: 100%;

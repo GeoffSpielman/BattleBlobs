@@ -18,5 +18,10 @@ npm run build
 npm run lint
 ```
 
+### Starts up the Firebase emulators
+```
+firebase emulators:start
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
