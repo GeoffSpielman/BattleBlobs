@@ -3,11 +3,11 @@
     <home-title></home-title>
     <div id="buttonsRow">
       <transition-group name="buttonsFade" appear>
-        <v-btn key="instructionsBtn" x-large color="primary" class="mx-10 px-5"
+        <v-btn key="instructionsBtn" @click="changePage('/testing')" x-large color="primary" class="mx-10 px-5"
           ><v-icon class="pr-3"> mdi-information-outline</v-icon>Learn How To
           Play</v-btn
         >
-        <v-btn key="lobbyBtn" x-large color="primary" class="mx-10 px-5"
+        <v-btn key="lobbyBtn" @click="changePage('/testing')" x-large color="primary" class="mx-10 px-5"
           ><v-icon class="pr-3"> mdi-fast-forward</v-icon>Skip To Lobby</v-btn
         >
       </transition-group>
@@ -28,7 +28,12 @@ import HomeFooter from "@/components/HomeFooter.vue";
     HomeTitle,
   },
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  
+  changePage(pagePath: string){
+    this.$router.push(pagePath);
+  }
+}
 </script>
 
 <style scoped>

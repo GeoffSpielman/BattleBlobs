@@ -7,18 +7,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 
+import { Component, Vue } from "vue-property-decorator";
 
-export default Vue.extend({
-  name: 'App',
-
-  
-
-  data: () => ({
-    //
-  }),
-});
+@Component({
+  name: "App"
+})
+export default class App extends Vue {
+  //name: 'App';
+}
 </script>
 
 <style>
