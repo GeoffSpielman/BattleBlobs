@@ -1,7 +1,7 @@
 <template>
   <div class="outermostDiv">
     <p class="leftLabel">Server state:</p>
-    <p style="width: 300px;"><strong>Game Status:</strong> {{ gameStatus }}</p>
+    <p style="width: 300px;"><strong>Game Status:</strong> {{ this.$store.state.testVal}}</p>
     <br />
     <v-card class="mx-auto" width="300">
       <v-list disabled>
@@ -46,6 +46,12 @@
         </v-col>
         <v-col cols="2" align-self="center"> <v-btn @click="submitClicked" elevation="2" text>Submit</v-btn> </v-col>
       </v-row>
+
+      <v-row justify="center">
+        <v-col cols="2" align-self="center">
+          <v-btn @click="doStuffClicked" elevation="2" text>Do Stuff</v-btn>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -53,6 +59,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+
 
 @Component({
   name: "Testing",
@@ -64,10 +71,17 @@ export default class Testing extends Vue {
   itemEntry: string = "Tomato";
   rulesForTestList = [(val: string) => val.length <= 25 || "Max 25 characters"];
 
+  get testVal(): string{
+    return this.$store.getters.getTestVal;
+  }
+
   submitClicked(){
       this.testList.push(this.itemEntry);
       this.itemEntry = "";
+  }
 
+  doStuffClicked(){
+    this.$store.dispatch("setTestVal", "turkey")
   }
 }
 </script>

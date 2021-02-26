@@ -15,6 +15,11 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class App extends Vue {
   //name: 'App';
+
+  created(){
+    //link app to firebase real time database
+    this.$store.dispatch('getFirebaseDatabase')
+  }
 }
 </script>
 
