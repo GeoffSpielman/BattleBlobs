@@ -1,15 +1,15 @@
 <template>
   <div class="outermostDiv">
-    <p class="leftLabel">Server state:</p>
-    <p style="width: 300px;"><strong>Game Status:</strong> {{ this.$store.state.testVal}}</p>
+    <p class="leftLabel">Store State/Database:</p>
+    <p style="width: 300px"><strong>Game Status:</strong> {{ gameStatus }}</p>
     <br />
     <v-card class="mx-auto" width="300">
       <v-list disabled>
-        <v-subheader>Testing List</v-subheader>
-        <v-list-item-group v-model="selectedItem">
-          <v-list-item v-for="item in testList" :key="item">
+        <v-subheader>Players List</v-subheader>
+        <v-list-item-group>
+          <v-list-item v-for="player in playerList" :key="player.key">
             <v-list-item-content>
-              <v-list-item-title v-text="item"></v-list-item-title>
+              <v-list-item-title v-text="player.name"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -17,7 +17,7 @@
     </v-card>
     <br />
     <hr style="width: 80%" />
-    <p class="leftLabel">Client Inputs:</p>
+    <p class="leftLabel">Client Controls:</p>
 
     <v-container fluid>
       <v-row justify="center">
@@ -27,7 +27,7 @@
             label="Game Status"
             outlined
             dense
-            v-model="gameStatus"
+            @change="userChangedGameStatus"
           ></v-select>
         </v-col>
       </v-row>
@@ -44,12 +44,14 @@
             hint="It's time to get funky!"
           ></v-text-field>
         </v-col>
-        <v-col cols="2" align-self="center"> <v-btn @click="submitClicked" elevation="2" text>Submit</v-btn> </v-col>
+        <v-col cols="2" align-self="center">
+          <v-btn @click="submitClicked" elevation="2" text>Submit</v-btn>
+        </v-col>
       </v-row>
 
       <v-row justify="center">
         <v-col cols="2" align-self="center">
-          <v-btn @click="doStuffClicked" elevation="2" text>Do Stuff</v-btn>
+          <v-btn @click="doStuffClicked" elevation="2" text>Clear List</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -59,29 +61,36 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-
+import { PlayerEntry } from "@/interfaces/PlayerEntry";
 
 @Component({
   name: "Testing",
 })
 export default class Testing extends Vue {
-  gameStatus: string = "Loading...";
-  testList: string[] = ["one", "two", "three"];
   statusOptions: string[] = ["Loading...", "Ready to Start", "Game has Begun"];
+  
   itemEntry: string = "Tomato";
   rulesForTestList = [(val: string) => val.length <= 25 || "Max 25 characters"];
 
-  get testVal(): string{
-    return this.$store.getters.getTestVal;
+  get gameStatus(): string {
+    return this.$store.getters.getGameStatus;
   }
 
-  submitClicked(){
-      this.testList.push(this.itemEntry);
-      this.itemEntry = "";
+  get playerList(): PlayerEntry[] {
+    return this.$store.getters.getPlayersList;
   }
 
-  doStuffClicked(){
-    this.$store.dispatch("setTestVal", "turkey")
+  userChangedGameStatus(val: string) {
+    this.$store.dispatch("setGameStatus", val);
+  }
+
+  submitClicked() {
+    this.$store.dispatch("addPlayerToList", this.itemEntry);
+    this.itemEntry = "";
+  }
+
+  doStuffClicked() {
+    this.$store.dispatch("clearPlayersList");
   }
 }
 </script>
@@ -100,5 +109,4 @@ export default class Testing extends Vue {
   width: 70%;
   margin-top: 10px;
 }
-
 </style>
