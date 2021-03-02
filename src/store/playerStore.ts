@@ -11,7 +11,8 @@ export interface PlayerState {
 
 const playerStore: Module<PlayerState, RootState> = {
   state: {
-    playersList: [] 
+    playersList: [], 
+
   },
 
   getters: {
@@ -23,34 +24,43 @@ const playerStore: Module<PlayerState, RootState> = {
   mutations: {
 
     addPlayerToList(state, newPlayer: PlayerEntry){
-      console.log(newPlayer)
       state.playersList.push(newPlayer);
     },
 
-    clearPlayersList(state){
-      state.playersList = []
+    removePlayerFromList(state, removedPlayer: PlayerEntry){
+      const removedPlayerIndex = state.playersList.findIndex((playerObj) => (playerObj.key === removedPlayer.key));
+      state.playersList.splice(removedPlayerIndex, 1);
     }
     
   },
 
   actions: {
 
-    //connects firebase database to store, updates are now driven from database
+    //firebase listeners
     getFirebaseDatabase(context) {
-      // DATASE LISTENERS
+   
       firebase.database.ref('playersList').on('child_added', function (data){
         const newPlayer: PlayerEntry = {key: data.key, name: data.val()}; 
         context.commit('addPlayerToList', newPlayer)
+      }),
+
+      firebase.database.ref('playersList').on('child_removed', function (data){
+        const removedPlayer: PlayerEntry = {key: data.key, name: data.val()};
+        context.commit('removePlayerFromList', removedPlayer)
       })
     },
 
-    addPlayerToList(context, newPlayer: PlayerEntry){
+    addPlayerToList(_, newPlayer: PlayerEntry){
       const newPlayerRef = firebase.database.ref('playersList').push();
       newPlayerRef.set(newPlayer);
     },
 
-    clearPlayerList(context, recArg){
-      firebase.database.ref('playersList').set(recArg)
+    removePlayerFromList(_, recKey: string){
+      firebase.database.ref('playersList/' + recKey).remove()
+    },
+    
+    clearPlayersList(){
+      firebase.database.ref('playersList').remove()
     }
   },
 }

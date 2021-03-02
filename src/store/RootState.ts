@@ -1,6 +1,6 @@
-import {PlayerState} from './playerStore'
+//import {PlayerState} from './playerStore'
 
 export interface RootState{
-    playerState: PlayerState;
+    /*playerState: PlayerState;*/
     gameStatus: string
 }
