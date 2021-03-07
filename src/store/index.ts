@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
   modules: {
-    playerState: playerStore
+    playerStore: playerStore
   },
 
   state: {

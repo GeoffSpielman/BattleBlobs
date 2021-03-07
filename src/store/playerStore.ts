@@ -1,67 +1,99 @@
-
 import firebase from './firebase'
-import {Module} from 'vuex'
-import {RootState} from './RootState'
-import {PlayerEntry} from '@/interfaces/PlayerEntry'
+import { Module } from 'vuex'
+import { RootState } from './RootState'
+import { PlayerEntry } from '@/models/interfaces'
+import { playerStatus } from '@/models/enums'
 
-export interface PlayerState {
-  playersList: PlayerEntry[];
+interface PlayerState {
+  myKey: string;
+  players: PlayerEntry[];
 
 }
 
 const playerStore: Module<PlayerState, RootState> = {
+  namespaced: true,
   state: {
-    playersList: [], 
-
+    myKey: "",
+    players: [],
   },
 
   getters: {
-    getPlayersList(state): PlayerEntry[]{
-      return state.playersList;
+    getPlayersList(state): PlayerEntry[] {
+      return state.players;
     }
+
   },
 
   mutations: {
 
-    addPlayerToList(state, newPlayer: PlayerEntry){
-      state.playersList.push(newPlayer);
+    addPlayer(state, newPlayerEntry: PlayerEntry) {
+      state.players.push(newPlayerEntry);
     },
 
-    removePlayerFromList(state, removedPlayer: PlayerEntry){
-      const removedPlayerIndex = state.playersList.findIndex((playerObj) => (playerObj.key === removedPlayer.key));
-      state.playersList.splice(removedPlayerIndex, 1);
+    /*
+    removePlayer(state, removedPlayerKey: string){
+      const removedPlayerIndex = state.players.findIndex((playerObj) => (playerObj.key === removedPlayerKey));
+      state.players.splice(removedPlayerIndex, 1);
+    },
+    */
+
+    setMyKey(state, recKey: string) {
+      state.myKey = recKey;
     }
-    
+
   },
 
   actions: {
 
     //firebase listeners
     getFirebaseDatabase(context) {
-   
-      firebase.database.ref('playersList').on('child_added', function (data){
-        const newPlayer: PlayerEntry = {key: data.key, name: data.val()}; 
-        context.commit('addPlayerToList', newPlayer)
-      }),
-
-      firebase.database.ref('playersList').on('child_removed', function (data){
-        const removedPlayer: PlayerEntry = {key: data.key, name: data.val()};
-        context.commit('removePlayerFromList', removedPlayer)
+      firebase.database.ref('players').on('child_added', function (data) {
+        context.commit('addPlayer', data.val())
       })
+
+      /*
+      firebase.database.ref('players').on('child_removed', function (data){
+        context.commit('removePlayer', data.key)
+      })
+      */
     },
 
-    addPlayerToList(_, newPlayer: PlayerEntry){
-      const newPlayerRef = firebase.database.ref('playersList').push();
+    addPlayer(_, newPlayer: PlayerEntry) {
+      const newPlayerRef = firebase.database.ref('players').push();
       newPlayerRef.set(newPlayer);
     },
 
-    removePlayerFromList(_, recKey: string){
-      firebase.database.ref('playersList/' + recKey).remove()
+
+    removePlayer(_, recKey: string) {
+      firebase.database.ref('players/' + recKey).remove()
     },
-    
+
+    /*
     clearPlayersList(){
-      firebase.database.ref('playersList').remove()
-    }
+      firebase.database.ref('players').remove()
+    },
+    */
+
+    intializeClient(context) {
+      const newClientRef = firebase.database.ref('players').push();
+      if (newClientRef.key === null) {
+        console.log("Error initializing new client. Firebase returned a 'null' key")
+      }
+      else {
+        const newPlayerEntry: PlayerEntry = {
+          'status': playerStatus.StartScreen,
+          'key': newClientRef.key,
+          'name': '',
+          'alias': '',
+          'color': '',
+          'captainNum': 0,
+          'shipOneKey': '',
+          'shipTwoKey': ''
+        }
+        context.commit('setMyKey', newClientRef.key);
+        newClientRef.set(newPlayerEntry);
+      }
+    },
   },
 }
 

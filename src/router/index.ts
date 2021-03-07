@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 
-import HomePage from '@/pages/Home.vue'
+import StartPage from '@/pages/Start.vue'
 import InstructionsPage from '@/pages/Instructions.vue'
 import LobbyPage from '@/pages/Lobby.vue'
-import GameScreenPage from '@/pages/GameScreen.vue'
-import TestingPage from '@/pages/Testing.vue'
+import GamePage from '@/pages/Game.vue'
+import HostPage from '@/pages/Host.vue'
 import NotFoundPage from '@/pages/NotFound.vue'
-
 
 
 Vue.use(VueRouter)
@@ -16,7 +15,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Home',
-    component: HomePage
+    component: StartPage
   },
   {
     path: '/instructions',
@@ -30,13 +29,13 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/play',
-    name: 'GameScreen',
-    component: GameScreenPage
+    name: 'Game',
+    component: GamePage
   },
   {
-    path: '/testing',
-    name: 'Testing',
-    component: TestingPage
+    path: '/Host',
+    name: 'Host',
+    component: HostPage
   },
   {
     path: '/:notFound(.*)',

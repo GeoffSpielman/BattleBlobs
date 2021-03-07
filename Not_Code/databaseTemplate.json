@@ -1,0 +1,45 @@
+{
+    "players": {
+        "2134535355535": {
+            "name": "Geoff",
+            "status": "On Start Screen" | "Reading Instructions" | "Creating Profile" | "Ready to Start" | "In Game" | "Spectating" | "Disconnected" | "Left Game",
+            "colour": "#341414",
+            "alias": "Big Boii",
+            "captainNum": 1,
+            "shipOneKey": "32q653634646",
+            "shipTwoKey": "3546fdg34346",
+        }
+    },
+    "lobbyDynamnicOptions": {
+        "colours": {
+            "#235fdf4": null,
+            "#54363456": "2353524535535",
+            "#45366536": null
+        },
+        "aliases": {
+            "Inigo Montoyo": null,
+            "Darth Evader": "678687978897",
+            "Lord Farquad": null
+        }
+    },
+    "ships": {
+        "32q653634646": {
+            "captainNum": 1,
+            "anchorPoint": {
+                "row": 4,
+                "col": 5
+            },
+            "status": "Hidden" | "Damaged" | "Sunk" | "Lifeboat",
+            "intactOffsets": [[3,4], [6,4], [3,4]],
+            "damagedOffsets": [[3,3], [3,2]],
+            "spawnRanges": {
+                "rowMin": -1,
+                "rowMax": 12,
+                "colMin": 0,
+                "colMax": 12
+            }
+
+        }
+    },
+    "gameStatus": "Waiting on Players" | "Ready to Start" | "Game In Progress"
+}
