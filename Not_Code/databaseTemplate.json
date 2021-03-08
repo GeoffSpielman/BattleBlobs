@@ -41,5 +41,10 @@
 
         }
     },
-    "gameStatus": "Waiting on Players" | "Ready to Start" | "Game In Progress"
+    "gameStatus": "Waiting on Players" | "Ready to Start" | "Game In Progress",
+    "config": {
+        "gameName": "Cluserfuck" | "Battle Blobs",
+        "mapSize": 15,
+        "soundboardCooldown": 23
+    }
 }

@@ -17,7 +17,7 @@ export default class App extends Vue {
 
   created(){
     this.$store.dispatch('playerStore/getFirebaseDatabase')
-    this.$store.dispatch('playerStore/intializeClient')
+    /*this.$store.dispatch('playerStore/intializeClient')*/
   }
 }
 </script>
