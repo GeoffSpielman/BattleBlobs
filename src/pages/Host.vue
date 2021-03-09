@@ -12,7 +12,7 @@
             <v-card-actions class="justify-center">
               <v-btn
                 key="player.key + skipBtn"
-                @click="skipBtnClicked(player.name)"
+                @click="skipBtnClicked()"
                 color="primary lighten-4"
                 class="pr-3 pl-2 py-1 mr-2 text-none"
                 style="color: black"
@@ -27,7 +27,7 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="5">
+        <v-col cols="8">
           <v-simple-table class="mt-2">
             <thead>
               <tr>
@@ -45,8 +45,8 @@
                 <td class="text-center">
                   <v-btn
                     key="player.key + removeBtn"
-                    @click="removeBtnClicked(player.name)"
-                    color="error lighten-4"
+                    @click="removeBtnClicked(player.key)"
+                    color="error lighten-1"
                     class="pr-3 pl-2 py-1 text-none"
                     style="color: black"
                     ><v-icon dense class="pr-2"> mdi-delete-forever</v-icon
@@ -64,7 +64,9 @@
             <h4>Game Status: In Progress</h4>
           </v-row>
         </v-col>
-        <v-col cols="4"> </v-col>
+        <v-col cols="1"> 
+          Next Round:
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -86,12 +88,12 @@ export default class Host extends Vue {
     return this.$store.getters["playerStore/getPlayersList"];
   }
 
-  skipBtnClicked(playerName: string) {
-    console.log("skipped " + playerName);
+  skipBtnClicked() {
+    console.log("skipped current player");
   }
 
-  removeBtnClicked(playerName: string) {
-    console.log("removed " + playerName);
+  removeBtnClicked(playerKey: string) {
+    this.$store.dispatch("playerStore/removePlayer", playerKey)
   }
 }
 </script>

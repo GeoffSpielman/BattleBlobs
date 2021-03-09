@@ -1,8 +1,8 @@
 import {playerStatus} from "@/models/enums"
 
 export interface PlayerEntry{
-    status: playerStatus;
     key: string | null;
+    status: playerStatus;
     name: string;
     alias: string;
     color: string;

@@ -29,13 +29,17 @@ const playerStore: Module<PlayerState, RootState> = {
     addPlayer(state, newPlayerEntry: PlayerEntry) {
       state.players.push(newPlayerEntry);
     },
-
-    /*
+    
     removePlayer(state, removedPlayerKey: string){
       const removedPlayerIndex = state.players.findIndex((playerObj) => (playerObj.key === removedPlayerKey));
       state.players.splice(removedPlayerIndex, 1);
     },
-    */
+
+    modifyPlayer(state, updatedPlayer: PlayerEntry){
+      const modifiedPlayerIndex = state.players.findIndex((playerObj) => (playerObj.key === updatedPlayer.key));
+      state.players.splice(modifiedPlayerIndex, 1, updatedPlayer);
+    },
+  
 
     setMyKey(state, recKey: string) {
       state.myKey = recKey;
@@ -48,14 +52,16 @@ const playerStore: Module<PlayerState, RootState> = {
     //firebase listeners
     getFirebaseDatabase(context) {
       firebase.database.ref('players').on('child_added', function (data) {
-        context.commit('addPlayer', data.val())
+        context.commit('addPlayer', data.val());
+      }),
+
+      firebase.database.ref('players').on('child_removed', function (data){
+        context.commit('removePlayer', data.key);
       })
 
-      /*
-      firebase.database.ref('players').on('child_removed', function (data){
-        context.commit('removePlayer', data.key)
+      firebase.database.ref('players').on('child_changed', function (data){
+        context.commit('modifyPlayer', data.val());
       })
-      */
     },
 
     addPlayer(_, newPlayer: PlayerEntry) {
@@ -63,16 +69,13 @@ const playerStore: Module<PlayerState, RootState> = {
       newPlayerRef.set(newPlayer);
     },
 
-
     removePlayer(_, recKey: string) {
       firebase.database.ref('players/' + recKey).remove()
     },
 
-    /*
-    clearPlayersList(){
-      firebase.database.ref('players').remove()
+    modifyPlayer(_, modifedPlayer: PlayerEntry){
+      firebase.database.ref('players/' + modifedPlayer.key).set(modifedPlayer);
     },
-    */
 
     intializeClient(context) {
       const newClientRef = firebase.database.ref('players').push();
@@ -81,8 +84,8 @@ const playerStore: Module<PlayerState, RootState> = {
       }
       else {
         const newPlayerEntry: PlayerEntry = {
-          'status': playerStatus.StartScreen,
           'key': newClientRef.key,
+          'status': playerStatus.StartScreen,
           'name': '',
           'alias': '',
           'color': '',
