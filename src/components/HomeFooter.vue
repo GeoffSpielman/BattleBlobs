@@ -1,75 +1,88 @@
 <template>
-  <v-footer color="primary lighten-1" padless>
-    <v-row justify="center" no-gutters>
-
-      <v-col class="outerCol pl-2" cols="3"> 
-        Copyright <v-icon dense color="white" class="px-1"> mdi-copyright</v-icon> 2021 Geoff Spielman
-      </v-col>
-
-      <v-col id="middleCol" cols="6">
-        Powered by: 
-        <a class="linkTag" href="https://vuejs.org/"> 
-          <img class="linkImage" src="@/assets/Home/vue_js_logo.png"><img>
-        </a>
-        <a class="linkTag" href="https://firebase.google.com/"> 
-          <img class="linkImage" src="@/assets/Home/firebase_logo.png"><img>
-        </a>
-        <a class="linkTag" href="https://vuetifyjs.com/en/"> 
-          <img class="linkImage" src="@/assets/Home/vuetify_logo.png"><img>
-        </a>
-      </v-col>
-      <v-col class="outerCol" id="lastCol" cols="3"> 
-        Source code:
-        <a class="linkTag" href="https://github.com/GeoffSpielman/BattleBlobs"> 
-          <img id="githubImage" src="@/assets/Home/github_logo.png"><img>
-        </a>   
-      </v-col>
-    </v-row>
+  <v-footer
+    color="primary lighten-1"
+    padless
+    style="justify-content: space-between"
+  >
+    <div id="copyrightDiv" class="footerDiv pl-1">
+      Copyright
+      <v-icon dense color="white" class="px-1"> mdi-copyright</v-icon> 2021
+      Geoff Spielman
+    </div>
+    <div id="poweredByDiv" class="footerDiv">
+      Powered by:
+      <a class="linkTag" href="https://vuejs.org/">
+        <img class="linkImage" src="@/assets/home/vue_js_logo.png" /><img />
+      </a>
+      <a class="linkTag" href="https://firebase.google.com/">
+        <img class="linkImage" src="@/assets/home/firebase_logo.png" /><img />
+      </a>
+      <a class="linkTag" href="https://vuetifyjs.com/en/">
+        <img class="linkImage" src="@/assets/home/vuetify_logo.png" /><img />
+      </a>
+    </div>
+    <div id="imageCreditsDiv" class="footerDiv">
+      <v-btn
+      dense
+      color="#e3f2fd"
+      class="text-none"
+      height="31px"
+      @click="imageCreditsBtnClicked()"
+    >
+      Image Credits
+    </v-btn></div>
+    <div id="sourceCodeDiv" class="footerDiv">
+      Source code:
+      <a class="linkTag" href="https://github.com/GeoffSpielman/BattleBlobs">
+        <img id="githubImage" src="@/assets/home/github_logo.png" /><img />
+      </a>
+    </div>
   </v-footer>
 </template>
 
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+
+@Component({
+})
+export default class HomeFooter extends Vue {
+  imageCreditsBtnClicked(){
+    this.$router.push('/imageCredits');
+  }
+}
+</script>
+
 <style scoped>
-.outerCol {
+.footerDiv {
   color: white;
   display: flex;
   align-items: center;
 }
 
-#middleCol{
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#lastCol{
-  justify-content: flex-end;
-}
-
-.linkTag{
+.linkTag {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.linkImage{
+.linkImage {
   height: 31px;
   border-radius: 15px;
-  background-color: #E3F2FD;
+  background-color: #e3f2fd;
   padding: 2px 8px;
   margin: 3px 0px 3px 10px;
 }
 
-.linkImage:hover{
+.linkImage:hover {
   background-color: white;
 }
 
-#githubImage{
+#githubImage {
   height: 31px;
-  margin: 3px 10px;
+  margin: 3px 5px 3px 7px;
 }
 
-#githubImage:hover{
-  background-color: #64B5F6;
+#githubImage:hover {
+  background-color: #64b5f6;
 }
-
 </style>

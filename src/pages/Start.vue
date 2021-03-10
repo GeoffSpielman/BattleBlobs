@@ -3,11 +3,11 @@
     <home-title></home-title>
     <div id="buttonsRow">
       <transition-group name="buttonsFade" appear>
-        <v-btn key="instructionsBtn" @click="changePage('/testing')" x-large color="primary" class="mx-10 px-5" elevation="7"
+        <v-btn key="instructionsBtn" @click="changePage('/instructions')" x-large color="primary" class="mx-10 px-5" elevation="7"
           ><v-icon class="pr-3"> mdi-information-outline</v-icon>Learn How To
           Play</v-btn
         >
-        <v-btn key="lobbyBtn" @click="changePage('/testing')" x-large color="primary" class="mx-10 px-5" elevation="7"
+        <v-btn key="lobbyBtn" @click="changePage('/lobby')" x-large color="primary" class="mx-10 px-5" elevation="7"
           ><v-icon class="pr-3"> mdi-fast-forward</v-icon>Skip To Lobby</v-btn
         >
       </transition-group>
@@ -38,7 +38,7 @@ export default class Home extends Vue {
 
 <style scoped>
 .outermostDiv {
-  background-image: url("../assets/Home/homepage_backdrop.jpg");
+  background-image: url("../assets/home/homepage_backdrop.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center bottom;
@@ -49,7 +49,7 @@ export default class Home extends Vue {
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-  background-image: url("../assets/Home/homepage.jpg");
+  background-image: url("../assets/home/homepage.jpg");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;

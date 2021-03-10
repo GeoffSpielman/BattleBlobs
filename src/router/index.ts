@@ -5,6 +5,7 @@ import StartPage from '@/pages/Start.vue'
 import InstructionsPage from '@/pages/Instructions.vue'
 import LobbyPage from '@/pages/Lobby.vue'
 import GamePage from '@/pages/Game.vue'
+import ImageCreditsPage from '@/pages/ImageCredits.vue'
 import HostPage from '@/pages/Host.vue'
 import NotFoundPage from '@/pages/NotFound.vue'
 
@@ -31,6 +32,11 @@ const routes: Array<RouteConfig> = [
     path: '/play',
     name: 'Game',
     component: GamePage
+  },
+  {
+    path: '/imageCredits',
+    name: 'Image Credits',
+    component: ImageCreditsPage
   },
   {
     path: '/Host',
