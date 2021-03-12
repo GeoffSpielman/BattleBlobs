@@ -9,6 +9,17 @@
   </div>
 </template>
 
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+@Component({
+  name: "HomeTitle",
+})
+export default class HomeTitle extends Vue {
+
+}
+</script>
+
 <style scoped>
 #titleOuterDiv {
   display: flex;
@@ -26,11 +37,12 @@
 }
 
 #titleDiv {
-  font-size: 65pt;
+  font-size: 87px;
   text-align: center;
   overflow: hidden;
   font-family: Copperplate Gothic, Tahoma, sans-serif;
   margin-top: -12px;
+  letter-spacing: normal;
 }
 
 .welcomeFade-enter{
@@ -40,6 +52,15 @@
 .welcomeFade-enter-active{
   transition: opacity 2.5s;
   transition-delay: 0.1s;
+}
+
+.welcomeFade-leave-active{
+  transition: transform 2s;
+  transform: translateY(50px) !important;
+}
+
+.welcomeFade-leave-to{
+  transform: translateY(50px) !important;
 }
 
 .titleGrow-enter-active {
@@ -56,4 +77,5 @@
     width: 750px;
   }
 }
+
 </style>

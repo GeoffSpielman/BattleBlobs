@@ -12,7 +12,7 @@
             <v-col cols="9">
           Name: 
           <v-text-field
-            v-model="message2"
+            v-model="name"
             solo
           ></v-text-field>  
             </v-col>
@@ -36,6 +36,8 @@ import TheHeader from "@/components/TheHeader.vue";
 export default class Lobby extends Vue {
   nameIconPath: string = require("@/assets/lobby/person_icon_black.png")
   aliasIconPath: string = require("@/assets/lobby/alias_icon_black.png")
+
+  name: string = "";
 }
 </script>
 
