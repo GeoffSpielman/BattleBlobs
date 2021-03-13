@@ -47,27 +47,19 @@ export default class HomeTitle extends Vue {
 }
 
 #welcomeDiv {
-  font-size: 26pt;
   font-family: Georgia, Helvetica, Tahoma, Geneva, sans-serif;
-  transition: height 0.75s ease-out;
-  /*.
-  transition: height 0.75s ease-out;
-  transition: margin-top 0.75s ease-out;
-  transition: transform 0.75s ease-out;
-  */
+  transition: all 0.75s ease-out;
 }
 .largeWelcome {
-  /*
+  font-size: 26pt;
   transform: translateY(0px);
   margin-top: 15px;
-  */
   height: 52px;
 }
 .smallWelcome{
-  /*
-  transform: translateY(-50px);
-  margin-top: 0px;
-  */
+  font-size: 15pt;
+  transform: translateY(-20px);
+  margin-top: -2px;
   height: 0px;
 }
 
@@ -84,57 +76,36 @@ export default class HomeTitle extends Vue {
 }
 .smallTitle{
   font-size: 22pt;
+  letter-spacing: 2px;
 }
 
-/* tranisitons */
-
-.welcomeFade-enter{
-  opacity: 0;
-}
-
+/* animations (on intial load) */
 .welcomeFade-enter-active{
-  transition: opacity 2.5s;
-  transition-delay: 0.1s;
+  animation: fade-in-welcome 2.5s;
+  animation-delay: 0.1s;
+  animation-fill-mode: backwards;
 }
-
-.welcomeFade-leave-active{
-  transition: transform 2s;
-  transform: translateY(50px) !important;
-}
-
-.welcomeFade-leave-to{
-  transform: translateY(50px) !important;
-}
-
-
-.titleGrow-enter{
-  width: 0px !important;
+@keyframes fade-in-welcome {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .titleGrow-enter-active {
-  transition-delay: 1s !important;
-  transition: width 2.5s ease-out;
-  width: 855px;
+  animation: grow-in-title 2.5s ease-out;
+  animation-delay: 1s;
+  animation-fill-mode: backwards;
 }
-
-
-
-.headerTrans-enter{
-  height: 40px !important;
-}
-
-.headerTrans-enter-active{
-  height: 187px !important;
-  transition: height 0.75s !important;
-}
-
-.headerTrans-leave-active{
-  transition: height 0.5s ease-in;
-  height: 0px !important;
-}
-
-.headerTrans-leave-to{
-  height: 0px !important;
+@keyframes grow-in-title {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 855px;
+  }
 }
 
 </style>

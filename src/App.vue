@@ -3,7 +3,12 @@
     <v-main class="outermostDiv">
       <the-header :startPageDisplay= "onStartPage"></the-header>
       <div id="pageContainingDiv">
+        <transition
+        name="fadePages"
+        mode="out-in"
+      >
         <router-view></router-view>
+        </transition>
       </div>
       <the-footer :startPageDisplay= "onStartPage"></the-footer>
     </v-main>
@@ -58,5 +63,18 @@ export default class App extends Vue {
 
 #pageContainingDiv{
   flex-grow: 1;
+}
+
+/*transitions */
+.fadePages-enter-active,
+.fadePages-leave-active {
+  transition-duration: 0.5s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fadePages-enter,
+.fadePages-leave-active {
+  opacity: 0
 }
 </style>

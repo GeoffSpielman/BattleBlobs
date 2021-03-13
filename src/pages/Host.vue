@@ -75,12 +75,9 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import TheHeader from "@/components/tempHeader.vue";
-
 import { PlayerEntry } from "@/models/interfaces";
 
 @Component({
-  components: { TheHeader },
   name: "Host",
 })
 export default class Host extends Vue {

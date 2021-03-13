@@ -16,10 +16,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import TheHeader from "@/components/tempHeader.vue";
 
 @Component({
-  components: { TheHeader },
   name: "ImageCredits",
 })
 export default class ImageCredits extends Vue {
