@@ -1,6 +1,5 @@
 <template>
   <div class="outermostDiv">
-    <the-header></the-header>
     <h1 id="lobbyHeader"> Lobby: </h1>
     <v-container style="width: 75%">
       <v-row no-gutters>
@@ -27,10 +26,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import TheHeader from "@/components/TheHeader.vue";
 
 @Component({
-  components: { TheHeader },
   name: "Lobby",
 })
 export default class Lobby extends Vue {

@@ -1,6 +1,5 @@
 <template>
   <div class="outermostDiv">
-    <home-title></home-title>
     <div id="buttonsRow">
       <transition-group name="buttonsFade" appear>
         <v-btn key="instructionsBtn" @click="changePage('/instructions')" x-large color="primary" class="mx-10 px-5" elevation="7"
@@ -12,21 +11,14 @@
         >
       </transition-group>
     </div>
-    <home-footer></home-footer>
   </div>
 </template>
 
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import HomeTitle from "@/components/HomeTitle.vue";
-import HomeFooter from "@/components/HomeFooter.vue";
 
 @Component({
-  components: {
-    HomeFooter,
-    HomeTitle,
-  },
 })
 export default class Home extends Vue {
   

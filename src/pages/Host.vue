@@ -75,7 +75,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import TheHeader from "@/components/TheHeader.vue";
+import TheHeader from "@/components/tempHeader.vue";
 
 import { PlayerEntry } from "@/models/interfaces";
 

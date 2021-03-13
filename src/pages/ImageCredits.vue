@@ -1,6 +1,5 @@
 <template>
   <div class="outermostDiv">
-    <the-header></the-header>
     <v-container style="width: 75%" class="mt-6">
       <v-row>
         <v-col v-for="image in images" :key="image.path" cols="4">
@@ -17,7 +16,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import TheHeader from "@/components/TheHeader.vue";
+import TheHeader from "@/components/tempHeader.vue";
 
 @Component({
   components: { TheHeader },
