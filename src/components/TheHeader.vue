@@ -36,7 +36,7 @@ export default class HomeTitle extends Vue {
   flex-direction: column;
   background-color: #0d47a1;
   color: white;
-  transition: all 0.75s ease-out;
+  transition: all 0.5s ease;
 }
 .largeHeader {
   height: 187px;
@@ -48,7 +48,7 @@ export default class HomeTitle extends Vue {
 
 #welcomeDiv {
   font-family: Georgia, Helvetica, Tahoma, Geneva, sans-serif;
-  transition: all 0.75s ease-out;
+  transition: all 0.5s ease;
 }
 .largeWelcome {
   font-size: 26pt;
@@ -67,7 +67,7 @@ export default class HomeTitle extends Vue {
   text-align: center;
   overflow: hidden;
   font-family: Copperplate Gothic, Tahoma, sans-serif;  
-  transition: all 0.75s ease-out;
+  transition: all 0.5s ease;
 }
 .largeTitle{
   font-size: 100px;

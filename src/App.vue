@@ -1,24 +1,20 @@
 <template>
   <v-app>
     <v-main class="outermostDiv">
-      <the-header :startPageDisplay= "onStartPage"></the-header>
+      <the-header :startPageDisplay="onStartPage"></the-header>
       <div id="pageContainingDiv">
-        <transition
-        name="fadePages"
-        mode="out-in"
-      >
-        <router-view></router-view>
-        </transition>
+          <transition name="fadePages" mode="out-in">
+            <router-view></router-view>
+          </transition>
       </div>
-      <the-footer :startPageDisplay= "onStartPage"></the-footer>
+      <the-footer :startPageDisplay="onStartPage"></the-footer>
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
-
 import { Component, Vue, Watch } from "vue-property-decorator";
-import {Route} from 'vue-router';
+import { Route } from "vue-router";
 import TheHeader from "@/components/TheHeader.vue";
 import TheFooter from "@/components/TheFooter.vue";
 
@@ -30,27 +26,26 @@ import TheFooter from "@/components/TheFooter.vue";
   },
 })
 export default class App extends Vue {
-
   onStartPage: boolean = true;
 
-  @Watch('$route', { immediate: true})
-   onRouteChange(newRoute: Route) {
-     this.onStartPage = (newRoute.name) === "Start" ? true : false; 
-    }
+  @Watch("$route", { immediate: true })
+  onRouteChange(newRoute: Route) {
+    this.onStartPage = newRoute.name === "Start" ? true : false;
+  }
 
-  created(){
-    this.$store.dispatch('playerStore/getFirebaseDatabase')
+  created() {
+    this.$store.dispatch("playerStore/getFirebaseDatabase");
     /*this.$store.dispatch('playerStore/intializeClient')*/
   }
 }
 </script>
 
 <style>
-*{
+* {
   box-sizing: border-box;
 }
 
-.v-main__wrap{
+.v-main__wrap {
   display: flex;
   flex-direction: column;
 }
@@ -61,7 +56,7 @@ export default class App extends Vue {
   flex-direction: column;
 }
 
-#pageContainingDiv{
+#pageContainingDiv {
   flex-grow: 1;
 }
 
@@ -75,6 +70,6 @@ export default class App extends Vue {
 
 .fadePages-enter,
 .fadePages-leave-active {
-  opacity: 0
+  opacity: 0;
 }
 </style>

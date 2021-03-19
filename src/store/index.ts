@@ -2,17 +2,20 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from './firebase'
 import playerStore from './playerStore'
+import clientSpecificStore from './clientSpecificStore'
 import {RootState} from './RootState'
  
 Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
   modules: {
-    playerStore: playerStore
+    playerStore: playerStore,
+    clientSpecificStore: clientSpecificStore
   },
 
   state: {
     gameStatus: "",
+    startPageButtonFade: "",
      
   },
 
@@ -20,12 +23,14 @@ export default new Vuex.Store<RootState>({
     getGameStatus(state) {
       return state.gameStatus;
     },
+    
   },
 
   mutations: {
-    setGameStatus(state, recStatus) {
+    setGameStatus(state, recStatus: string) {
       state.gameStatus = recStatus;
     },
+    
   },
 
   actions: {
@@ -41,5 +46,6 @@ export default new Vuex.Store<RootState>({
     setGameStatus(context, recStatus) {
       firebase.database.ref('gameStatus').set(recStatus);
     },
+    
   },
 })

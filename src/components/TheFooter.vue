@@ -106,7 +106,7 @@ export default class HomeFooter extends Vue {
 }
 
 .footerTrans-leave-active{
-  transition: height 0.5s ease-in;
+  transition: height 0.5s ease;
   height: 0px !important;
 }
 
