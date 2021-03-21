@@ -4,7 +4,7 @@
       color="primary lighten-1"
       padless
       id="footerOutermost"
-      v-if="startPageDisplay"
+      v-if="showFooter"
     >
       <div id="copyrightDiv" class="footerDiv pl-1">
         Copyright
@@ -45,15 +45,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Watch, Vue } from "vue-property-decorator";
+import { Route } from "vue-router";
 
-@Component({})
-export default class HomeFooter extends Vue {
-  @Prop({ required: true, type: Boolean })
-  readonly startPageDisplay: boolean = true;
+@Component({
+  name: "TheFooter",
+})
+export default class TheFooter extends Vue {
+  showFooter: boolean = true;
 
   imageCreditsBtnClicked() {
     this.$router.push("/imageCredits");
+  }
+
+  @Watch("$route", { immediate: true })
+  onRouteChange(newRoute: Route) {
+    if (newRoute.name === "Start") {
+      this.showFooter = true;
+    } else {
+      this.showFooter = false;
+    }
   }
 }
 </script>
@@ -96,21 +107,21 @@ export default class HomeFooter extends Vue {
 }
 
 /* tranisitons */
-.footerTrans-enter{
+.footerTrans-enter {
   height: 0px !important;
 }
 
-.footerTrans-enter-active{
+.footerTrans-enter-active {
   height: 37px;
   transition: height 0.5s !important;
 }
 
-.footerTrans-leave-active{
+.footerTrans-leave-active {
   transition: height 0.5s ease;
   height: 0px !important;
 }
 
-.footerTrans-leave-to{
+.footerTrans-leave-to {
   height: 0px !important;
 }
 </style>

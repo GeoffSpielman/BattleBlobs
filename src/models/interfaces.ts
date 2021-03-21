@@ -9,4 +9,4 @@ export interface PlayerEntry{
     captainNum: number;
     shipOneKey: string;
     shipTwoKey: string;
-}   
+}

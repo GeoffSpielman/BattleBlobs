@@ -2,21 +2,23 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from './firebase'
 import playerStore from './playerStore'
+import lobbyStore from './lobbyStore'
 import clientSpecificStore from './clientSpecificStore'
 import {RootState} from './RootState'
+
  
 Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
   modules: {
     playerStore: playerStore,
-    clientSpecificStore: clientSpecificStore
+    lobbyStore: lobbyStore,
+    clientSpecificStore: clientSpecificStore,
   },
 
   state: {
     gameStatus: "",
     startPageButtonFade: "",
-     
   },
 
   getters: {
@@ -37,7 +39,7 @@ export default new Vuex.Store<RootState>({
 
     //connects firebase database to store, updates are now driven from database
     getFirebaseDatabase(context) {
-      // DATASE LISTENERS
+      // DATABASE LISTENERS
       firebase.database.ref('gameStatus').on('value', function (snapshot) {
         context.commit('setGameStatus', snapshot.val());
       })

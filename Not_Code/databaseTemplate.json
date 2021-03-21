@@ -4,13 +4,13 @@
             "name": "Geoff",
             "status": "On Start Screen" | "Reading Instructions" | "Creating Profile" | "Ready to Start" | "In Game" | "Spectating" | "Disconnected" | "Left Game",
             "colour": "#341414",
-            "alias": "Big Boii",
+            "alias": "Darth Evader",
             "captainNum": 1,
             "shipOneKey": "32q653634646",
             "shipTwoKey": "3546fdg34346",
         }
     },
-    "lobbyDynamnicOptions": {
+    "lobby": {
         "colours": {
             "#235fdf4": null,
             "#54363456": "2353524535535",

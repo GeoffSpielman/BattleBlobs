@@ -1,20 +1,19 @@
 <template>
   <v-app>
     <v-main class="outermostDiv">
-      <the-header :startPageDisplay="onStartPage"></the-header>
+      <the-header></the-header>
       <div id="pageContainingDiv">
           <transition name="fadePages" mode="out-in">
             <router-view></router-view>
           </transition>
       </div>
-      <the-footer :startPageDisplay="onStartPage"></the-footer>
+      <the-footer></the-footer>
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import { Route } from "vue-router";
+import { Component, Vue} from "vue-property-decorator";
 import TheHeader from "@/components/TheHeader.vue";
 import TheFooter from "@/components/TheFooter.vue";
 
@@ -26,15 +25,13 @@ import TheFooter from "@/components/TheFooter.vue";
   },
 })
 export default class App extends Vue {
-  onStartPage: boolean = true;
-
-  @Watch("$route", { immediate: true })
-  onRouteChange(newRoute: Route) {
-    this.onStartPage = newRoute.name === "Start" ? true : false;
-  }
-
+ 
   created() {
     this.$store.dispatch("playerStore/getFirebaseDatabase");
+    this.$store.dispatch("lobbyStore/getFirebaseDatabase");
+    if (this.$route.name !== "Start"){
+      this.$router.push("/");
+    }
     /*this.$store.dispatch('playerStore/intializeClient')*/
   }
 }

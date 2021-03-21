@@ -1,31 +1,34 @@
 <template>
-  <div id="headerOuterDiv" :class="{largeHeader: largeHeader, smallHeader: smallHeader}">
+  <div id="headerOuterDiv" :class="showLargeHeader ? 'largeHeader' : 'smallHeader'">
     <transition name="welcomeFade" appear> 
-    <h2 id="welcomeDiv" :class="{largeWelcome: largeHeader, smallWelcome: smallHeader}">Welcome to</h2>
+    <h2 id="welcomeDiv" :class="showLargeHeader? 'largeWelcome' : 'smallWelcome'">Welcome to</h2>
     </transition>
     <transition name="titleGrow" appear>
-      <h1 id="titleDiv" :class="{largeTitle: largeHeader, smallTitle: smallHeader}">CLUSTERFUCK</h1>
+      <h1 id="titleDiv" :class="showLargeHeader? 'largeTitle' : 'smallTitle'">CLUSTERFUCK</h1>
     </transition>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch, } from "vue-property-decorator";
+import { Route } from "vue-router";
 
 @Component({
-  name: "HomeTitle",
+  name: "TheHeader",
 })
-export default class HomeTitle extends Vue {
-  @Prop({required: true, type: Boolean}) readonly startPageDisplay: boolean = true;
+export default class TheHeader extends Vue {
 
-  get largeHeader(): boolean {
-    return this.startPageDisplay;
+  showLargeHeader: boolean = true;
+
+   @Watch("$route", { immediate: true })
+    onRouteChange(newRoute: Route) {
+    if (newRoute.name === "Start"){
+      this.showLargeHeader = true;
+    }
+    else{
+      this.showLargeHeader = false;
+    }
   }
-
-  get smallHeader(): boolean {
-    return !this.startPageDisplay;
-  }
-
 }
 </script>
 
