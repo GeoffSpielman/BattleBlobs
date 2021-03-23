@@ -45,6 +45,7 @@
                 counter="14"
                 solo
                 class="textField"
+                @change="aliasTextChanged()"
               >
                 <template v-slot:prepend>
                   <h3 class="textfieldPrompt">Alias:</h3>
@@ -53,18 +54,11 @@
               <ul class="bulletList">
                 <li>Create your own or choose from the bank below:</li>
               </ul>
-              <v-containter id="aliasListContainer">
-                <!--
-                <ul>
-                  <li v-for="alias in aliasList" :key="alias">
-                      {{alias}}
-                  </li>
-                </ul>
-                -->
+              <div id="aliasListContainer">
                 
                 <v-list dense height="100%" max-height="100%">
                   <v-list-item-group color="primary">
-                    <v-list-item v-for="alias in aliasList" :key="alias">
+                    <v-list-item v-for="alias in aliasList" :key="alias" @click="listItemClicked(alias)">
                       <v-list-item-content>
                         <v-list-item-title v-text="alias"></v-list-item-title>
                       </v-list-item-content>
@@ -73,7 +67,7 @@
                 </v-list>
               
                 
-              </v-containter>
+              </div>
             </div>
           </div>
         </div>
@@ -97,6 +91,9 @@ export default class Lobby extends Vue {
 
   name: string = "";
   alias: string = "";
+  usingBankAlias: boolean = false;
+  bankAliasClicked: string = "";
+
   nameRules = [
     (v: string) =>
       v.length <= 14 || "Sorry, names are limited to 14 characters max",
@@ -108,6 +105,32 @@ export default class Lobby extends Vue {
 
   get aliasList() {
     return this.$store.getters["lobbyStore/getAliasesList"];
+  }
+
+  aliasTextChanged(){
+    if (this.usingBankAlias === true){
+      this.usingBankAlias = false;
+      this.$store.dispatch('lobbyStore/releaseAlias', this.bankAliasClicked);
+    }
+    //user typed out an alias that was in the bank
+    const aliasIndexInBank = this.aliasList.findIndex((element: string) => element.toLowerCase() === this.alias.toLowerCase());
+    if (aliasIndexInBank !== -1){
+      this.usingBankAlias = true;
+      this.bankAliasClicked = this.aliasList[aliasIndexInBank];
+      this.$store.dispatch('lobbyStore/reserveAlias', this.bankAliasClicked);
+    }
+
+    //TODO: actually set player's alias
+    //playerLobby.setPlayerAlias(myKey, this.alias)
+
+
+  }
+
+  listItemClicked(aliasClicked: string){
+    this.alias = aliasClicked;
+    this.usingBankAlias = true;
+    this.bankAliasClicked = aliasClicked;
+    this.$store.dispatch('lobbyStore/reserveAlias', aliasClicked);
   }
 }
 </script>

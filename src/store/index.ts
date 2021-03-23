@@ -45,7 +45,7 @@ export default new Vuex.Store<RootState>({
       })
     },
 
-    setGameStatus(context, recStatus) {
+    setGameStatus(_, recStatus) {
       firebase.database.ref('gameStatus').set(recStatus);
     },
     

@@ -5,15 +5,12 @@ import { PlayerEntry } from '@/models/interfaces'
 import { playerStatus } from '@/models/enums'
 
 interface PlayerState {
-  myKey: string;
   players: PlayerEntry[];
-
 }
 
 const playerStore: Module<PlayerState, RootState> = {
   namespaced: true,
   state: {
-    myKey: "",
     players: [],
   },
 
@@ -41,9 +38,7 @@ const playerStore: Module<PlayerState, RootState> = {
     },
   
 
-    setMyKey(state, recKey: string) {
-      state.myKey = recKey;
-    }
+    
 
   },
 
@@ -77,7 +72,7 @@ const playerStore: Module<PlayerState, RootState> = {
       firebase.database.ref('players/' + modifedPlayer.key).set(modifedPlayer);
     },
 
-    intializeClient(context) {
+    intializeClient(_) {
       const newClientRef = firebase.database.ref('players').push();
       if (newClientRef.key === null) {
         console.log("Error initializing new client. Firebase returned a 'null' key")
@@ -93,7 +88,7 @@ const playerStore: Module<PlayerState, RootState> = {
           'shipOneKey': '',
           'shipTwoKey': ''
         }
-        context.commit('setMyKey', newClientRef.key);
+        this.dispatch('clientSpecificStore/setMyKey', newClientRef.key, {root: true})
         newClientRef.set(newPlayerEntry);
       }
     },

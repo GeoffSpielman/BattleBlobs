@@ -30,6 +30,9 @@ const lobbyStore: Module<LobbyState, RootState> = {
 
     addAlias(state, newAlias: string) {
       state.availableAliases.push(newAlias);
+      const tempArray = state.availableAliases
+      tempArray.sort()
+      state.availableAliases = tempArray;
     },
 
     addColour(state, newColour: string) {
@@ -51,8 +54,18 @@ const lobbyStore: Module<LobbyState, RootState> = {
     //firebase listeners
     getFirebaseDatabase(context) {
       firebase.database.ref('lobby/aliases').on('child_added', function (data) {
-        if ( data.val() === 'available'){
+        if ( data.val() === 'available' && context.state.availableAliases.indexOf(String(data.key)) === -1){
           context.commit('addAlias', data.key);
+        }
+      })
+
+      firebase.database.ref('lobby/aliases').on('child_changed', function (data) {
+        //make sure it's not already in the list
+        if ( data.val() === 'available' && context.state.availableAliases.indexOf(String(data.key)) === -1){
+          context.commit('addAlias', data.key);
+        }
+        else if (data.val() !== 'available' && context.state.availableAliases.indexOf(String(data.key)) !== -1){
+          context.commit('removeAlias', data.key);
         }
       })
 
@@ -61,6 +74,14 @@ const lobbyStore: Module<LobbyState, RootState> = {
           context.commit('addColour', data.key);
         }
       })
+    },
+
+    reserveAlias(context, recAlias: string) {
+      firebase.database.ref('lobby/aliases/' + recAlias).set(context.rootGetters['clientSpecificStore/getMyKey']);
+    },
+
+    releaseAlias(_, recAlias: string) {
+      firebase.database.ref('lobby/aliases/' + recAlias).set('available');
     },
   },
 }

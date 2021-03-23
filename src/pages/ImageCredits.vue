@@ -28,7 +28,7 @@ export default class ImageCredits extends Vue {
     },
     {
       path: require("@/assets/imageCredits/person_icon.png"),
-      caption: "person by mim studio from the Noun Project",
+      caption: "Person by Mim Studio from the Noun Project",
     },
 
     {
