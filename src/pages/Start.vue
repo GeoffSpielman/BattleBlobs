@@ -17,6 +17,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { playerStatus } from '@/models/enums'
 
 @Component({
 })
@@ -30,6 +31,10 @@ export default class Home extends Vue {
   changePage(pagePath: string){
     this.$router.push(pagePath);
     this.$store.dispatch("clientSpecificStore/setStartPageButtonFade", 'quickFade')
+  }
+
+  mounted(){
+    this.$store.dispatch('playerStore/setMyStatus', playerStatus.StartScreen)
   }
 
   

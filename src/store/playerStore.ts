@@ -5,16 +5,22 @@ import { PlayerEntry } from '@/models/interfaces'
 import { playerStatus } from '@/models/enums'
 
 interface PlayerState {
+  myKey: string;
   players: PlayerEntry[];
 }
 
 const playerStore: Module<PlayerState, RootState> = {
   namespaced: true,
   state: {
+    myKey: "initial dummy key",
     players: [],
   },
 
   getters: {
+    getMyKey(state){
+      return state.myKey;
+    },
+
     getPlayersList(state): PlayerEntry[] {
       return state.players;
     }
@@ -22,7 +28,7 @@ const playerStore: Module<PlayerState, RootState> = {
   },
 
   mutations: {
-
+    
     addPlayer(state, newPlayerEntry: PlayerEntry) {
       state.players.push(newPlayerEntry);
     },
@@ -36,10 +42,11 @@ const playerStore: Module<PlayerState, RootState> = {
       const modifiedPlayerIndex = state.players.findIndex((playerObj) => (playerObj.key === updatedPlayer.key));
       state.players.splice(modifiedPlayerIndex, 1, updatedPlayer);
     },
+
+    setMyKey(state, recKey: string) {
+      state.myKey = recKey;
+    },
   
-
-    
-
   },
 
   actions: {
@@ -59,6 +66,8 @@ const playerStore: Module<PlayerState, RootState> = {
       })
     },
 
+  
+
     addPlayer(_, newPlayer: PlayerEntry) {
       const newPlayerRef = firebase.database.ref('players').push();
       newPlayerRef.set(newPlayer);
@@ -72,7 +81,7 @@ const playerStore: Module<PlayerState, RootState> = {
       firebase.database.ref('players/' + modifedPlayer.key).set(modifedPlayer);
     },
 
-    intializeClient(_) {
+    intializeClient(context) {
       const newClientRef = firebase.database.ref('players').push();
       if (newClientRef.key === null) {
         console.log("Error initializing new client. Firebase returned a 'null' key")
@@ -88,10 +97,18 @@ const playerStore: Module<PlayerState, RootState> = {
           'shipOneKey': '',
           'shipTwoKey': ''
         }
-        this.dispatch('clientSpecificStore/setMyKey', newClientRef.key, {root: true})
+        context.commit('setMyKey', newClientRef.key)
         newClientRef.set(newPlayerEntry);
       }
     },
+
+    setMyKey(context, recKey: string){
+      context.commit('setMyKey', recKey);  
+    },
+
+    setMyStatus(context, recStatus: playerStatus){
+      firebase.database.ref('players/' + context.state.myKey + '/status').set(recStatus);
+    }
   },
 }
 

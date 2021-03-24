@@ -81,6 +81,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { playerStatus } from '@/models/enums'
 
 @Component({
   name: "Lobby",
@@ -121,7 +122,7 @@ export default class Lobby extends Vue {
     }
 
     //TODO: actually set player's alias
-    //playerLobby.setPlayerAlias(myKey, this.alias)
+    //playerLobby.setMyAlias(this.alias)
 
 
   }
@@ -131,6 +132,10 @@ export default class Lobby extends Vue {
     this.usingBankAlias = true;
     this.bankAliasClicked = aliasClicked;
     this.$store.dispatch('lobbyStore/reserveAlias', aliasClicked);
+  }
+
+  mounted(){
+    this.$store.dispatch('playerStore/setMyStatus', playerStatus.CreatingProfile)
   }
 }
 </script>

@@ -5,6 +5,6 @@ export enum playerStatus{
     ReadyToStart = "Ready to Start",
     InGame = "In Game",
     Spectating = "Spectating",
-    Disconneted = "Disconnected",
+    Disconnected = "Disconnected",
     LeftGame = "Left Game"
 }

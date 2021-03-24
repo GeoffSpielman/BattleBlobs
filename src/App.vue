@@ -3,9 +3,9 @@
     <v-main class="outermostDiv">
       <the-header></the-header>
       <div id="pageContainingDiv">
-          <transition name="fadePages" mode="out-in">
-            <router-view></router-view>
-          </transition>
+        <transition name="fadePages" mode="out-in">
+          <router-view></router-view>
+        </transition>
       </div>
       <the-footer></the-footer>
     </v-main>
@@ -13,9 +13,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue} from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import TheHeader from "@/components/TheHeader.vue";
 import TheFooter from "@/components/TheFooter.vue";
+import configuredDatabase from "@/store/firebase";
+import firebase from "firebase/app";
+import { playerStatus } from '@/models/enums'
 
 @Component({
   name: "App",
@@ -25,14 +28,23 @@ import TheFooter from "@/components/TheFooter.vue";
   },
 })
 export default class App extends Vue {
- 
+  myPlayerStatusRef: firebase.database.Reference = configuredDatabase.database.ref();
+
   created() {
-    this.$store.dispatch("playerStore/getFirebaseDatabase");
-    this.$store.dispatch("lobbyStore/getFirebaseDatabase");
-    if (this.$route.name !== "Start"){
+    if (this.$route.name !== "Start") {
       this.$router.push("/");
     }
-    /*this.$store.dispatch('playerStore/intializeClient')*/
+
+    this.$store.dispatch("playerStore/getFirebaseDatabase");
+    this.$store.dispatch("lobbyStore/getFirebaseDatabase");
+
+    this.$store.dispatch("playerStore/intializeClient").then(() => {
+      this.myPlayerStatusRef = configuredDatabase.database.ref(
+        "players/" + this.$store.getters["playerStore/getMyKey"] + '/status'
+      );
+      this.myPlayerStatusRef.onDisconnect().set(playerStatus.Disconnected)
+    });
+    
   }
 }
 </script>
