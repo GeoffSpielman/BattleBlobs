@@ -4,17 +4,23 @@ import { RootState } from './RootState'
 
 interface ClientSpecificState {
   startPageButtonFade: string;
+  usingBankAlias: boolean;
 }
 
 const playerStore: Module<ClientSpecificState, RootState> = {
   namespaced: true,
   state: {
     startPageButtonFade: "initialFade",
+    usingBankAlias: false,
   },
 
   getters: {
     getStartPageButtonFade(state){
       return state.startPageButtonFade;
+    },
+
+    getUsingBankAlias(state){
+      return state.usingBankAlias;
     }
   },
 
@@ -23,6 +29,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
       state.startPageButtonFade = recFade
     },
 
+    setUsingBankAlias(state, recVal: boolean){
+      state.usingBankAlias = recVal;
+    }
+
   },
 
   actions: {   
@@ -30,6 +40,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
     setStartPageButtonFade(context, recFade: string){
       context.commit('setStartPageButtonFade', recFade)
     },
+
+    setUsingBankAlias(context, recVal: boolean){
+      context.commit('setUsingBankAlias', recVal);
+    }
   },
 }
 

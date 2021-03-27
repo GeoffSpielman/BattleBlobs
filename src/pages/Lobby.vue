@@ -5,70 +5,18 @@
       <div id="topRow">
         <div id="textFieldsOuterColumn">
           <div id="nameRow">
-            <div class="iconColumn">
-              <v-img :src="nameIconPath" height="90px" contain></v-img>
-            </div>
-            <div class="textFieldColumn">
-              <v-text-field
-                v-model="name"
-                :rules="nameRules"
-                counter="14"
-                solo
-                class="textField"
-              >
-                <template v-slot:prepend>
-                  <h3 class="textfieldPrompt">Name:</h3>
+              <name-entry>
+                <template v-slot:iconImage>
+                  <v-img :src="nameIconPath" height="90px" contain></v-img>
                 </template>
-              </v-text-field>
-              <ul class="bulletList">
-                <li>Please use your real first name</li>
-                <li>
-                  Useful for troubleshooting connection issues
-                  <v-icon style="margin-top: -3px" dense
-                    >mdi-emoticon-happy-outline</v-icon
-                  >
-                </li>
-                <li>
-                  Revealed after the game to determine the 'stealth master'
-                </li>
-              </ul>
-            </div>
+              </name-entry>
           </div>
           <div id="aliasRow">
-            <div class="iconColumn">
-              <v-img :src="aliasIconPath" height="90px" contain></v-img>
-            </div>
-            <div class="textFieldColumn">
-              <v-text-field
-                v-model="alias"
-                :rules="aliasRules"
-                counter="14"
-                solo
-                class="textField"
-                @change="aliasTextChanged()"
-              >
-                <template v-slot:prepend>
-                  <h3 class="textfieldPrompt">Alias:</h3>
+              <alias-entry>
+                <template v-slot:iconImage>
+                  <v-img :src="aliasIconPath" height="90px" contain></v-img>
                 </template>
-              </v-text-field>
-              <ul class="bulletList">
-                <li>Create your own or choose from the bank below:</li>
-              </ul>
-              <div id="aliasListContainer">
-                
-                <v-list dense height="100%" max-height="100%">
-                  <v-list-item-group color="primary">
-                    <v-list-item v-for="alias in aliasList" :key="alias" @click="listItemClicked(alias)">
-                      <v-list-item-content>
-                        <v-list-item-title v-text="alias"></v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              
-                
-              </div>
-            </div>
+              </alias-entry>
           </div>
         </div>
         <div id="colourAndShipsColumn">I am the left column</div>
@@ -82,57 +30,25 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { playerStatus } from '@/models/enums'
+import NameEntry from "@/components/NameEntry.vue";
+import AliasEntry from "@/components/AliasEntry.vue";
 
 @Component({
   name: "Lobby",
+  components: {
+    NameEntry,
+    AliasEntry
+  }
 })
 export default class Lobby extends Vue {
   nameIconPath: string = require("@/assets/lobby/person_icon_black.png");
   aliasIconPath: string = require("@/assets/lobby/alias_icon_black.png");
 
   name: string = "";
-  alias: string = "";
-  usingBankAlias: boolean = false;
-  bankAliasClicked: string = "";
-
   nameRules = [
     (v: string) =>
       v.length <= 14 || "Sorry, names are limited to 14 characters max",
   ];
-  aliasRules = [
-    (v: string) =>
-      v.length <= 14 || "Sorry, aliases are limited to 14 characters max",
-  ];
-
-  get aliasList() {
-    return this.$store.getters["lobbyStore/getAliasesList"];
-  }
-
-  aliasTextChanged(){
-    if (this.usingBankAlias === true){
-      this.usingBankAlias = false;
-      this.$store.dispatch('lobbyStore/releaseAlias', this.bankAliasClicked);
-    }
-    //user typed out an alias that was in the bank
-    const aliasIndexInBank = this.aliasList.findIndex((element: string) => element.toLowerCase() === this.alias.toLowerCase());
-    if (aliasIndexInBank !== -1){
-      this.usingBankAlias = true;
-      this.bankAliasClicked = this.aliasList[aliasIndexInBank];
-      this.$store.dispatch('lobbyStore/reserveAlias', this.bankAliasClicked);
-    }
-
-    //TODO: actually set player's alias
-    //playerLobby.setMyAlias(this.alias)
-
-
-  }
-
-  listItemClicked(aliasClicked: string){
-    this.alias = aliasClicked;
-    this.usingBankAlias = true;
-    this.bankAliasClicked = aliasClicked;
-    this.$store.dispatch('lobbyStore/reserveAlias', aliasClicked);
-  }
 
   mounted(){
     this.$store.dispatch('playerStore/setMyStatus', playerStatus.CreatingProfile)
@@ -144,6 +60,7 @@ export default class Lobby extends Vue {
 .outermostDiv {
   align-items: center;
 }
+
 #lobbyHeader {
   font-size: 30pt;
   font-family: Tahoma, sans-serif;
@@ -204,10 +121,6 @@ export default class Lobby extends Vue {
   flex-grow: 1;
 }
 
-.fieldOuterBox {
-  background-color: orange;
-}
-
 .textfieldPrompt {
   margin-top: 4px;
 }
@@ -222,13 +135,4 @@ export default class Lobby extends Vue {
   margin-bottom: 10px;
 }
 
-#aliasListContainer {
-  height: 50px;
-  flex-grow: 1;
-  margin-left: 25px;
-}
-
-.v-list {
-  overflow-y: auto;
-}
 </style>

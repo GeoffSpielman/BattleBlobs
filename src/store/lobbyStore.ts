@@ -16,7 +16,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
   },
 
   getters: {
-    getAliasesList(state): object {
+    getAvailableAliases(state): object {
       return state.availableAliases;
     },
 
@@ -28,22 +28,22 @@ const lobbyStore: Module<LobbyState, RootState> = {
 
   mutations: {
 
-    addAlias(state, newAlias: string) {
+    addAvailableAlias(state, newAlias: string) {
       state.availableAliases.push(newAlias);
       const tempArray = state.availableAliases
       tempArray.sort()
       state.availableAliases = tempArray;
     },
 
-    addColour(state, newColour: string) {
-      state.availableColours.push(newColour);
-    },
-    
-    removeAlias(state, removedAlias: string){
+    removeAvailableAlias(state, removedAlias: string) {
       state.availableAliases.splice(state.availableAliases.indexOf(removedAlias), 1);
     },
 
-    removeColour(state, removedColour: string){
+    addColour(state, newColour: string) {
+      state.availableColours.push(newColour);
+    },
+
+    removeColour(state, removedColour: string) {
       state.availableColours.splice(state.availableColours.indexOf(removedColour), 1);
     },
 
@@ -54,34 +54,68 @@ const lobbyStore: Module<LobbyState, RootState> = {
     //firebase listeners
     getFirebaseDatabase(context) {
       firebase.database.ref('lobby/aliases').on('child_added', function (data) {
-        if ( data.val() === 'available' && context.state.availableAliases.indexOf(String(data.key)) === -1){
-          context.commit('addAlias', data.key);
+        if (data.val() === 'available' && context.state.availableAliases.indexOf(String(data.key)) === -1) {
+          context.commit('addAvailableAlias', data.key);
         }
       })
 
       firebase.database.ref('lobby/aliases').on('child_changed', function (data) {
-        //make sure it's not already in the list
-        if ( data.val() === 'available' && context.state.availableAliases.indexOf(String(data.key)) === -1){
-          context.commit('addAlias', data.key);
+        if (data.val() === 'available' && context.state.availableAliases.indexOf(String(data.key)) === -1) {
+          context.commit('addAvailableAlias', data.key);
         }
-        else if (data.val() !== 'available' && context.state.availableAliases.indexOf(String(data.key)) !== -1){
-          context.commit('removeAlias', data.key);
+        else if (data.val() !== 'available' && context.state.availableAliases.indexOf(String(data.key)) !== -1) {
+          context.commit('removeAvailableAlias', data.key);
         }
       })
 
       firebase.database.ref('lobby/colours').on('child_added', function (data) {
-        if ( data.val() === 'available'){
+        if (data.val() === 'available') {
           context.commit('addColour', data.key);
         }
       })
     },
 
     reserveAlias(context, recAlias: string) {
-      firebase.database.ref('lobby/aliases/' + recAlias).set(context.rootGetters['clientSpecificStore/getMyKey']);
+      firebase.database.ref('lobby/aliases/' + recAlias).set(context.rootGetters['playerStore/getMyKey']);
     },
 
     releaseAlias(_, recAlias: string) {
       firebase.database.ref('lobby/aliases/' + recAlias).set('available');
+    },
+
+    allocateAlias(context, recAlias: string) {
+      return new Promise((resolve, reject) => {
+        //user requests their current alias again (due to v-textfield 'on change' bug)
+        if (recAlias === context.rootGetters['playerStore/getMyAlias']){
+          resolve("SUCCESS: Alias " + recAlias + " has already been reserved for you");
+        }
+        //check if any other players are currently using this alias
+        else if (context.rootGetters['playerStore/getAliasAvailable'](recAlias)) {
+
+          //if the user's old alias was in the bank, we need to release it
+          if(context.rootGetters['clientSpecificStore/getUsingBankAlias']){
+            context.dispatch('releaseAlias', context.rootGetters['playerStore/getMyAlias']);
+          }
+
+          //user clicked alias from bank or typed it out - need to claim it
+          if (context.getters.getAvailableAliases.findIndex(
+            (element: string) => element.toLowerCase() === recAlias.toLowerCase()) !== -1) {
+            context.dispatch('reserveAlias', recAlias);            
+            context.dispatch('clientSpecificStore/setUsingBankAlias', true, { root: true });
+          }
+          else{
+            context.dispatch('clientSpecificStore/setUsingBankAlias', false, { root: true });
+          }
+          //actually set player's alias in the player store
+          context.dispatch('playerStore/setMyAlias', recAlias, { root: true });
+          resolve("SUCCESS: Alias '" + recAlias + "' succesfully reserved");
+
+        }
+        else {
+          reject('FAIL: Alias is already in use, please choose another')
+        }
+
+      })
     },
   },
 }

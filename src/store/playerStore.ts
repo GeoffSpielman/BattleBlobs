@@ -23,6 +23,14 @@ const playerStore: Module<PlayerState, RootState> = {
 
     getPlayersList(state): PlayerEntry[] {
       return state.players;
+    },
+
+    getAliasAvailable: (state) => (recAlias: string) => {
+      return state.players.findIndex((player)=> player.alias.toLowerCase() === recAlias.toLowerCase()) === -1 ? true: false
+    },
+
+    getMyAlias(state){      
+      return state.players.find((player) => player.key === state.myKey)?.alias;
     }
 
   },
@@ -108,6 +116,10 @@ const playerStore: Module<PlayerState, RootState> = {
 
     setMyStatus(context, recStatus: playerStatus){
       firebase.database.ref('players/' + context.state.myKey + '/status').set(recStatus);
+    },
+
+    setMyAlias(context, recAlias: string){
+      firebase.database.ref('players/' + context.state.myKey + '/alias').set(recAlias);
     }
   },
 }
