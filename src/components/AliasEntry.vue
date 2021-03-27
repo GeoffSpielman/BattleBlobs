@@ -17,6 +17,7 @@
           <h3 class="textfieldPrompt">Alias:</h3>
         </template>
       </v-text-field>
+
       <ul class="bulletList">
         <li>Create your own or choose from the bank below:</li>
       </ul>
@@ -28,9 +29,11 @@
               :key="alias"
               @click="listItemClicked(alias)"
             >
+            <transition name="fadeItem">
               <v-list-item-content>
                 <v-list-item-title v-text="alias"></v-list-item-title>
               </v-list-item-content>
+            </transition>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -120,5 +123,24 @@ export default class AliasEntry extends Vue {
 
 .v-list {
   overflow-y: auto;
+}
+
+.fadeItem-enter {
+  opacity: 0 !important;
+}
+
+.fadeItem-enter-active {
+  opacity: 1 !important;
+  transition: opacity 0.5s !important;
+}
+
+
+.fadeItem-leave-active {
+  transition: opacity 0.5s !important;
+  opacity: 0 !important;
+}
+
+.fadeItem-leave-to {
+  opacity: 0 !important;
 }
 </style>
