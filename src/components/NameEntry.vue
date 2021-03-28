@@ -11,6 +11,7 @@
         solo
         class="textField"
         @change="nameTextChanged()"
+        :error-messages="nameErrorMessage"
       >
         <template v-slot:prepend>
           <h3 class="textfieldPrompt">Name:</h3>
@@ -43,9 +44,19 @@ export default class NameEntry extends Vue {
     (v: string) =>
       v.length <= 14 || "Sorry, names are limited to 14 characters max",
   ];
+  nameErrorMessage: string = "";
 
   nameTextChanged() {
-    console.log("new name: " + this.name);
+    this.$store.dispatch("lobbyStore/allocateName", this.name).then(
+      (response) => {
+        console.log(response);
+        this.nameErrorMessage = "";
+      },
+      (error) => {
+        console.log(error);
+        this.nameErrorMessage = "Unfortunately this name is taken. Maybe add your last initial?";
+      }
+    );
   }
 }
 </script>

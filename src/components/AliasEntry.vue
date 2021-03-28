@@ -29,11 +29,9 @@
               :key="alias"
               @click="listItemClicked(alias)"
             >
-            <transition name="fadeItem">
               <v-list-item-content>
                 <v-list-item-title v-text="alias"></v-list-item-title>
               </v-list-item-content>
-            </transition>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -66,10 +64,10 @@ export default class AliasEntry extends Vue {
 
   aliasEntryChanged() {
     this.$store.dispatch("lobbyStore/allocateAlias", this.alias).then(response => {
-        console.log(response);
+        //console.log(response);
         this.aliasErrorMessage = ""
     }, error => {
-        console.log(error);
+        //console.log(error);
         this.aliasErrorMessage = "Unfortunately this alias is already taken"
     });
   }
@@ -123,24 +121,5 @@ export default class AliasEntry extends Vue {
 
 .v-list {
   overflow-y: auto;
-}
-
-.fadeItem-enter {
-  opacity: 0 !important;
-}
-
-.fadeItem-enter-active {
-  opacity: 1 !important;
-  transition: opacity 0.5s !important;
-}
-
-
-.fadeItem-leave-active {
-  transition: opacity 0.5s !important;
-  opacity: 0 !important;
-}
-
-.fadeItem-leave-to {
-  opacity: 0 !important;
 }
 </style>

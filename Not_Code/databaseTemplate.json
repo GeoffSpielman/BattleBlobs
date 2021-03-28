@@ -2,7 +2,7 @@
     "players": {
         "2134535355535": {
             "name": "Geoff",
-            "status": "On Start Screen" | "Reading Instructions" | "Creating Profile" | "Ready to Start" | "In Game" | "Spectating" | "Disconnected" | "Left Game",
+            "status": "On Start Screen" | "Reading Instructions" | "Creating Profile" | "Ready to Start" | "In Game" | "Spectating" | "Disconnected" | "Hosting",
             "colour": "#341414",
             "alias": "Darth Evader",
             "captainNum": 1,

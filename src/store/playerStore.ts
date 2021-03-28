@@ -12,7 +12,7 @@ interface PlayerState {
 const playerStore: Module<PlayerState, RootState> = {
   namespaced: true,
   state: {
-    myKey: "initial dummy key",
+    myKey: "",
     players: [],
   },
 
@@ -25,8 +25,16 @@ const playerStore: Module<PlayerState, RootState> = {
       return state.players;
     },
 
+    getNameAvailable: (state) => (recName: string) => {
+      return state.players.findIndex((player)=> player.name.toLowerCase() === recName.toLowerCase()) === -1 ? true: false
+    },
+
     getAliasAvailable: (state) => (recAlias: string) => {
       return state.players.findIndex((player)=> player.alias.toLowerCase() === recAlias.toLowerCase()) === -1 ? true: false
+    },
+
+    getMyName(state){
+      return state.players.find((player) => player.key === state.myKey)?.name;
     },
 
     getMyAlias(state){      
@@ -116,6 +124,10 @@ const playerStore: Module<PlayerState, RootState> = {
 
     setMyStatus(context, recStatus: playerStatus){
       firebase.database.ref('players/' + context.state.myKey + '/status').set(recStatus);
+    },
+
+    setMyName(context, recName: string){
+      firebase.database.ref('players/' + context.state.myKey + '/name').set(recName);
     },
 
     setMyAlias(context, recAlias: string){

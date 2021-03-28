@@ -75,6 +75,26 @@ const lobbyStore: Module<LobbyState, RootState> = {
       })
     },
 
+    allocateName(context, recName: string) {
+      return new Promise((resolve, reject) => {
+        //user requests their current name again (due to v-textfield 'on change' bug)
+        if (recName === context.rootGetters['playerStore/getMyName']){
+          resolve("SUCCESS: Your name is already set to " + recName);
+        }
+        //ensure no other players are currently using this name
+        else if (context.rootGetters['playerStore/getNameAvailable'](recName)) {
+
+          //set player's name in the player store
+          context.dispatch('playerStore/setMyName', recName, { root: true });
+          resolve("SUCCESS: Name set to '" + recName + "'");
+        }
+        else {
+          reject('FAIL: Name is already in use, please choose another')
+        }
+      })
+    },
+
+
     reserveAlias(context, recAlias: string) {
       firebase.database.ref('lobby/aliases/' + recAlias).set(context.rootGetters['playerStore/getMyKey']);
     },
@@ -89,7 +109,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
         if (recAlias === context.rootGetters['playerStore/getMyAlias']){
           resolve("SUCCESS: Alias " + recAlias + " has already been reserved for you");
         }
-        //check if any other players are currently using this alias
+        //ensure no other players are currently using this alias
         else if (context.rootGetters['playerStore/getAliasAvailable'](recAlias)) {
 
           //if the user's old alias was in the bank, we need to release it
@@ -117,6 +137,8 @@ const lobbyStore: Module<LobbyState, RootState> = {
 
       })
     },
+
+    
   },
 }
 

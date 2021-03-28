@@ -1,5 +1,6 @@
 When 'players' does not exist in the database (I deleted all players) and a new client arrives at the website, they generate TWO player records immediately. 
     The first only has a 'status' attribute set to 'disconnected'
     The second is as you would expect
+    Has something to do with already being on the page when I press save in visual studio or refresh
 
     

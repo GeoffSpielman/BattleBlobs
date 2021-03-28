@@ -1,4 +1,4 @@
 export interface RootState{
-    gameStatus: string,
-    startPageButtonFade : string
+    gameStatus: string;
+    startPageButtonFade: string;
 }

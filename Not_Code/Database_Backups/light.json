@@ -1,0 +1,26 @@
+{
+  "gameStatus" : "Game has Begun",
+  "lobby" : {
+    "aliases" : {
+      "Nougat" : "available",
+      "Ryan Gosling" : "available",
+      "Waluigi Wah!" : "available",
+      "Willy Wonka" : "available"
+    },
+    "colours" : {
+      "a3d3d3" : "available"
+    }
+  },
+  "players" : {
+    "-MWpqBbo3lKuFu0YnwTb" : {
+      "alias" : "Augustus Gloop",
+      "captainNum" : 0,
+      "color" : "",
+      "key" : "-MWpqBbo3lKuFu0YnwTb",
+      "name" : "",
+      "shipOneKey" : "",
+      "shipTwoKey" : "",
+      "status" : "Creating Profile"
+    }
+  }
+}

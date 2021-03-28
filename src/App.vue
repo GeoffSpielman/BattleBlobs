@@ -9,6 +9,15 @@
       </div>
       <the-footer></the-footer>
     </v-main>
+
+    <v-dialog
+      v-model="showDisconnectedDialog"
+      persistent
+      width="600"
+    >
+    <disconnected-card></disconnected-card>
+    </v-dialog>
+
   </v-app>
 </template>
 
@@ -16,35 +25,92 @@
 import { Component, Vue } from "vue-property-decorator";
 import TheHeader from "@/components/TheHeader.vue";
 import TheFooter from "@/components/TheFooter.vue";
+import DisconnectedCard from "@/components/DisconnectedCard.vue"
 import configuredDatabase from "@/store/firebase";
 import firebase from "firebase/app";
-import { playerStatus } from '@/models/enums'
+import { playerStatus } from "@/models/enums";
 
 @Component({
   name: "App",
   components: {
     TheHeader,
     TheFooter,
+    DisconnectedCard,
   },
 })
 export default class App extends Vue {
+  
   myPlayerStatusRef: firebase.database.Reference = configuredDatabase.database.ref();
+  connectedRef: firebase.database.Reference = configuredDatabase.database.ref(
+    ".info/connected"
+  );
+
+  showDisconnectedDialog: boolean = false;
+
 
   created() {
-    if (this.$route.name !== "Start") {
+    //put the user back on the home page if they clicked 'refresh'
+    if (this.$route.name !== "Start" && this.$route.name !== "Host") {
       this.$router.push("/");
     }
+    
+    //react to disconnection/reconnection
+    this.connectedRef.on("value", (snapshot) => {
+      //reconnect
+      if (snapshot.val() === true){
+        this.showDisconnectedDialog = false;
+        
+        switch(this.$route.name){
+          case ("Start"): {
+            this.$store.dispatch("playerStore/setMyStatus", playerStatus.StartScreen)
+            break;
+          }
+          case ("Instructions"): {
+            this.$store.dispatch("playerStore/setMyStatus", playerStatus.ReadingInstructions)
+            break;
+          }
+          case ("Lobby"): {
+            //TODO: what if they already were 'locked in' and ready to play?
+            this.$store.dispatch("playerStore/setMyStatus", playerStatus.CreatingProfile)
+            break;
+          }
+          case ("Game"): {
+            //TODO: how to rejoin the current game, what if the game ended while you were disconnected etc.
+            this.$store.dispatch("playerStore/setMyStatus", playerStatus.InGame)
+            break;
+          }
+          case ("Image Credits"): {
+            this.$store.dispatch("playerStore/setMyStatus", playerStatus.ReadingImageCredits)
+            break;
+          }
+          case ("Host"): {
+            this.$store.dispatch("playerStore/setMyStatus", playerStatus.Hosting)
+            break;
+          }
+          default: {
+            this.$store.dispatch("playerStore/setMyStatus", playerStatus.ErrorUnknown)
+            break;
+          }
+        }
+        
+      }
+      //disconnect
+      else if (this.$store.getters["playerStore/getMyKey"] !== ""){
+        this.showDisconnectedDialog = true;
+      }
+    })
 
+    //initialize stores
     this.$store.dispatch("playerStore/getFirebaseDatabase");
     this.$store.dispatch("lobbyStore/getFirebaseDatabase");
 
+    //initilize client instance (player object) in database
     this.$store.dispatch("playerStore/intializeClient").then(() => {
       this.myPlayerStatusRef = configuredDatabase.database.ref(
-        "players/" + this.$store.getters["playerStore/getMyKey"] + '/status'
+        "players/" + this.$store.getters["playerStore/getMyKey"] + "/status"
       );
-      this.myPlayerStatusRef.onDisconnect().set(playerStatus.Disconnected)
+      this.myPlayerStatusRef.onDisconnect().set(playerStatus.Disconnected);
     });
-    
   }
 }
 </script>
@@ -81,4 +147,5 @@ export default class App extends Vue {
 .fadePages-leave-active {
   opacity: 0;
 }
+
 </style>
