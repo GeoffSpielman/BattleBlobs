@@ -2,7 +2,7 @@ import firebase from './firebase'
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 import { PlayerEntry } from '@/models/interfaces'
-import { playerStatus } from '@/models/enums'
+import { PlayerStatus } from '@/models/enums'
 
 interface PlayerState {
   myKey: string;
@@ -105,7 +105,7 @@ const playerStore: Module<PlayerState, RootState> = {
       else {
         const newPlayerEntry: PlayerEntry = {
           'key': newClientRef.key,
-          'status': playerStatus.StartScreen,
+          'status': PlayerStatus.StartScreen,
           'name': '',
           'alias': '',
           'color': '',
@@ -122,7 +122,7 @@ const playerStore: Module<PlayerState, RootState> = {
       context.commit('setMyKey', recKey);  
     },
 
-    setMyStatus(context, recStatus: playerStatus){
+    setMyStatus(context, recStatus: PlayerStatus){
       firebase.database.ref('players/' + context.state.myKey + '/status').set(recStatus);
     },
 

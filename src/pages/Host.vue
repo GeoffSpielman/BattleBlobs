@@ -76,7 +76,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { PlayerEntry } from "@/models/interfaces";
-import { playerStatus } from '@/models/enums'
+import { PlayerStatus } from '@/models/enums'
 
 @Component({
   name: "Host",
@@ -84,13 +84,12 @@ import { playerStatus } from '@/models/enums'
 export default class Host extends Vue {
   
   mounted(){
-    this.$store.dispatch('playerStore/setMyStatus', playerStatus.Hosting)
+    this.$store.dispatch('playerStore/setMyStatus', PlayerStatus.Hosting)
   }
   
   get playersList(): PlayerEntry[] {
     return this.$store.getters["playerStore/getPlayersList"];
   }
-
 
   skipBtnClicked() {
     console.log("skipped current player");

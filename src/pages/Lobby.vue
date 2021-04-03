@@ -5,21 +5,36 @@
       <div id="topRow">
         <div id="textFieldsOuterColumn">
           <div id="nameRow">
-              <name-entry>
-                <template v-slot:iconImage>
-                  <v-img :src="nameIconPath" height="90px" contain></v-img>
-                </template>
-              </name-entry>
+            <name-entry>
+              <template v-slot:iconImage>
+                <v-img :src="nameIconPath" max-height= "90px" contain></v-img>
+              </template>
+            </name-entry>
           </div>
           <div id="aliasRow">
-              <alias-entry>
-                <template v-slot:iconImage>
-                  <v-img :src="aliasIconPath" height="90px" contain></v-img>
-                </template>
-              </alias-entry>
+            <alias-entry>
+              <template v-slot:iconImage>
+                <v-img :src="aliasIconPath" max-height="90px" contain></v-img>
+              </template>
+            </alias-entry>
           </div>
         </div>
-        <div id="colourAndShipsColumn">I am the left column</div>
+        <div id="colourAndShipsColumn">
+          <div id="colourRow">
+            <colour-selector>
+              <template v-slot:iconImage>
+                <v-img :src="colourIconPath" max-height="90px" contain></v-img>
+              </template>
+            </colour-selector>
+          </div>
+          <div id="shipsRow">
+            <ship-builder>
+              <template v-slot:iconImage>
+                <v-img :src="shipIconPath" max-height="90px" contain></v-img>
+              </template>
+            </ship-builder>
+          </div>
+        </div>
       </div>
       <div id="bottomRow">I am the bottom row</div>
     </div>
@@ -29,20 +44,26 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { playerStatus } from '@/models/enums'
-import NameEntry from "@/components/NameEntry.vue";
-import AliasEntry from "@/components/AliasEntry.vue";
+import { PlayerStatus } from "@/models/enums";
+import NameEntry from "@/components/lobby/NameEntry.vue";
+import AliasEntry from "@/components/lobby/AliasEntry.vue";
+import ColourSelector from "@/components/lobby/ColourSelector.vue";
+import ShipBuilder from "@/components/lobby/ShipBuilder.vue";
 
 @Component({
   name: "Lobby",
   components: {
     NameEntry,
-    AliasEntry
-  }
+    AliasEntry,
+    ColourSelector,
+    ShipBuilder,
+  },
 })
 export default class Lobby extends Vue {
   nameIconPath: string = require("@/assets/lobby/person_icon_black.png");
   aliasIconPath: string = require("@/assets/lobby/alias_icon_black.png");
+  colourIconPath: string = require("@/assets/lobby/colour_icon_black.png");
+  shipIconPath: string = require("@/assets/lobby/ship_icon_black.png");
 
   name: string = "";
   nameRules = [
@@ -50,8 +71,11 @@ export default class Lobby extends Vue {
       v.length <= 14 || "Sorry, names are limited to 14 characters max",
   ];
 
-  mounted(){
-    this.$store.dispatch('playerStore/setMyStatus', playerStatus.CreatingProfile)
+  mounted() {
+    this.$store.dispatch(
+      "playerStore/setMyStatus",
+      PlayerStatus.CreatingProfile
+    );
   }
 }
 </script>
@@ -98,7 +122,8 @@ export default class Lobby extends Vue {
 #colourAndShipsColumn {
   display: flex;
   flex-grow: 1;
-  background-color: lightblue;
+  flex-direction: column;
+  padding-left: 55px;
 }
 
 #nameRow {
@@ -110,29 +135,14 @@ export default class Lobby extends Vue {
   flex-grow: 1;
 }
 
-.iconColumn {
-  width: 20%;
-  padding-top: 5px;
-}
-
-.textFieldColumn {
+#colourRow {
   display: flex;
-  flex-direction: column;
+  height: 200px;
+}
+
+#shipsRow {
+  display: flex;
   flex-grow: 1;
+  margin-top: 50px;
 }
-
-.textfieldPrompt {
-  margin-top: 4px;
-}
-
-.textField {
-  flex-grow: 0;
-}
-
-.bulletList {
-  margin-left: 15px;
-  margin-top: -6px;
-  margin-bottom: 10px;
-}
-
 </style>

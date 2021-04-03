@@ -1,0 +1,48 @@
+{
+  "gameStatus" : "Game has Begun",
+  "lobby" : {
+    "aliases" : {
+      "bobert" : "available",
+      "timothy" : "available"
+    },
+    "colours" : {
+      "808000" : "available",
+      "3cb44b" : "available",
+      "42d4f4" : "available",
+      "4363d8" : "available",
+      "911eb4" : "available",
+      "aaffc3" : "available",
+      "bfef45" : "available",
+      "dcbeff" : "available",
+      "e6194b" : "available",
+      "f032e6" : "available",
+      "f58231" : "available",
+      "fabed4" : "available",
+      "ffd8b1" : "available",
+      "ffe119" : "available",
+      "fffac8" : "available"
+    }
+  },
+  "players" : {
+    "-MVK3kWo16b0RdlgQm7S" : {
+      "alias" : "",
+      "captainNum" : 0,
+      "color" : "",
+      "key" : "-MVK3kWo16b0RdlgQm7S",
+      "name" : "",
+      "shipOneKey" : "",
+      "shipTwoKey" : "",
+      "status" : "On Start Screen"
+    },
+    "-MXKWAPXOI1mQ7JvLPiP" : {
+      "alias" : "",
+      "captainNum" : 0,
+      "color" : "",
+      "key" : "-MXKWAPXOI1mQ7JvLPiP",
+      "name" : "",
+      "shipOneKey" : "",
+      "shipTwoKey" : "",
+      "status" : "Disconnected"
+    }
+  }
+}

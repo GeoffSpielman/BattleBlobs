@@ -23,12 +23,12 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import TheHeader from "@/components/TheHeader.vue";
-import TheFooter from "@/components/TheFooter.vue";
-import DisconnectedCard from "@/components/DisconnectedCard.vue"
+import TheHeader from "@/components/start/TheHeader.vue";
+import TheFooter from "@/components/start/TheFooter.vue";
+import DisconnectedCard from "@/components/start/DisconnectedCard.vue"
 import configuredDatabase from "@/store/firebase";
 import firebase from "firebase/app";
-import { playerStatus } from "@/models/enums";
+import { PlayerStatus } from "@/models/enums";
 
 @Component({
   name: "App",
@@ -54,6 +54,9 @@ export default class App extends Vue {
       this.$router.push("/");
     }
     
+
+    /*
+    */
     //react to disconnection/reconnection
     this.connectedRef.on("value", (snapshot) => {
       //reconnect
@@ -62,33 +65,33 @@ export default class App extends Vue {
         
         switch(this.$route.name){
           case ("Start"): {
-            this.$store.dispatch("playerStore/setMyStatus", playerStatus.StartScreen)
+            this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.StartScreen)
             break;
           }
           case ("Instructions"): {
-            this.$store.dispatch("playerStore/setMyStatus", playerStatus.ReadingInstructions)
+            this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.ReadingInstructions)
             break;
           }
           case ("Lobby"): {
             //TODO: what if they already were 'locked in' and ready to play?
-            this.$store.dispatch("playerStore/setMyStatus", playerStatus.CreatingProfile)
+            this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.CreatingProfile)
             break;
           }
           case ("Game"): {
             //TODO: how to rejoin the current game, what if the game ended while you were disconnected etc.
-            this.$store.dispatch("playerStore/setMyStatus", playerStatus.InGame)
+            this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.InGame)
             break;
           }
           case ("Image Credits"): {
-            this.$store.dispatch("playerStore/setMyStatus", playerStatus.ReadingImageCredits)
+            this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.ReadingImageCredits)
             break;
           }
           case ("Host"): {
-            this.$store.dispatch("playerStore/setMyStatus", playerStatus.Hosting)
+            this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.Hosting)
             break;
           }
           default: {
-            this.$store.dispatch("playerStore/setMyStatus", playerStatus.ErrorUnknown)
+            this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.ErrorUnknown)
             break;
           }
         }
@@ -109,8 +112,12 @@ export default class App extends Vue {
       this.myPlayerStatusRef = configuredDatabase.database.ref(
         "players/" + this.$store.getters["playerStore/getMyKey"] + "/status"
       );
-      this.myPlayerStatusRef.onDisconnect().set(playerStatus.Disconnected);
+      this.myPlayerStatusRef.onDisconnect().set(PlayerStatus.Disconnected);
     });
+
+
+    
+    
   }
 }
 </script>

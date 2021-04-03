@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { playerStatus } from '@/models/enums'
+import { PlayerStatus } from '@/models/enums'
 
 @Component({
 })
@@ -34,7 +34,7 @@ export default class Home extends Vue {
   }
 
   mounted(){
-    this.$store.dispatch('playerStore/setMyStatus', playerStatus.StartScreen)
+    this.$store.dispatch('playerStore/setMyStatus', PlayerStatus.StartScreen)
   }
 
   

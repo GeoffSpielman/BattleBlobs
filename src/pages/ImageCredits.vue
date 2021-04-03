@@ -42,6 +42,18 @@ export default class ImageCredits extends Vue {
     },
 
     {
+      path: require("@/assets/imageCredits/colour_icon.png"),
+      caption: "Color by Adrien Coquet from The Noun Project",
+      link: "https://thenounproject.com/term/color/2225526/"
+    },
+
+    {
+      path: require("@/assets/imageCredits/ship_icon.png"),
+      caption: "Ship by Kareemovic2000 from The Noun Project",
+      link: "https://thenounproject.com/term/ship/1525171/"
+    },
+
+    {
       path: require("@/assets/misc/disconnected.gif"),
       caption: "Internet Data Concept by Matthew Butler from Behance",
       link: "https://www.behance.net/gallery/49505405/Internet-Data-Concept"

@@ -1,4 +1,4 @@
-export enum playerStatus{
+export enum PlayerStatus{
     StartScreen = "On Start Screen",
     ReadingInstructions = "Reading Instructions",
     CreatingProfile = "Creating Profile",
@@ -9,4 +9,10 @@ export enum playerStatus{
     Disconnected = "Disconnected",
     Hosting = "Hosting",
     ErrorUnknown = "Error (Unknown)"
+}
+
+export enum ColourStatus{
+    Available = "available",
+    Taken = "taken",
+    Mine = "mine"
 }
