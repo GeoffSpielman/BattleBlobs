@@ -50,6 +50,10 @@ export default class DisconnectedCard extends Vue {
 }
 
 #rightCol h2 {
-    margin: 0px 0px 3px 10px;
+    margin-top: 3px;
+    margin-bottom: 5px;
+    margin-left: -15px;
+    width: 100%;
+    text-align: center;
 }
 </style>

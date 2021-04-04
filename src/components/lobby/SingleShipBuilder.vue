@@ -1,38 +1,43 @@
 <template>
   <div id="shipBuilderOutermost">
-    
-      <div id="buttonGrid">
-        <div
-          v-for="(rowArray, rowIdx) in canvasGrid"
-          :key="rowIdx"
-          class="rowDiv"
+    <div id="buttonGrid">
+      <div
+        v-for="(rowArray, rowIdx) in canvasGrid"
+        :key="rowIdx"
+        class="rowDiv"
+      >
+        <v-btn
+          v-for="(val, colIdx) in rowArray"
+          :key="colIdx"
+          @click="gridButtonClicked(rowIdx, colIdx)"
+          :style="{
+            backgroundColor:
+              canvasGrid[rowIdx][colIdx] === true ? shipColour : '#f9f9f9',
+          }"
+          min-width="50px"
+          width="50px"
+          height="50px"
+          tile
         >
-          <button
-            v-for="(val, colIdx) in rowArray"
-            :key="colIdx"
-            @click="gridButtonClicked(rowIdx, colIdx)"
-            :class="{
-              gridBtn: true,
-              selectedGridBtn: canvasGrid[rowIdx][colIdx],
-            }"
-          >
-            {{ rowIdx + ", " + colIdx }}
-          </button>
-        </div>
+        </v-btn>
       </div>
-      <p id="outputStatement">{{ shipStatement }}</p>
+    </div>
+    <h3 id="outputStatement" :class="{confirmationText: shipValid}">{{ shipStatement }}</h3>
   </div>
 </template>
 
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import {validateShipDesign} from "@/algorithms/validateShipDesign"
 
 @Component({
   name: "SingleShipBuilder",
 })
 export default class SingleShipBuilder extends Vue {
   numSegsInShip: number = 9;
+  shipValid: boolean = false;
+
   canvasGrid: boolean[][] = [
     [false, false, false, false],
     [false, false, false, false],
@@ -43,127 +48,45 @@ export default class SingleShipBuilder extends Vue {
   shipOffsets: number[][] = [];
   shipStatement: string = "0/" + this.numSegsInShip + " segments built";
 
-  /*
-  data() {
-    return {
-      numSegsInShip: 9,
-      canvasGrid: [
-        [false, false, false, false],
-        [false, false, false, false],
-        [false, false, false, false],
-        [false, false, false, false],
-      ],
-      shipOffsets: [],
-      shipStatement: "0/" + this.numSegsInShip + " segments built",
-    };
-  },
-  methods: {
-    gridButtonClicked(rowIdx, colIdx) {
-      this.canvasGrid[rowIdx][colIdx] = !this.canvasGrid[rowIdx][colIdx];
+  get shipColour(): string {
+    return this.$store.getters["clientSpecificStore/getSelectedColourHex"];
+  }
 
-      const entryInOffsets = this.shipOffsets.some(
-        (entry) => entry[0] === rowIdx && entry[1] === colIdx
+  gridButtonClicked(rowIdx: number, colIdx: number) {
+    this.canvasGrid[rowIdx].splice(colIdx, 1, !this.canvasGrid[rowIdx][colIdx]);
+
+    const entryInOffsets: boolean = this.shipOffsets.some(
+      (entry) => entry[0] === rowIdx && entry[1] === colIdx
+    );
+
+    //clicked square not in offsets already
+    if (this.canvasGrid[rowIdx][colIdx] && !entryInOffsets) {
+      this.shipOffsets.push([rowIdx, colIdx]);
+
+      //remove deselected square
+    } else if (!this.canvasGrid[rowIdx][colIdx] && entryInOffsets) {
+      this.shipOffsets = this.shipOffsets.filter(
+        (entry) => !(entry[0] === rowIdx && entry[1] === colIdx)
       );
-
-      if (this.canvasGrid[rowIdx][colIdx] && !entryInOffsets) {
-        this.shipOffsets.push([rowIdx, colIdx]);
-      } else if (!this.canvasGrid[rowIdx][colIdx] && entryInOffsets) {
-        this.shipOffsets = this.shipOffsets.filter(
-          (entry) => !(entry[0] === rowIdx && entry[1] === colIdx)
-        );
-      } else {
-        console.log(
-          "ERROR: shipOffsets is out of sync with canvasGrid. Are both being re-initialized properly?"
-        );
-        return;
-      }
-
-      if (this.shipOffsets.length < this.numSegsInShip) {
-        this.shipStatement =
-          this.shipOffsets.length +
-          "/" +
-          this.numSegsInShip +
-          " segments built";
-      } else if (this.shipOffsets.length > this.numSegsInShip) {
-        this.shipStatement =
-          "Ship it too big! Please remove " +
-          (this.shipOffsets.length - this.numSegsInShip) +
-          " segments";
-      } else {
-        //'traversed index' and 'traversed segments of ship'
-        let travIdx = 0;
-        let travSegs = [this.shipOffsets[0]];
-
-        while (travIdx < travSegs.length) {
-          let curSeg = travSegs[travIdx];
-
-          //possible to go 'up'  AND 'up' isin't already in the travSegs list AND 'up' is part of the ship
-          if (
-            curSeg[0] > 0 &&
-            !travSegs.some(
-              (entry) => entry[0] === curSeg[0] - 1 && entry[1] === curSeg[1]
-            ) &&
-            this.shipOffsets.some(
-              (entry) => entry[0] === curSeg[0] - 1 && entry[1] === curSeg[1]
-            )
-          ) {
-            travSegs.push([curSeg[0] - 1, curSeg[1]]);
-          }
-          //possible to go 'down'  AND 'down' isin't already in the travSegs list AND 'down' is part of the ship
-          if (
-            curSeg[0] < 3 &&
-            !travSegs.some(
-              (entry) => entry[0] === curSeg[0] + 1 && entry[1] === curSeg[1]
-            ) &&
-            this.shipOffsets.some(
-              (entry) => entry[0] === curSeg[0] + 1 && entry[1] === curSeg[1]
-            )
-          ) {
-            travSegs.push([curSeg[0] + 1, curSeg[1]]);
-          }
-          //possible to go 'left'  AND 'left' isin't already in the travSegs list AND 'left' is part of the ship
-          if (
-            curSeg[1] > 0 &&
-            !travSegs.some(
-              (entry) => entry[0] === curSeg[0] && entry[1] === curSeg[1] - 1
-            ) &&
-            this.shipOffsets.some(
-              (entry) => entry[0] === curSeg[0] && entry[1] === curSeg[1] - 1
-            )
-          ) {
-            travSegs.push([curSeg[0], curSeg[1] - 1]);
-          }
-          if (
-            curSeg[1] < 3 &&
-            !travSegs.some(
-              (entry) => entry[0] === curSeg[0] && entry[1] === curSeg[1] + 1
-            ) &&
-            this.shipOffsets.some(
-              (entry) => entry[0] === curSeg[0] && entry[1] === curSeg[1] + 1
-            )
-          ) {
-            travSegs.push([curSeg[0], curSeg[1] + 1]);
-          }
-          travIdx++;
-        }
-
-        if (travIdx === this.numSegsInShip) {
-          this.shipStatement = "Looks good";
-        } else {
-          this.shipStatement = "All segments must be connected by shared edges";
-        }
-      }
-    },
-    prettyCoordList(recArray) {
-      let listString = "";
-      let i;
-      for (i = 0; i < recArray.length; i++) {
-        listString += "[" + recArray[i][0] + ", " + recArray[i][1] + "], ";
-      }
-      return listString;
-    },
-  },
-  */
+    } else {
+      console.log(
+        "ERROR: shipOffsets is out of sync with canvasGrid. Are both being re-initialized properly?"
+      );
+      return;
+    }
+    //determine statement under ship
+    if (this.shipOffsets.length < this.numSegsInShip) {
+        this.shipStatement = this.shipOffsets.length + "/" + this.numSegsInShip + " segments built";
+        this.shipValid = false;
+    } else if (this.shipOffsets.length > this.numSegsInShip) {
+        this.shipStatement = "Ship is too big! Please remove " + (this.shipOffsets.length - this.numSegsInShip) + " segments";
+        this.shipValid = false;
+    } else {
+      let validationResult = validateShipDesign(this.shipOffsets, this.numSegsInShip);
+      this.shipStatement = validationResult.message;
+      this.shipValid = validationResult.valid;
+    }
+  }
 }
 </script>
 
@@ -175,22 +98,30 @@ export default class SingleShipBuilder extends Vue {
   flex-direction: column;
 }
 
+#buttonGrid {
+  display: flex;
+  flex-direction: column;
+}
+
 .rowDiv {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-.gridBtn {
-  height: 40px;
-  width: 40px;
-}
-
 .selectedGridBtn {
-  background-color: yellow;
+  background-color: yellow !important;
 }
 
 #outputStatement {
+  margin-top: 20px;
   text-align: center;
+  font-weight: normal;
+  font-size: 16px;
+}
+
+.confirmationText{
+  color: darkgreen;
+  text-shadow: 0px 3px 8px #7dd481;
 }
 </style>

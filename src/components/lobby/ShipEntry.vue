@@ -1,14 +1,10 @@
 <template>
   <div id="shipsOutermost">
-      <h2>Ships:</h2>
-      <div id="shipBuildersRow">
-        <div class="builderContainer">
-          <single-ship-builder></single-ship-builder>
-        </div>
-        <div class="builderContainer">
-          <single-ship-builder></single-ship-builder>
-        </div>
-      </div>
+    <h2>Ships:</h2>
+    <div id="shipBuildersRow">
+      <single-ship-builder></single-ship-builder>
+      <single-ship-builder></single-ship-builder>
+    </div>
   </div>
 </template>
 
@@ -17,14 +13,11 @@
 import { Component, Vue } from "vue-property-decorator";
 import SingleShipBuilder from "@/components/lobby/SingleShipBuilder.vue";
 
-
 @Component({
   name: "ShipEntry",
-  components: {SingleShipBuilder}
+  components: { SingleShipBuilder},
 })
-export default class ShipEntry extends Vue {
-  
-}
+export default class ShipEntry extends Vue {}
 </script>
 
 <style scoped>
@@ -35,19 +28,14 @@ export default class ShipEntry extends Vue {
   flex-direction: column;
 }
 
-#shipsOutermost h2{
+#shipsOutermost h2 {
   font-size: 19px;
   font-weight: bold;
 }
-#shipBuildersRow{
+#shipBuildersRow {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  padding-left: 40px;
 }
-
-.builderContainer{
-  flex-grow: 1;
-  display: flex;
-}
-
 </style>

@@ -6,6 +6,7 @@ interface ClientSpecificState {
   startPageButtonFade: string;
   usingBankAlias: boolean;
   colourIconPath: string;
+  selectedColourHex: string;
 }
 
 const playerStore: Module<ClientSpecificState, RootState> = {
@@ -14,6 +15,7 @@ const playerStore: Module<ClientSpecificState, RootState> = {
     startPageButtonFade: "initialFade",
     usingBankAlias: false,
     colourIconPath: require("@/assets/lobby/colour_icon_black.png"),
+    selectedColourHex: "#252525",
   },
 
   getters: {
@@ -27,6 +29,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     getColourIconPath(state){
       return state.colourIconPath;
+    },
+
+    getSelectedColourHex(state){
+      return state.selectedColourHex;
     }
   },
 
@@ -41,6 +47,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setColourIconPath(state, recPath: string){
       state.colourIconPath = recPath;
+    },
+
+    setSelectedColourHex(state, recCode: string){
+      state.selectedColourHex = recCode;
     }
   },
 
@@ -56,6 +66,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setColourIconPath(context, recPath: string){
       context.commit('setColourIconPath', recPath);
+    },
+
+    setSelectedColourHex(context, recCode: string){
+      context.commit('setSelectedColourHex', recCode);
     }
   },
 }

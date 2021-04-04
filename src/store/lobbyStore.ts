@@ -164,7 +164,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
       else if (payload.status !== "available") {
         if (payload.status === context.rootGetters["playerStore/getMyKey"]) {
           localColourObj.status = ColourStatus.Mine;
-
+          context.dispatch('clientSpecificStore/setSelectedColourHex', "#" + payload.hexCode, { root: true });
           switch (payload.hexCode) {
             case "e6194b":
               context.dispatch('clientSpecificStore/setColourIconPath', require("@/assets/lobby/Red.png"), { root: true });
