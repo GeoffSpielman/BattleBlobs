@@ -4,35 +4,35 @@
     <div id="centralColumnOuter">
       <div id="topRow">
         <div id="textFieldsOuterColumn">
-          <div id="nameRow">
+          <div class="compRow">
+            <div class="iconColumn">
+               <img class="iconImg" :src="nameIconPath">
+            </div>
             <name-entry>
-              <template v-slot:iconImage>
-                <v-img :src="nameIconPath" max-height= "90px" contain></v-img>
-              </template>
             </name-entry>
           </div>
-          <div id="aliasRow">
+          <div class="compRow bottomCompRow">
+             <div class="iconColumn">
+               <img class="iconImg" :src="aliasIconPath">
+            </div>
             <alias-entry>
-              <template v-slot:iconImage>
-                <v-img :src="aliasIconPath" max-height="90px" contain></v-img>
-              </template>
             </alias-entry>
           </div>
         </div>
         <div id="colourAndShipsColumn">
-          <div id="colourRow">
+          <div class="compRow">
+            <div class="iconColumn">
+               <img class="iconImg" :src="colourIconPath">
+            </div>
             <colour-selector>
-              <template v-slot:iconImage>
-                <v-img :src="colourIconPath" max-height="90px" contain></v-img>
-              </template>
             </colour-selector>
           </div>
-          <div id="shipsRow">
-            <ship-builder>
-              <template v-slot:iconImage>
-                <v-img :src="shipIconPath" max-height="90px" contain></v-img>
-              </template>
-            </ship-builder>
+          <div class="compRow bottomCompRow">
+            <div class="iconColumn">
+               <img class="iconImg" :src="shipIconPath">
+            </div>
+            <ship-entry>
+            </ship-entry>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@ import { PlayerStatus } from "@/models/enums";
 import NameEntry from "@/components/lobby/NameEntry.vue";
 import AliasEntry from "@/components/lobby/AliasEntry.vue";
 import ColourSelector from "@/components/lobby/ColourSelector.vue";
-import ShipBuilder from "@/components/lobby/ShipBuilder.vue";
+import ShipEntry from "@/components/lobby/ShipEntry.vue";
 
 @Component({
   name: "Lobby",
@@ -56,14 +56,17 @@ import ShipBuilder from "@/components/lobby/ShipBuilder.vue";
     NameEntry,
     AliasEntry,
     ColourSelector,
-    ShipBuilder,
+    ShipEntry,
   },
 })
 export default class Lobby extends Vue {
-  nameIconPath: string = require("@/assets/lobby/person_icon_black.png");
-  aliasIconPath: string = require("@/assets/lobby/alias_icon_black.png");
-  colourIconPath: string = require("@/assets/lobby/colour_icon_black.png");
-  shipIconPath: string = require("@/assets/lobby/ship_icon_black.png");
+  nameIconPath: string = require("@/assets/lobby/person_icon.png");
+  aliasIconPath: string = require("@/assets/lobby/alias_icon.png");
+  shipIconPath: string = require("@/assets/lobby/ship_icon.png");
+
+  get colourIconPath(): string{
+    return this.$store.getters['clientSpecificStore/getColourIconPath'];
+  }
 
   name: string = "";
   nameRules = [
@@ -94,7 +97,7 @@ export default class Lobby extends Vue {
 }
 
 #centralColumnOuter {
-  width: 75%;
+  width: 70%;
   display: flex;
   flex-grow: 1;
   flex-direction: column;
@@ -123,26 +126,26 @@ export default class Lobby extends Vue {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-  padding-left: 55px;
+  padding-left: 65px;
 }
 
-#nameRow {
+.compRow {
   display: flex;
 }
-#aliasRow {
+
+.bottomCompRow {
   margin-top: 50px;
   display: flex;
   flex-grow: 1;
 }
 
-#colourRow {
-  display: flex;
-  height: 200px;
+.iconColumn {
+  width: 8vw;
+  max-width: 80px;
+  padding-right: 8px;
 }
 
-#shipsRow {
-  display: flex;
-  flex-grow: 1;
-  margin-top: 50px;
+.iconImg {
+  width: 100%;
 }
 </style>

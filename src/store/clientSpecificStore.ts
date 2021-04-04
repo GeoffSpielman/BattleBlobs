@@ -5,6 +5,7 @@ import { RootState } from './RootState'
 interface ClientSpecificState {
   startPageButtonFade: string;
   usingBankAlias: boolean;
+  colourIconPath: string;
 }
 
 const playerStore: Module<ClientSpecificState, RootState> = {
@@ -12,6 +13,7 @@ const playerStore: Module<ClientSpecificState, RootState> = {
   state: {
     startPageButtonFade: "initialFade",
     usingBankAlias: false,
+    colourIconPath: require("@/assets/lobby/colour_icon_black.png"),
   },
 
   getters: {
@@ -21,6 +23,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     getUsingBankAlias(state){
       return state.usingBankAlias;
+    },
+
+    getColourIconPath(state){
+      return state.colourIconPath;
     }
   },
 
@@ -31,8 +37,11 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setUsingBankAlias(state, recVal: boolean){
       state.usingBankAlias = recVal;
-    }
+    },
 
+    setColourIconPath(state, recPath: string){
+      state.colourIconPath = recPath;
+    }
   },
 
   actions: {   
@@ -43,6 +52,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setUsingBankAlias(context, recVal: boolean){
       context.commit('setUsingBankAlias', recVal);
+    },
+
+    setColourIconPath(context, recPath: string){
+      context.commit('setColourIconPath', recPath);
     }
   },
 }

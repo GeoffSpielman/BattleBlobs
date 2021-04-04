@@ -1,33 +1,28 @@
 <template>
   <div id="nameOutermost">
-    <div class="iconColumn">
-      <slot name="iconImage"> </slot>
-    </div>
-    <div class="textColumn">
-      <v-text-field
-        v-model="name"
-        :rules="nameRules"
-        counter="14"
-        solo
-        class="textField"
-        @change="nameTextChanged()"
-        :error-messages="nameErrorMessage"
-      >
-        <template v-slot:prepend>
-          <h3 class="textfieldPrompt">Name:</h3>
-        </template>
-      </v-text-field>
-      <ul class="bulletList">
-        <li>Please use your real first name</li>
-        <li>
-          Useful for troubleshooting connection issues
-          <v-icon style="margin-top: -3px" dense
-            >mdi-emoticon-happy-outline</v-icon
-          >
-        </li>
-        <li>Revealed after the game to determine the 'stealth master'</li>
-      </ul>
-    </div>
+    <v-text-field
+      v-model="name"
+      :rules="nameRules"
+      counter="14"
+      solo
+      class="textField"
+      @change="nameTextChanged()"
+      :error-messages="nameErrorMessage"
+    >
+      <template v-slot:prepend>
+        <h3 class="textfieldPrompt">Name:</h3>
+      </template>
+    </v-text-field>
+    <ul class="bulletList">
+      <li>Please use your real first name</li>
+      <li>
+        Useful for troubleshooting connection issues
+        <v-icon style="margin-top: -3px" dense
+          >mdi-emoticon-happy-outline</v-icon
+        >
+      </li>
+      <li>Revealed after the game to determine the 'stealth master'</li>
+    </ul>
   </div>
 </template>
 
@@ -54,7 +49,8 @@ export default class NameEntry extends Vue {
       },
       (error) => {
         console.log(error);
-        this.nameErrorMessage = "Unfortunately this name is taken. Maybe add your last initial?";
+        this.nameErrorMessage =
+          "Unfortunately this name is taken. Maybe add your last initial?";
       }
     );
   }
@@ -66,19 +62,8 @@ export default class NameEntry extends Vue {
   height: 100%;
   width: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-.iconColumn {
-  width: 10vh;
-  padding-top: 15px;
-}
-
-.textColumn {
-  height: 100%;
-  display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  align-items: flex-start;
 }
 
 .textfieldPrompt {
@@ -86,7 +71,7 @@ export default class NameEntry extends Vue {
 }
 
 .textField {
-  flex-grow: 0;
+  width: 100%;
 }
 
 .bulletList {

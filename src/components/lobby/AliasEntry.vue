@@ -1,9 +1,6 @@
 <template>
   <div id="aliasOutermost">
-    <div class="iconColumn">
-      <slot name="iconImage"> </slot>
-    </div>
-    <div class="textColumn">
+    <div id="textFieldDiv">
       <v-text-field
         v-model="alias"
         :rules="aliasRules"
@@ -17,7 +14,8 @@
           <h3 class="textfieldPrompt">Alias:</h3>
         </template>
       </v-text-field>
-
+    </div>
+    <div id="aliasListDiv">
       <ul class="bulletList">
         <li>Create your own or choose from the bank below:</li>
       </ul>
@@ -63,13 +61,16 @@ export default class AliasEntry extends Vue {
   }
 
   aliasEntryChanged() {
-    this.$store.dispatch("lobbyStore/allocateAlias", this.alias).then(response => {
+    this.$store.dispatch("lobbyStore/allocateAlias", this.alias).then(
+      (response) => {
         //console.log(response);
-        this.aliasErrorMessage = ""
-    }, error => {
+        this.aliasErrorMessage = "";
+      },
+      (error) => {
         //console.log(error);
-        this.aliasErrorMessage = "Unfortunately this alias is already taken"
-    });
+        this.aliasErrorMessage = "Unfortunately this alias is already taken";
+      }
+    );
   }
 
   listItemClicked(aliasClicked: string) {
@@ -84,19 +85,7 @@ export default class AliasEntry extends Vue {
   height: 100%;
   width: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-.iconColumn {
-  width: 10vh;
-  padding-top: 15px;
-}
-
-.textColumn {
-  height: 100%;
-  display: flex;
   flex-direction: column;
-  flex-grow: 1;
 }
 
 .textfieldPrompt {
@@ -104,7 +93,13 @@ export default class AliasEntry extends Vue {
 }
 
 .textField {
-  flex-grow: 0;
+  width: 100%;
+}
+
+#aliasListDiv{
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .bulletList {
