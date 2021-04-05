@@ -1,0 +1,78 @@
+{
+  "gameStatus" : "Game has Begun",
+  "lobby" : {
+    "aliases" : {
+      "Augustus Gloop" : "available",
+      "Baby Yoda" : "available",
+      "BeachBabe97" : "available",
+      "Ben Derhover" : "available",
+      "Ben Geller" : "available",
+      "Buddy the Elf" : "available",
+      "Butler Albert" : "available",
+      "Carl Wheezer" : "available",
+      "DONKEY" : "available",
+      "Daddy Napolean" : "available",
+      "Darth Evader" : "available",
+      "Dixie Normous" : "available",
+      "Doug Judy" : "available",
+      "Dwight Shrute" : "available",
+      "Elliot Moose" : "available",
+      "Fawn Dilenmibals" : "available",
+      "Fedora Explora" : "available",
+      "Ford Tough" : "available",
+      "GarBear007" : "available",
+      "George Shrinks" : "available",
+      "Gordon Ramsay" : "available",
+      "Hagrid's Owl" : "available",
+      "Hakuna Matata" : "available",
+      "Hey It's Franklin" : "available",
+      "Hugh Neutron" : "available",
+      "Iron Fist" : "available",
+      "Jack B Nimble" : "available",
+      "Janice Hosenstein" : "available",
+      "Lord Farquad" : "available",
+      "Miya Butreaks" : "available",
+      "Moist Thunder" : "available",
+      "Mom's Spaghetti" : "available",
+      "Mr Paninos" : "available",
+      "Mucho Grande" : "available",
+      "Nestea Cool" : "available",
+      "Old Greg" : "available",
+      "Papa John" : "available",
+      "Regina George" : "available",
+      "Rolie Polie Olie" : "available",
+      "Ron Swanson" : "available",
+      "Ron Weasely" : "available",
+      "Squidward" : "available",
+      "ThisIsAPingo" : "available",
+      "Tutin Putin" : "available",
+      "Waluigi Wah!" : "available",
+      "Willy Wonka" : "available"
+    },
+    "colours" : {
+      "a3d3d3" : "available"
+    }
+  },
+  "players" : {
+    "-MVK3nLATE3L8kmLQ9zP" : {
+      "alias" : "",
+      "captainNum" : 0,
+      "color" : "",
+      "key" : "-MVK3nLATE3L8kmLQ9zP",
+      "name" : "",
+      "shipOneKey" : "",
+      "shipTwoKey" : "",
+      "status" : "On Start Screen"
+    },
+    "-MVK3nqWo2u5jSrW2Upi" : {
+      "alias" : "",
+      "captainNum" : 0,
+      "color" : "",
+      "key" : "-MVK3nqWo2u5jSrW2Upi",
+      "name" : "",
+      "shipOneKey" : "",
+      "shipTwoKey" : "",
+      "status" : "On Start Screen"
+    }
+  }
+}

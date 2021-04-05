@@ -4,7 +4,7 @@
       <v-text-field
         v-model="alias"
         :rules="aliasRules"
-        counter="14"
+        counter="18"
         solo
         class="textField"
         @change="aliasEntryChanged()"
@@ -47,13 +47,11 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class AliasEntry extends Vue {
   alias: string = "";
-  usingBankAlias: boolean = false;
-  bankAliasClicked: string = "";
   aliasErrorMessage: string = "";
 
   aliasRules = [
     (v: string) =>
-      v.length <= 14 || "Sorry, aliases are limited to 14 characters max",
+      v.length <= 18 || "Sorry, aliases are limited to 18 characters max",
   ];
 
   get availableAliasesList() {
@@ -61,16 +59,28 @@ export default class AliasEntry extends Vue {
   }
 
   aliasEntryChanged() {
-    this.$store.dispatch("lobbyStore/allocateAlias", this.alias).then(
-      (response) => {
-        //console.log(response);
-        this.aliasErrorMessage = "";
-      },
-      (error) => {
-        //console.log(error);
-        this.aliasErrorMessage = "Unfortunately this alias is already taken";
-      }
-    );
+    //check for empty or purely white space entries
+    if (this.alias === ""){
+       this.aliasErrorMessage = "Please enter an alias";
+       this.$emit("aliasvalidupdate", false);
+    }
+    else if (!this.alias.replace(/\s/g, "").length) {
+      this.aliasErrorMessage = "Aliases cannot be blank spaces. Nice try ;)";
+      this.$emit("aliasvalidupdate", false);
+    } else {
+      this.$store.dispatch("lobbyStore/allocateAlias", this.alias).then(
+        (response) => {
+          //console.log(response);
+          this.aliasErrorMessage = "";
+          this.$emit("aliasvalidupdate", true);
+        },
+        (error) => {
+          //console.log(error);
+          this.aliasErrorMessage = "Unfortunately this alias is already taken";
+          this.$emit("aliasvalidupdate", false);
+        }
+      );
+    }
   }
 
   listItemClicked(aliasClicked: string) {
@@ -96,7 +106,7 @@ export default class AliasEntry extends Vue {
   width: 100%;
 }
 
-#aliasListDiv{
+#aliasListDiv {
   flex-grow: 1;
   display: flex;
   flex-direction: column;

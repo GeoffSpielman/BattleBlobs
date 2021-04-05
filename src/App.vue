@@ -57,7 +57,7 @@ export default class App extends Vue {
 
     /*
     
-    
+    */
     //react to disconnection/reconnection
     this.connectedRef.on("value", (snapshot) => {
       //reconnect
@@ -116,7 +116,7 @@ export default class App extends Vue {
       this.myPlayerStatusRef.onDisconnect().set(PlayerStatus.Disconnected);
     });
 
-    */
+    
     
   }
 }

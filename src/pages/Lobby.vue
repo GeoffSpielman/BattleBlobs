@@ -6,37 +6,44 @@
         <div id="textFieldsOuterColumn">
           <div class="compRow">
             <div class="iconColumn">
-               <img class="iconImg" :src="nameIconPath">
+              <img class="iconImg" :src="nameIconPath" />
             </div>
-            <name-entry>
-            </name-entry>
+            <name-entry @namevalidupdate="nameValidUpdate"> </name-entry>
           </div>
           <div class="compRow bottomCompRow">
-             <div class="iconColumn">
-               <img class="iconImg" :src="aliasIconPath">
+            <div class="iconColumn">
+              <img class="iconImg" :src="aliasIconPath" />
             </div>
-            <alias-entry>
-            </alias-entry>
+            <alias-entry @aliasvalidupdate="aliasValidUpdate"> </alias-entry>
           </div>
         </div>
         <div id="colourAndShipsColumn">
           <div class="compRow">
             <div class="iconColumn">
-               <img class="iconImg" :src="colourIconPath">
+              <img class="iconImg" :src="colourIconPath" />
             </div>
-            <colour-selector>
-            </colour-selector>
+            <colour-selector> </colour-selector>
           </div>
           <div class="compRow bottomCompRow">
             <div class="iconColumn">
-               <img class="iconImg" :src="shipIconPath">
+              <img class="iconImg" :src="shipIconPath" />
             </div>
-            <ship-entry>
-            </ship-entry>
+            <ship-entry @shipsvalidupdate="shipsValidUpdate"> </ship-entry>
           </div>
         </div>
       </div>
-      <div id="bottomRow">I am the bottom row</div>
+      <div id="bottomRow">
+        <div id="readyButtonsDiv">
+          <v-btn x-large elevation="2" color="success" dark class="mt-12" @click="startBtnClicked"
+            >Ready to Start
+          </v-btn>
+          <v-btn class="mt-2" small> I changed my mind </v-btn>
+        </div>
+
+        <div id="playersReadyDiv">
+          <h3 class="mb-1">3 Players Ready to Start</h3>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -63,16 +70,45 @@ export default class Lobby extends Vue {
   nameIconPath: string = require("@/assets/lobby/person_icon.png");
   aliasIconPath: string = require("@/assets/lobby/alias_icon.png");
   shipIconPath: string = require("@/assets/lobby/ship_icon.png");
-
-  get colourIconPath(): string{
-    return this.$store.getters['clientSpecificStore/getColourIconPath'];
-  }
-
   name: string = "";
   nameRules = [
     (v: string) =>
       v.length <= 14 || "Sorry, names are limited to 14 characters max",
   ];
+
+  get colourIconPath(): string {
+    return this.$store.getters["clientSpecificStore/getColourIconPath"];
+  }
+
+  get colourValid() {
+    return this.$store.getters["clientSpecificStore/getSelectedColourHex"] ===
+      "#252525"
+      ? false
+      : true;
+  }
+
+  nameValid: boolean = false;
+  aliasValid: boolean = false;
+  shipsValid: boolean = false;
+
+  nameValidUpdate(recVal: boolean){
+    this.nameValid = recVal;
+  }
+  aliasValidUpdate(recVal: boolean){
+    this.aliasValid = recVal;
+  }
+  shipsValidUpdate(recVal: boolean) {
+    this.shipsValid = recVal;
+  }
+
+  startBtnClicked(){
+    console.log("name valid: " + this.nameValid);
+    console.log("alias valid: " + this.aliasValid);
+    console.log("colour valid: " + this.colourValid);
+    console.log("ships valid: " + this.shipsValid);
+  }
+
+
 
   mounted() {
     this.$store.dispatch(
@@ -109,12 +145,6 @@ export default class Lobby extends Vue {
   display: flex;
   flex-grow: 1;
 }
-#bottomRow {
-  background-color: lightgreen;
-  width: 100%;
-  display: flex;
-  height: 100px;
-}
 
 #textFieldsOuterColumn {
   width: 40%;
@@ -125,6 +155,7 @@ export default class Lobby extends Vue {
 #colourAndShipsColumn {
   display: flex;
   flex-grow: 1;
+  flex-basis: 0;
   flex-direction: column;
   padding-left: 65px;
 }
@@ -147,5 +178,24 @@ export default class Lobby extends Vue {
 
 .iconImg {
   width: 100%;
+}
+
+#bottomRow {
+  width: 100%;
+  display: flex;
+  height: 200px;
+  flex-direction: column;
+}
+
+#readyButtonsDiv {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+#playersReadyDiv {
+  display: flex;
+  justify-content: center;
 }
 </style>

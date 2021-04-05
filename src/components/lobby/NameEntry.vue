@@ -3,7 +3,7 @@
     <v-text-field
       v-model="name"
       :rules="nameRules"
-      counter="14"
+      counter="18"
       solo
       class="textField"
       @change="nameTextChanged()"
@@ -37,22 +37,32 @@ export default class NameEntry extends Vue {
   name: string = "";
   nameRules = [
     (v: string) =>
-      v.length <= 14 || "Sorry, names are limited to 14 characters max",
+      v.length <= 18 || "Sorry, names are limited to 18 characters max",
   ];
   nameErrorMessage: string = "";
 
   nameTextChanged() {
-    this.$store.dispatch("lobbyStore/allocateName", this.name).then(
-      (response) => {
-        console.log(response);
-        this.nameErrorMessage = "";
-      },
-      (error) => {
-        console.log(error);
-        this.nameErrorMessage =
-          "Unfortunately this name is taken. Maybe add your last initial?";
-      }
-    );
+    if (this.name === "") {
+      this.nameErrorMessage = "Please enter your name";
+      this.$emit("namevalidupdate", false);
+    } else if (!this.name.replace(/\s/g, "").length) {
+      this.nameErrorMessage = "Names cannot be blank spaces. Nice try ;)";
+      this.$emit("namevalidupdate", false);
+    } else {
+      this.$store.dispatch("lobbyStore/allocateName", this.name).then(
+        (response) => {
+          //console.log(response);
+          this.nameErrorMessage = "";
+          this.$emit("namevalidupdate", true);
+        },
+        (error) => {
+          //console.log(error);
+          this.nameErrorMessage =
+            "Unfortunately this name is taken. Maybe add your last initial?";
+            this.$emit("namevalidupdate", false);
+        }
+      );
+    }
   }
 }
 </script>

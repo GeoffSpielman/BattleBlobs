@@ -28,7 +28,7 @@
 
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch} from "vue-property-decorator";
 import {validateShipDesign} from "@/algorithms/validateShipDesign"
 
 @Component({
@@ -50,6 +50,11 @@ export default class SingleShipBuilder extends Vue {
 
   get shipColour(): string {
     return this.$store.getters["clientSpecificStore/getSelectedColourHex"];
+  }
+
+  @Watch('shipValid')
+  shipValidChanged(newVal: boolean){
+    this.$emit('shipvalidupdate', newVal);
   }
 
   gridButtonClicked(rowIdx: number, colIdx: number) {
@@ -118,6 +123,8 @@ export default class SingleShipBuilder extends Vue {
   text-align: center;
   font-weight: normal;
   font-size: 16px;
+  height: 48px;
+  padding: 0px 15px;
 }
 
 .confirmationText{
