@@ -51,9 +51,11 @@ export default class ColourSelector extends Vue {
 
 #coloursContainer {
   padding-left: 40px;
+  padding-right: 10px;
   flex-grow: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
+  
 }
 </style>

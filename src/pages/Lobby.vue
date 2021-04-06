@@ -31,17 +31,39 @@
             <ship-entry @shipsvalidupdate="shipsValidUpdate"> </ship-entry>
           </div>
         </div>
+        <v-overlay id="disableOverlay" :value="lockedIn" opacity="0.2">
+        </v-overlay>
       </div>
       <div id="bottomRow">
         <div id="readyButtonsDiv">
-          <v-btn x-large elevation="2" color="success" dark class="mt-12" @click="startBtnClicked"
-            >Ready to Start
+          <v-btn
+            x-large
+            elevation="2"
+            color="success"
+            class="mt-10"
+            @click="startBtnClicked"
+            :disabled="lockedIn"
+            >{{
+              lockedIn
+                ? "Locked In - Waiting for Other Players..."
+                : "Ready to Start"
+            }}
           </v-btn>
-          <v-btn class="mt-2" small> I changed my mind </v-btn>
+          <p id="errorMessage">{{ errorMessage }}</p>
+          <v-btn
+            class="mt-2"
+            small
+            :style="{
+              display: lockedIn ? 'flex' : 'none',
+            }"
+            @click="changedMindBtnClicked"
+          >
+            I changed my mind
+          </v-btn>
         </div>
 
         <div id="playersReadyDiv">
-          <h3 class="mb-1">3 Players Ready to Start</h3>
+          <h3 class="mb-1">0 Players Ready to Start</h3>
         </div>
       </div>
     </div>
@@ -76,6 +98,9 @@ export default class Lobby extends Vue {
       v.length <= 14 || "Sorry, names are limited to 14 characters max",
   ];
 
+  errorMessage: string = "";
+  lockedIn: boolean = false;
+
   get colourIconPath(): string {
     return this.$store.getters["clientSpecificStore/getColourIconPath"];
   }
@@ -91,24 +116,41 @@ export default class Lobby extends Vue {
   aliasValid: boolean = false;
   shipsValid: boolean = false;
 
-  nameValidUpdate(recVal: boolean){
+  nameValidUpdate(recVal: boolean) {
     this.nameValid = recVal;
   }
-  aliasValidUpdate(recVal: boolean){
+  aliasValidUpdate(recVal: boolean) {
     this.aliasValid = recVal;
   }
   shipsValidUpdate(recVal: boolean) {
     this.shipsValid = recVal;
   }
 
-  startBtnClicked(){
+  startBtnClicked() {
     console.log("name valid: " + this.nameValid);
     console.log("alias valid: " + this.aliasValid);
     console.log("colour valid: " + this.colourValid);
     console.log("ships valid: " + this.shipsValid);
+
+    if (!this.nameValid) {
+      this.errorMessage = "Please enter a valid name";
+    } else if (!this.aliasValid) {
+      this.errorMessage = "Please enter a valid alias";
+    } else if (!this.colourValid) {
+      this.errorMessage = "Please select a colour";
+    } else if (!this.shipsValid) {
+      this.errorMessage = "Please build 2 valid ships";
+    } else {
+      this.errorMessage = "";
+      this.lockedIn = true;
+      //TODO: set status to 'ready for start'
+      //TODO: send all data up to playerStore
+    }
   }
 
-
+  changedMindBtnClicked() {
+    this.lockedIn = false;
+  }
 
   mounted() {
     this.$store.dispatch(
@@ -194,8 +236,19 @@ export default class Lobby extends Vue {
   flex-grow: 1;
 }
 
+#errorMessage {
+  margin: 8px 0px 0px 0px;
+  color: red;
+  font-weight: bold;
+}
+
 #playersReadyDiv {
   display: flex;
   justify-content: center;
+}
+
+#disableOverlay {
+  top: 40px;
+  bottom: 180px;
 }
 </style>
