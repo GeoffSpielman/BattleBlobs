@@ -22,19 +22,23 @@
         </v-btn>
       </div>
     </div>
-    <h3 id="outputStatement" :class="{confirmationText: shipValid}">{{ shipStatement }}</h3>
+    <h3 id="outputStatement" :class="{ confirmationText: shipValid }">
+      {{ shipStatement }}
+    </h3>
   </div>
 </template>
 
 
 <script lang="ts">
-import { Component, Vue, Watch} from "vue-property-decorator";
-import {validateShipDesign} from "@/algorithms/validateShipDesign"
+import { Component, Vue, Watch, Prop } from "vue-property-decorator";
+import { validateShipDesign } from "@/algorithms/validateShipDesign";
 
 @Component({
   name: "SingleShipBuilder",
 })
 export default class SingleShipBuilder extends Vue {
+  @Prop({ required: true }) readonly whichShipAmI!: number;
+
   numSegsInShip: number = 9;
   shipValid: boolean = false;
 
@@ -52,9 +56,16 @@ export default class SingleShipBuilder extends Vue {
     return this.$store.getters["clientSpecificStore/getSelectedColourHex"];
   }
 
-  @Watch('shipValid')
-  shipValidChanged(newVal: boolean){
-    this.$emit('shipvalidupdate', newVal);
+  @Watch("shipValid")
+  shipValidChanged(newVal: boolean) {
+    this.$emit("shipvalidupdate", newVal);
+
+    if (newVal) {
+      this.$store.dispatch("clientSpecificStore/setShipOffsets", {
+        whichShip: this.whichShipAmI,
+        offsets: this.shipOffsets,
+      });
+    }
   }
 
   gridButtonClicked(rowIdx: number, colIdx: number) {
@@ -81,13 +92,20 @@ export default class SingleShipBuilder extends Vue {
     }
     //determine statement under ship
     if (this.shipOffsets.length < this.numSegsInShip) {
-        this.shipStatement = this.shipOffsets.length + "/" + this.numSegsInShip + " segments built";
-        this.shipValid = false;
+      this.shipStatement =
+        this.shipOffsets.length + "/" + this.numSegsInShip + " segments built";
+      this.shipValid = false;
     } else if (this.shipOffsets.length > this.numSegsInShip) {
-        this.shipStatement = "Ship is too big! Please remove " + (this.shipOffsets.length - this.numSegsInShip) + " segments";
-        this.shipValid = false;
+      this.shipStatement =
+        "Ship is too big! Please remove " +
+        (this.shipOffsets.length - this.numSegsInShip) +
+        " segments";
+      this.shipValid = false;
     } else {
-      let validationResult = validateShipDesign(this.shipOffsets, this.numSegsInShip);
+      let validationResult = validateShipDesign(
+        this.shipOffsets,
+        this.numSegsInShip
+      );
       this.shipStatement = validationResult.message;
       this.shipValid = validationResult.valid;
     }
@@ -127,7 +145,7 @@ export default class SingleShipBuilder extends Vue {
   padding: 0px 15px;
 }
 
-.confirmationText{
+.confirmationText {
   color: darkgreen;
   text-shadow: 0px 3px 8px #7dd481;
 }

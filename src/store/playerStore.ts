@@ -17,7 +17,7 @@ const playerStore: Module<PlayerState, RootState> = {
   },
 
   getters: {
-    getMyKey(state){
+    getMyKey(state): string{
       return state.myKey;
     },
 
@@ -33,13 +33,23 @@ const playerStore: Module<PlayerState, RootState> = {
       return state.players.findIndex((player)=> player.alias.toLowerCase() === recAlias.toLowerCase()) === -1 ? true: false
     },
 
-    getMyName(state){
+    getMyName(state): string | undefined{
       return state.players.find((player) => player.key === state.myKey)?.name;
     },
 
-    getMyAlias(state){      
+    getMyAlias(state): string | undefined{      
       return state.players.find((player) => player.key === state.myKey)?.alias;
-    }
+    },
+
+    getMyShipKey: (state) => (recShipNum: number) => {
+      const playerObj = state.players.find((player) => player.key === state.myKey);
+      if (recShipNum === 1){
+        return playerObj?.shipOneKey;
+      }
+      else if (recShipNum === 2){
+        return playerObj?.shipTwoKey;
+      }
+    },
 
   },
 
@@ -82,8 +92,6 @@ const playerStore: Module<PlayerState, RootState> = {
       })
     },
 
-  
-
     addPlayer(_, newPlayer: PlayerEntry) {
       const newPlayerRef = firebase.database.ref('players').push();
       newPlayerRef.set(newPlayer);
@@ -108,8 +116,8 @@ const playerStore: Module<PlayerState, RootState> = {
           'status': PlayerStatus.StartScreen,
           'name': '',
           'alias': '',
-          'color': '',
-          'captainNum': 0,
+          'colour': '',
+          'captainNum': -1,
           'shipOneKey': '',
           'shipTwoKey': ''
         }
@@ -132,7 +140,41 @@ const playerStore: Module<PlayerState, RootState> = {
 
     setMyAlias(context, recAlias: string){
       firebase.database.ref('players/' + context.state.myKey + '/alias').set(recAlias);
+    },
+
+    setMyShipKey(context, payload: {'shipKey': string; 'shipNum': number}){
+      if (payload.shipNum === 1){
+        firebase.database.ref('players/' + context.state.myKey + '/shipOneKey').set(payload.shipKey);
+
+      }
+      else if (payload.shipNum === 2){
+        firebase.database.ref('players/' + context.state.myKey + '/shipTwoKey').set(payload.shipKey);
+      }
+    },
+
+
+    lockedInUploadData(context){
+      //set the colour hex code
+      firebase.database.ref('players/' + context.state.myKey + '/colour').set(context.rootGetters['clientSpecificStore/getSelectedColourHex'].substring(1));
+      
+      for (let i = 1; i < 3; i++){
+        //If client's ship key has never been set, create a new entry in ships store
+        if (context.getters.getMyShipKey(i) === ""){
+          const payloadForCreation = {'offsets': context.rootGetters['clientSpecificStore/getShipOffsets'](i), 'shipNum': i}
+          context.dispatch('shipsStore/createShipOffsetsOnly', payloadForCreation, {root: true});
+          
+          //otherwise modify the entry in the ships store
+        } else{
+          context.dispatch('shipsStore/overwriteShipOffsets', {'shipKey': context.getters.getMyShipKey(i), 'offsets': context.rootGetters['clientSpecificStore/getShipOffsets'](i)}, {root: true});
+        }
+
+      }
+      
+      
+
+        
     }
+   
   },
 }
 

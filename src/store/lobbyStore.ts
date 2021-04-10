@@ -19,11 +19,11 @@ const lobbyStore: Module<LobbyState, RootState> = {
   },
 
   getters: {
-    getAvailableAliases(state): object {
+    getAvailableAliases(state): string[] {
       return state.availableAliases;
     },
 
-    getColoursList(state): object {
+    getColoursList(state): ColourEntry[] {
       return state.colours;
     },
 
@@ -165,6 +165,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
         if (payload.status === context.rootGetters["playerStore/getMyKey"]) {
           localColourObj.status = ColourStatus.Mine;
           context.dispatch('clientSpecificStore/setSelectedColourHex', "#" + payload.hexCode, { root: true });
+          
           switch (payload.hexCode) {
             case "e6194b":
               context.dispatch('clientSpecificStore/setColourIconPath', require("@/assets/lobby/Red.png"), { root: true });

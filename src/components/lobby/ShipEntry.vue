@@ -2,8 +2,8 @@
   <div id="shipsOutermost">
     <h2>Ships:</h2>
     <div id="shipBuildersRow">
-      <single-ship-builder @shipvalidupdate="childShipValidUpdate('left', ...arguments)"></single-ship-builder>
-      <single-ship-builder @shipvalidupdate="childShipValidUpdate('right', ...arguments)"></single-ship-builder>
+      <single-ship-builder :whichShipAmI="1" @shipvalidupdate="childShipValidUpdate('left', ...arguments)"></single-ship-builder>
+      <single-ship-builder :whichShipAmI="2" @shipvalidupdate="childShipValidUpdate('right', ...arguments)"></single-ship-builder>
     </div>
   </div>
 </template>

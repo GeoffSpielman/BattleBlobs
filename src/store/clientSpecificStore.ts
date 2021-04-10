@@ -7,6 +7,8 @@ interface ClientSpecificState {
   usingBankAlias: boolean;
   colourIconPath: string;
   selectedColourHex: string;
+  shipOneOffsets: number[][];
+  shipTwoOffsets: number[][];
 }
 
 const playerStore: Module<ClientSpecificState, RootState> = {
@@ -16,24 +18,37 @@ const playerStore: Module<ClientSpecificState, RootState> = {
     usingBankAlias: false,
     colourIconPath: require("@/assets/lobby/colour_icon_black.png"),
     selectedColourHex: "#252525",
+    shipOneOffsets: [],
+    shipTwoOffsets: []
   },
 
   getters: {
-    getStartPageButtonFade(state){
+    getStartPageButtonFade(state): string{
       return state.startPageButtonFade;
     },
 
-    getUsingBankAlias(state){
+    getUsingBankAlias(state): boolean{
       return state.usingBankAlias;
     },
 
-    getColourIconPath(state){
+    getColourIconPath(state): string{
       return state.colourIconPath;
     },
 
-    getSelectedColourHex(state){
+    getSelectedColourHex(state): string{
       return state.selectedColourHex;
+    },
+
+    getShipOffsets: (state) => (recShipNum: number) => {
+      if (recShipNum === 1){
+        return state.shipOneOffsets;
+      }
+      else if (recShipNum === 2){
+        return state.shipTwoOffsets; 
+      }
     }
+
+
   },
 
   mutations: {
@@ -51,6 +66,14 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setSelectedColourHex(state, recCode: string){
       state.selectedColourHex = recCode;
+    },
+
+    setShipOffsets(state, payload){
+      if (payload.whichShip === 1){
+        state.shipOneOffsets = payload.offsets;
+      } else if (payload.whichShip === 2){
+        state.shipTwoOffsets = payload.offsets;
+      }
     }
   },
 
@@ -70,6 +93,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setSelectedColourHex(context, recCode: string){
       context.commit('setSelectedColourHex', recCode);
+    },
+
+    setShipOffsets(context, payload){
+      context.commit('setShipOffsets', payload);
     }
   },
 }

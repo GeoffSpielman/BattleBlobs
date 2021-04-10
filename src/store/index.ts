@@ -4,6 +4,7 @@ import firebase from './firebase'
 import playerStore from './playerStore'
 import lobbyStore from './lobbyStore'
 import clientSpecificStore from './clientSpecificStore'
+import shipsStore from './shipsStore'
 import {RootState} from './RootState'
 
  
@@ -14,6 +15,7 @@ export default new Vuex.Store<RootState>({
     playerStore: playerStore,
     lobbyStore: lobbyStore,
     clientSpecificStore: clientSpecificStore,
+    shipsStore: shipsStore,
   },
 
   state: {

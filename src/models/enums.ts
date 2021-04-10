@@ -16,3 +16,11 @@ export enum ColourStatus{
     Taken = "taken",
     Mine = "mine"
 }
+
+export enum ShipStatus{
+    Hidden = "Hidden",
+    Damaged = "Damaged",
+    Sunk = "Sunk",
+    Lifeboat = "Lifeboat",
+    Incomplete = "Incomplete",
+}

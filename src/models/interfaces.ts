@@ -1,24 +1,47 @@
-import {PlayerStatus} from "@/models/enums"
-import {ColourStatus} from "@/models/enums"
+import { PlayerStatus } from "@/models/enums"
+import { ColourStatus } from "@/models/enums"
+import { ShipStatus } from "@/models/enums"
 
-export interface PlayerEntry{
+export interface PlayerEntry {
     key: string | null;
     status: PlayerStatus;
     name: string;
     alias: string;
-    color: string;
+    colour: string;
     captainNum: number;
     shipOneKey: string;
     shipTwoKey: string;
 }
 
-export interface ColourEntry{
+export interface ColourEntry {
     name: string;
     hexCode: string;
     status: ColourStatus;
 }
 
-export interface ColourUpdateObject{
+export interface ColourUpdateObject {
     hexCode: string;
     status: string;
+}
+
+export interface ShipEntry {
+    key: string | null;
+    captainNum: number;
+    status: ShipStatus;
+    intactOffsets: number[][];
+    damagedOffsets: number[][];
+    anchorPoint: Coord;
+    spawnRange: ShipSpawnRange;
+}
+
+export interface Coord {
+    row: number;
+    col: number;
+}
+
+export interface ShipSpawnRange{
+    rowMin: number;
+    rowMax: number;
+    colMin: number;
+    colMax: number;
 }

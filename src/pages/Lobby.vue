@@ -127,11 +127,6 @@ export default class Lobby extends Vue {
   }
 
   startBtnClicked() {
-    console.log("name valid: " + this.nameValid);
-    console.log("alias valid: " + this.aliasValid);
-    console.log("colour valid: " + this.colourValid);
-    console.log("ships valid: " + this.shipsValid);
-
     if (!this.nameValid) {
       this.errorMessage = "Please enter a valid name";
     } else if (!this.aliasValid) {
@@ -143,8 +138,9 @@ export default class Lobby extends Vue {
     } else {
       this.errorMessage = "";
       this.lockedIn = true;
-      //TODO: set status to 'ready for start'
-      //TODO: send all data up to playerStore
+
+      this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.ReadyToStart);
+      this.$store.dispatch("playerStore/lockedInUploadData");
     }
   }
 
