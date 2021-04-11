@@ -56,21 +56,6 @@ const shipsStore: Module<ShipsState, RootState> = {
       })
     },
 
-    /*
-    addPlayer(_, newPlayer: PlayerEntry) {
-      const newPlayerRef = firebase.database.ref('players').push();
-      newPlayerRef.set(newPlayer);
-    },
-
-    removePlayer(_, recKey: string) {
-      firebase.database.ref('players/' + recKey).remove()
-    },
-
-    modifyPlayer(_, modifedPlayer: PlayerEntry){
-      firebase.database.ref('players/' + modifedPlayer.key).set(modifedPlayer);
-    },
-    */
-
     createShipOffsetsOnly(context, payload: {'offsets': number[][]; 'captainKey': string; 'shipNum': number}){
         const newShipRef = firebase.database.ref('ships').push();
         if (newShipRef.key === null) {

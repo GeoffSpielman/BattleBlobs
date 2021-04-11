@@ -26,11 +26,11 @@ const playerStore: Module<PlayerState, RootState> = {
     },
 
     getNameAvailable: (state) => (recName: string) => {
-      return state.players.findIndex((player)=> player.name.toLowerCase() === recName.toLowerCase()) === -1 ? true: false
+      return state.players.findIndex((player)=> player.name?.toLowerCase() === recName.toLowerCase()) === -1 ? true: false
     },
 
     getAliasAvailable: (state) => (recAlias: string) => {
-      return state.players.findIndex((player)=> player.alias.toLowerCase() === recAlias.toLowerCase()) === -1 ? true: false
+      return state.players.findIndex((player)=> player.alias?.toLowerCase() === recAlias.toLowerCase()) === -1 ? true: false
     },
 
     getMyName(state): string | undefined{
@@ -50,6 +50,16 @@ const playerStore: Module<PlayerState, RootState> = {
         return playerObj?.shipTwoKey;
       }
     },
+
+    getPlayersReadyCount(state): number{
+      let counter: number = 0;
+      state.players.forEach(player => {
+        if (player.status === PlayerStatus.ReadyToStart){
+          counter ++;
+        }
+      })
+      return counter;
+    }
 
   },
 
@@ -131,7 +141,14 @@ const playerStore: Module<PlayerState, RootState> = {
     },
 
     setMyStatus(context, recStatus: PlayerStatus){
-      firebase.database.ref('players/' + context.state.myKey + '/status').set(recStatus);
+      //first make sure you haven't been removed from the database
+      if (context.state.players.findIndex((playerObj) => (playerObj.key === context.state.myKey)) !== -1){
+        firebase.database.ref('players/' + context.state.myKey + '/status').set(recStatus);
+      }
+      else{
+        console.log("you were deleted :(")
+      }
+      
     },
 
     setMyName(context, recName: string){
@@ -169,12 +186,17 @@ const playerStore: Module<PlayerState, RootState> = {
         }
 
       }
-      
-      
-
-        
-    }
+    },
    
+    deleteAllPlayersExceptMe(context){
+      const myPlayerObj = context.state.players.find((player) => player.key === context.state.myKey);
+      if (myPlayerObj !== undefined){
+        firebase.database.ref('players/').set({[context.state.myKey]: myPlayerObj});
+      }
+      else{
+        console.log("Couldn't find host's own entry in the players database");
+      }
+    }
   },
 }
 

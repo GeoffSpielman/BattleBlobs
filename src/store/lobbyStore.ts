@@ -133,7 +133,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
           }
 
           //user clicked alias from bank or typed it out - need to claim it
-          if (context.getters.getAvailableAliases.findIndex(
+          if (context.state.availableAliases.findIndex(
             (element: string) => element.toLowerCase() === recAlias.toLowerCase()) !== -1) {
             context.dispatch('reserveAlias', recAlias);
             context.dispatch('clientSpecificStore/setUsingBankAlias', true, { root: true });

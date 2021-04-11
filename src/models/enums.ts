@@ -24,3 +24,8 @@ export enum ShipStatus{
     Lifeboat = "Lifeboat",
     Incomplete = "Incomplete",
 }
+
+export enum GameStatus{
+    WaitingOnPlayers = "Waiting on Players",
+    GameInProgress= "Game in Progress"
+}

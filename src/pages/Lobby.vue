@@ -1,6 +1,6 @@
 <template>
   <div class="outermostDiv">
-    <h1 id="lobbyHeader">Lobby:</h1>
+    <h1 class="pageHeader">Lobby:</h1>
     <div id="centralColumnOuter">
       <div id="topRow">
         <div id="textFieldsOuterColumn">
@@ -63,7 +63,7 @@
         </div>
 
         <div id="playersReadyDiv">
-          <h3 class="mb-1">0 Players Ready to Start</h3>
+          <h3 class="mb-1">{{numPlayersReadyToStart}} Players Ready to Start</h3>
         </div>
       </div>
     </div>
@@ -112,6 +112,10 @@ export default class Lobby extends Vue {
       : true;
   }
 
+  get numPlayersReadyToStart(){
+    return this.$store.getters["playerStore/getPlayersReadyCount"];
+  }
+
   nameValid: boolean = false;
   aliasValid: boolean = false;
   shipsValid: boolean = false;
@@ -146,6 +150,7 @@ export default class Lobby extends Vue {
 
   changedMindBtnClicked() {
     this.lockedIn = false;
+    this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.CreatingProfile);
   }
 
   mounted() {
@@ -160,14 +165,6 @@ export default class Lobby extends Vue {
 <style scoped>
 .outermostDiv {
   align-items: center;
-}
-
-#lobbyHeader {
-  font-size: 30pt;
-  font-family: Tahoma, sans-serif;
-  margin-left: 18px;
-  width: 100%;
-  text-align: left;
 }
 
 #centralColumnOuter {

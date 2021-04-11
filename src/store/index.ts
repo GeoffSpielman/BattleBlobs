@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from './firebase'
+import {RootState} from './RootState'
+
 import playerStore from './playerStore'
 import lobbyStore from './lobbyStore'
 import clientSpecificStore from './clientSpecificStore'
 import shipsStore from './shipsStore'
-import {RootState} from './RootState'
-
+import gameStore from './gameStore'
  
 Vue.use(Vuex)
 
@@ -16,40 +17,22 @@ export default new Vuex.Store<RootState>({
     lobbyStore: lobbyStore,
     clientSpecificStore: clientSpecificStore,
     shipsStore: shipsStore,
+    gameStore: gameStore
   },
 
   state: {
-    gameStatus: "",
-    startPageButtonFade: "",
+  
   },
 
   getters: {
-    getGameStatus(state) {
-      return state.gameStatus;
-    },
     
   },
 
   mutations: {
-    setGameStatus(state, recStatus: string) {
-      state.gameStatus = recStatus;
-    },
     
   },
 
-  actions: {
-
-    //connects firebase database to store, updates are now driven from database
-    getFirebaseDatabase(context) {
-      // DATABASE LISTENERS
-      firebase.database.ref('gameStatus').on('value', function (snapshot) {
-        context.commit('setGameStatus', snapshot.val());
-      })
-    },
-
-    setGameStatus(_, recStatus) {
-      firebase.database.ref('gameStatus').set(recStatus);
-    },
+  actions: {    
     
   },
 })

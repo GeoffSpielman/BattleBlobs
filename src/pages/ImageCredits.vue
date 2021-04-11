@@ -1,6 +1,7 @@
 <template>
   <div class="outermostDiv">
-    <v-container style="width: 75%" class="mt-6">
+    <h1 class="pageHeader"> Image Credits: </h1>
+    <v-container style="width: 75%" class="mt-2">
       <v-row>
         <v-col v-for="image in images" :key="image.path" cols="4">
           <a :href="image.link" target="_blank">
