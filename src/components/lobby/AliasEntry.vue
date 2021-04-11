@@ -127,4 +127,9 @@ export default class AliasEntry extends Vue {
 .v-list {
   overflow-y: auto;
 }
+
+.v-list-item{
+  height: 32px;
+  min-height: 32px !important;
+}
 </style>

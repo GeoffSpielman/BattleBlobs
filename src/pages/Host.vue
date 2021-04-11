@@ -87,6 +87,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { PlayerEntry } from "@/models/interfaces";
 import { PlayerStatus } from "@/models/enums";
+import { GameStatus } from '@/models/enums'
 
 @Component({
   name: "Host",
@@ -117,7 +118,12 @@ export default class Host extends Vue {
   }
 
   resetDatabaseClicked(){
+    //TODO: add an 'are you sure' prompty
     this.$store.dispatch('playerStore/deleteAllPlayersExceptMe');
+    this.$store.dispatch('lobbyStore/resetColoursInDatabase');
+    this.$store.dispatch('lobbyStore/resetAliasesInDatabase');
+    this.$store.dispatch('gameStore/setGameStatus', GameStatus.WaitingOnPlayers);
+    this.$store.dispatch('shipsStore/deleteAllShips');
   }
 }
 </script>
@@ -174,6 +180,6 @@ export default class Host extends Vue {
   width: 100%;
   display: flex;
   justify-content: space-evenly;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 </style>

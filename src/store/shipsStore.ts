@@ -81,6 +81,10 @@ const shipsStore: Module<ShipsState, RootState> = {
       firebase.database.ref('ships/' + payload.shipKey+ '/intactOffsets').set(payload.offsets);
     },
 
+    deleteAllShips(context){
+      firebase.database.ref('ships').set({'ghostShip': 'empty'});
+    }
+
 
       
   },

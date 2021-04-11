@@ -5,6 +5,7 @@ import { ColourEntry } from '@/models/interfaces';
 import { ColourStatus } from '@/models/enums';
 import { ColourUpdateObject } from '@/models/interfaces';
 import initialColoursArray from "@/initialization/coloursArray";
+import aliasesInitialObject from "@/initialization/aliasesObject"
 
 interface LobbyState {
   availableAliases: string[];
@@ -120,6 +121,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
 
     allocateAlias(context, recAlias: string) {
       return new Promise((resolve, reject) => {
+
         //user requests their current alias again (due to v-textfield 'on change' bug)
         if (recAlias === context.rootGetters['playerStore/getMyAlias']) {
           resolve("SUCCESS: Alias " + recAlias + " has already been reserved for you");
@@ -235,7 +237,20 @@ const lobbyStore: Module<LobbyState, RootState> = {
         //reserve the new colour selection
         firebase.database.ref('lobby/colours/' + recHexCode.substring(1)).set(context.rootGetters['playerStore/getMyKey']);
       }
-    }
+    },
+
+
+    resetColoursInDatabase(context){
+      let colourOverwriteObj: {[hexCode: string]: string} = {}
+      initialColoursArray.forEach((colour) => {
+        colourOverwriteObj[colour.hexCode.substring(1)] = "available";
+      })
+      firebase.database.ref('lobby/colours').set(colourOverwriteObj);
+    },
+
+    resetAliasesInDatabase(context){
+      firebase.database.ref('lobby/aliases').set(aliasesInitialObject);
+    },
 
   },
 }

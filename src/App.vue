@@ -43,14 +43,14 @@ export default class App extends Vue {
   showDisconnectedDialog: boolean = false;
 
   created() {
+    
+    /*
+    
     //put the user back on the home page if they clicked 'refresh'
     if (this.$route.name !== "Start" && this.$route.name !== "Host") {
       this.$router.push("/");
-    }
-
-    /*
+    }   
     
-    */
     //react to disconnection/reconnection
     this.connectedRef.on("value", (snapshot) => {
       //reconnect
@@ -134,6 +134,11 @@ export default class App extends Vue {
       this.myPlayerStatusRef.onDisconnect().set(PlayerStatus.Disconnected);
       this.myPlayerKeyRef.onDisconnect().set(this.$store.getters["playerStore/getMyKey"]);
     });
+
+
+  */
+
+
   }
 }
 </script>

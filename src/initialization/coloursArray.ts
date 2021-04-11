@@ -1,4 +1,3 @@
-//import ColourEntry from "@/models/enums.ts"
 import {ColourStatus} from "@/models/enums";
 
 const coloursInitialArray = [
