@@ -1,15 +1,8 @@
 <template>
   <div class="outermostDiv">
     <div id="mainTopRow">
-      <div id="chatAndSoundsColumn">
-         <div id="soundboardContainer">
-          <soundboard-bar></soundboard-bar>
-        </div>
-        <div id="chatContainer">
-          <chat-window></chat-window>
-        </div>
-       
-   
+      <div id="chatColumn">
+          <chat-window></chat-window>   
       </div>
       <div id="mapColumn">Map</div>
       <div id="powerupsColumn">Powerups</div>
@@ -58,10 +51,9 @@ export default class Game extends Vue {
   width: 100%;
 }
 
-#chatAndSoundsColumn {
+#chatColumn {
   display: flex;
   width: 25vw;
-  flex-direction: column;
 }
 
 #mapColumn {
@@ -71,7 +63,7 @@ export default class Game extends Vue {
 
 #powerupsColumn {
   display: flex;
-  width: 100px;
+  width: 150px;
   background-color: blue;
 }
 
@@ -82,8 +74,4 @@ export default class Game extends Vue {
   display: flex;
 }
 
-#soundboardContainer{
-  width: 100%;
-  display: flex;
-}
 </style>

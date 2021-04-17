@@ -115,6 +115,8 @@ export default class Host extends Vue {
 
   startBtnClicked(){
     console.log("start the game!")
+    this.$store.dispatch('playerStore/addPlayersToGame');
+    this.$store.dispatch('gameStore/setGameStatus', GameStatus.GameInProgress);
   }
 
   resetDatabaseClicked(){
@@ -124,6 +126,7 @@ export default class Host extends Vue {
     this.$store.dispatch('lobbyStore/resetAliasesInDatabase');
     this.$store.dispatch('gameStore/setGameStatus', GameStatus.WaitingOnPlayers);
     this.$store.dispatch('shipsStore/deleteAllShips');
+    this.$store.dispatch('gameStore/setCurrentPlayersList', null);
   }
 }
 </script>
@@ -168,6 +171,9 @@ export default class Host extends Vue {
   margin: 10px;
 }
 
+#playersTable{
+  overflow-y: auto;
+}
 #playersTable th {
   font-size: 12pt;
 }

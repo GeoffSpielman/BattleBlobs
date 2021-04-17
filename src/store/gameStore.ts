@@ -29,15 +29,19 @@ const gameStore: Module<GameState, RootState> = {
 
         //firebase listeners
         getFirebaseDatabase(context) {
-            firebase.database.ref('gameStatus').on('value', function (snapshot) {
+            firebase.database.ref('game/status').on('value', function (snapshot) {
                 context.commit('setGameStatus', snapshot.val());
             })
         },
 
         setGameStatus(_, recStatus: GameStatus) {
-            firebase.database.ref('gameStatus').set(recStatus);
+            firebase.database.ref('game/status').set(recStatus);
         },
 
+
+        setCurrentPlayersList(_, recPlayersList: string[]){
+            firebase.database.ref('game/currentPlayers').set(recPlayersList);
+        }
     },
 }
 

@@ -135,8 +135,8 @@ export default class App extends Vue {
       this.myPlayerKeyRef.onDisconnect().set(this.$store.getters["playerStore/getMyKey"]);
     });
 
-
   */
+  
 
 
   }

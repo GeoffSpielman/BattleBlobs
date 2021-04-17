@@ -196,6 +196,18 @@ const playerStore: Module<PlayerState, RootState> = {
       else{
         console.log("Couldn't find host's own entry in the players database");
       }
+    },
+
+    addPlayersToGame(context){
+      let readyPlayerIDsList: string[] = [];
+      context.state.players.forEach(playerObj => {
+        if (playerObj.status === PlayerStatus.ReadyToStart){
+          readyPlayerIDsList.push(String(playerObj.key));
+          firebase.database.ref('players/' + playerObj.key + '/status').set(PlayerStatus.InGame);
+        }
+      });
+      context.dispatch('gameStore/setCurrentPlayersList', readyPlayerIDsList, {root: true});
+      context.dispatch('chatStore/generateChatPairings', readyPlayerIDsList, {root: true});
     }
   },
 }

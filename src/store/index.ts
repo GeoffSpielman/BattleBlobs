@@ -8,6 +8,7 @@ import lobbyStore from './lobbyStore'
 import clientSpecificStore from './clientSpecificStore'
 import shipsStore from './shipsStore'
 import gameStore from './gameStore'
+import chatStore from './chatStore'
  
 Vue.use(Vuex)
 
@@ -17,7 +18,8 @@ export default new Vuex.Store<RootState>({
     lobbyStore: lobbyStore,
     clientSpecificStore: clientSpecificStore,
     shipsStore: shipsStore,
-    gameStore: gameStore
+    gameStore: gameStore,
+    chatStore: chatStore
   },
 
   state: {
