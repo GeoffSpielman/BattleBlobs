@@ -45,3 +45,8 @@ export interface ShipSpawnRange{
     colMin: number;
     colMax: number;
 }
+
+export interface MessageEntry{
+    senderAlias: string;
+    content: string;
+}
