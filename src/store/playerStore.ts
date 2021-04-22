@@ -59,7 +59,11 @@ const playerStore: Module<PlayerState, RootState> = {
         }
       })
       return counter;
-    }
+    },
+
+    getAliasUsingKey: (state) => (recKey: string) => {
+      return state.players.find((player) => player.key === recKey)?.alias;
+    },
 
   },
 

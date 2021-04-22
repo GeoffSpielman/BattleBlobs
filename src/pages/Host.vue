@@ -127,6 +127,7 @@ export default class Host extends Vue {
     this.$store.dispatch('gameStore/setGameStatus', GameStatus.WaitingOnPlayers);
     this.$store.dispatch('shipsStore/deleteAllShips');
     this.$store.dispatch('gameStore/setCurrentPlayersList', null);
+    this.$store.dispatch('chatStore/deleteAllChats');
   }
 }
 </script>

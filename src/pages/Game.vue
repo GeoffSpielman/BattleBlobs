@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { PlayerStatus } from "@/models/enums";
-import ChatWindow from "@/components/game/ChatWindow.vue";
+import ChatWindow from "@/components/game/chat/ChatWindow.vue";
 import SoundboardBar from "@/components/game/SoundboardBar.vue"
 import GameGrid from "@/components/game/GameGrid.vue";
 import PowerupsDisplay from "@/components/game/PowerupsDisplay.vue";

@@ -17,13 +17,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import TheHeader from "@/components/start/TheHeader.vue";
 import TheFooter from "@/components/start/TheFooter.vue";
 import DisconnectedCard from "@/components/start/DisconnectedCard.vue";
 import configuredDatabase from "@/store/firebase";
 import firebase from "firebase/app";
 import { PlayerStatus } from "@/models/enums";
+import { GameStatus } from "@/models/enums";
 
 @Component({
   name: "App",
@@ -42,15 +43,23 @@ export default class App extends Vue {
 
   showDisconnectedDialog: boolean = false;
 
+  get gameStatus(): GameStatus {
+    return this.$store.getters["gameStore/getGameStatus"];
+  }
+
+  @Watch("gameStatus")
+  gameStatusChanged(newVal: GameStatus) {
+    if (newVal === GameStatus.GameInProgress && this.$route.name !== "Host") {
+      this.$router.push("/play");
+    }
+  }
+
   created() {
-    
-    /*
-    
     //put the user back on the home page if they clicked 'refresh'
     if (this.$route.name !== "Start" && this.$route.name !== "Host") {
       this.$router.push("/");
-    }   
-    
+    }
+
     //react to disconnection/reconnection
     this.connectedRef.on("value", (snapshot) => {
       //reconnect
@@ -122,6 +131,7 @@ export default class App extends Vue {
     this.$store.dispatch("lobbyStore/getFirebaseDatabase");
     this.$store.dispatch("shipsStore/getFirebaseDatabase");
     this.$store.dispatch("gameStore/getFirebaseDatabase");
+    this.$store.dispatch("chatStore/getFirebaseDatabase");
 
     //initilize client instance (player object) in database
     this.$store.dispatch("playerStore/intializeClient").then(() => {
@@ -132,13 +142,10 @@ export default class App extends Vue {
         "players/" + this.$store.getters["playerStore/getMyKey"] + "/key"
       );
       this.myPlayerStatusRef.onDisconnect().set(PlayerStatus.Disconnected);
-      this.myPlayerKeyRef.onDisconnect().set(this.$store.getters["playerStore/getMyKey"]);
+      this.myPlayerKeyRef
+        .onDisconnect()
+        .set(this.$store.getters["playerStore/getMyKey"]);
     });
-
-  */
-  
-
-
   }
 }
 </script>

@@ -3,20 +3,17 @@
     <v-tabs vertical v-model="tab" id="tabsOutermostDOM">
       <v-tab id="dummyTab">te</v-tab>
       <v-tab class="tabOuter"> <div class="tabInner">Public</div></v-tab>
-      <v-tab class="tabOuter"> <div class="tabInner">Player 1</div> </v-tab>
-      <v-tab class="tabOuter"> <div class="tabInner">Player 2</div> </v-tab>
+      <v-tab class="tabOuter" v-for="chat in chatsToShow" :key="chat.pairingKey + 'tab'"> <div class="tabInner">{{chat.otherPlayerAlias}}</div> </v-tab>
+      
 
-      <v-tab-item :transition="chatTransition" class="chatItem">
-        <individual-chat-pane></individual-chat-pane>
+       <v-tab-item :transition="chatTransition" class="chatItem">
+        corresponds to dummy tab - never shown
       </v-tab-item>
       <v-tab-item :transition="chatTransition" class="chatItem">
-        <individual-chat-pane></individual-chat-pane>
+        <individual-chat-pane :isPublic=true :chatKey="'public'" :otherPlayerAlias="null"></individual-chat-pane>
       </v-tab-item>
-      <v-tab-item :transition="chatTransition" class="chatItem">
-        <individual-chat-pane></individual-chat-pane>
-      </v-tab-item>
-      <v-tab-item :transition="chatTransition" class="chatItem">
-        <individual-chat-pane></individual-chat-pane>
+      <v-tab-item :transition="chatTransition" class="chatItem" v-for="chat in chatsToShow" :key="chat.pairingKey + 'convo'">
+        <individual-chat-pane :isPublic=false :chatKey="chat.pairingKey" :otherPlayerAlias="chat.otherPlayerAlias"></individual-chat-pane>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -25,7 +22,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import IndividualChatPane from "@/components/game/IndividualChatPane.vue";
+import IndividualChatPane from "@/components/game/chat/IndividualChatPane.vue";
 
 @Component({
   name: "ChatWindow",
@@ -37,6 +34,13 @@ export default class ChatWindow extends Vue {
   chatTransition: string = "fade-transition";
   headerText: string = "Public Chat";
   tab: number = 1;
+
+  get chatsToShow(): {'pairingKey': string; 'otherPlayerAlias': string}[]{
+    return this.$store.getters['chatStore/getMyPairings'](this.$store.getters['playerStore/getMyKey']);  
+  }
+
+  
+    
 }
 </script>
 

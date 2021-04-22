@@ -13,9 +13,21 @@ const chatStore: Module<ChatState, RootState> = {
     },
 
     getters: {
-        getPairings(state): { [key: string]: string[] } {
+        getAllPairings(state): { [key: string]: string[] } {
             return state.pairings
         },
+
+        getMyPairings: (state, getters, rootState, rootGetters) => (recKey: string) => {
+            let pairingList: {'pairingKey': string; 'otherPlayerAlias': string}[] = [];
+            for (const [pairingKey, participantsList] of Object.entries(state.pairings)) {
+                if (participantsList.includes(recKey)) {
+                    const otherPlayerKey = participantsList[0] === recKey ? participantsList[1] : participantsList[0];
+                    pairingList.push({'pairingKey': pairingKey, 'otherPlayerAlias': rootGetters['playerStore/getAliasUsingKey'](otherPlayerKey)});
+                }
+            }
+            return pairingList;
+        },
+
     },
 
     mutations: {
@@ -33,15 +45,17 @@ const chatStore: Module<ChatState, RootState> = {
         },
 
         generateChatPairings(context, recIDsList) {
-            console.log("received the following list of IDs:")
-            console.log(recIDsList);
-
-            for (let i = 0; i < recIDsList.length - 1; i ++){
-                for (let j = i + 1; j < recIDsList.length; j++){
+            for (let i = 0; i < recIDsList.length - 1; i++) {
+                for (let j = i + 1; j < recIDsList.length; j++) {
                     let pairingRef = firebase.database.ref('chat/pairings').push()
                     pairingRef.set([recIDsList[i], recIDsList[j]]);
                 }
             }
+        },
+
+        deleteAllChats(_){
+            firebase.database.ref('chat').set(null);
+            console.log("nuking chats");
         }
 
     },

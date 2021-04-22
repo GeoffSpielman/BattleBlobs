@@ -1,7 +1,7 @@
 <template>
-  <div id="messageBalloonOutermost" :class="{'rightAlign': senderAlias === null}">
-    <h6 id="senderAliasH"> {{senderAlias}} </h6>
-    <p id="messageContentP" :class="{'pLeft': senderAlias !== null, 'pRight': senderAlias === null}">
+  <div id="messageBalloonOutermost" :class="{'rightAlign': myMessage}">
+    <h6 id="senderAliasH" v-if="isPublic && !myMessage"> {{senderAlias}} </h6>
+    <p id="messageContentP" :class="{'pLeft': !myMessage, 'pRight': myMessage}">
     {{content}}
     </p>
   </div>
@@ -15,8 +15,13 @@ import { Component, Vue, Prop } from "vue-property-decorator";
   name: "MessageBalloon",
 })
 export default class MessageBalloon extends Vue {
-    @Prop({ required: true }) readonly senderAlias!: string|null;
+    @Prop({ required: true }) readonly senderAlias!: string;
     @Prop({ required: true }) readonly content!: string;
+    @Prop({ required: true }) readonly isPublic!: boolean;
+
+    get myMessage(): boolean{
+      return this.$store.getters['playerStore/getMyAlias'] === this.senderAlias;
+    }
  }
 </script>
 
@@ -27,9 +32,12 @@ export default class MessageBalloon extends Vue {
  width: 100%;
  margin: 6px 0px 6px 0px;
 }
+
 #senderAliasH{
   padding-left: 15px;
   line-height: 1.5;
+  font-size: 9pt;
+  letter-spacing: 0.5px;
 }
 
 #messageContentP{

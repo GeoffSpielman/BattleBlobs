@@ -33,8 +33,11 @@ export default class MessageEntry extends Vue {
   }
 
   sendMessage() {
-    console.log("sending message: " + this.messageText);
-    this.messageText = ""
+    if (this.messageText !== ""){
+      this.$emit("sendMessage", this.messageText);
+      this.messageText = ""
+    }
+    
   }
 }
 </script>
