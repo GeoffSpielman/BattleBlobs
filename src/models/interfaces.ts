@@ -49,4 +49,5 @@ export interface ShipSpawnRange{
 export interface MessageEntry{
     senderAlias: string;
     content: string;
+    repeatSender: boolean;
 }

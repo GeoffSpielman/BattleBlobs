@@ -1,17 +1,23 @@
 <template>
   <div id="individualChatPaneOutermost">
-    <h5 id="chatHeader" :style="{backgroundColor: isPublic ? '#FF8F00' : '#bbdefb'}">{{ChatTitle}}</h5>
+    <h5
+      id="chatHeader"
+      :style="{ backgroundColor: isPublic ? '#FF8F00' : '#bbdefb' }"
+    >
+      {{ ChatTitle }}
+    </h5>
     <div id="convoAreaOuter">
-    <div id="convoAreaInner">
-      <message-balloon
-        v-for="(message, i) in messageList"
-        :key="i"
-        :isPublic="isPublic"
-        :senderAlias="message.senderAlias !== 'MyAlias'? message.senderAlias : null"
-        :content="message.content"
-        @sendMessage="sendMessage"
-      ></message-balloon>
-    </div>
+      <div id="convoAreaInner">
+        <message-balloon
+          v-for="(message, i) in messageList"
+          :key="i"
+          :isPublic="isPublic"
+          :senderAlias="message.senderAlias"
+          :content="message.content"
+          :repeatSender="message.repeatSender"
+          @sendMessage="sendMessage"
+        ></message-balloon>
+      </div>
     </div>
     <message-input @sendMessage="sendMessage"></message-input>
   </div>
@@ -23,8 +29,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import MessageInput from "@/components/game/chat/MessageInput.vue";
 import MessageBalloon from "@/components/game/chat/MessageBalloon.vue";
 import { MessageEntry } from "@/models/interfaces";
-import firebase from '@/store/firebase'
-
+import firebase from "@/store/firebase";
 
 @Component({
   name: "IndividualChatPane",
@@ -33,9 +38,7 @@ import firebase from '@/store/firebase'
     MessageBalloon,
   },
 })
-
 export default class IndividualChatPane extends Vue {
-
   @Prop({ required: true }) readonly isPublic!: boolean;
   @Prop({ required: true }) readonly chatKey!: string;
   @Prop({ required: true }) readonly otherPlayerAlias!: string;
@@ -43,27 +46,33 @@ export default class IndividualChatPane extends Vue {
   messageList: MessageEntry[] = [];
 
   get ChatTitle() {
-    if(this.isPublic){
+    if (this.isPublic) {
       return "PUBLIC CHAT";
-    }
-    else{
+    } else {
       return "PRIVATE CHAT WITH " + this.otherPlayerAlias.toUpperCase();
     }
   }
 
-  sendMessage(recMessage: string){
-    console.log("sending message: " + recMessage)
-    firebase.database.ref('chat/convos/' + this.chatKey).push({'senderAlias': this.$store.getters['playerStore/getMyAlias'], 'content': recMessage})
+  sendMessage(recMessage: string) {
+    firebase.database
+      .ref("chat/convos/" + this.chatKey)
+      .push({
+        senderAlias: this.$store.getters["playerStore/getMyAlias"],
+        content: recMessage,
+      });
   }
 
-  mounted(){
-    
-    firebase.database.ref('chat/convos/' + this.chatKey).on('child_added', (data) => {
-        this.messageList.push({'senderAlias': data.val().senderAlias, 'content': data.val().content});
-        //(this.$refs["convoList"] as Element).scrollTop = (this.$refs["convoList"] as Element).scrollHeight;
-    })
+  mounted() {
+    firebase.database
+      .ref("chat/convos/" + this.chatKey)
+      .on("child_added", (data) => {
+        this.messageList.push({
+          senderAlias: data.val().senderAlias,
+          content: data.val().content,
+          repeatSender: this.messageList[this.messageList.length - 1]?.senderAlias === data.val().senderAlias,
+        });
+      });
   }
-
 }
 </script>
 
@@ -84,13 +93,14 @@ export default class IndividualChatPane extends Vue {
   padding-top: 2px;
 }
 
-#convoAreaOuter{
+#convoAreaOuter {
   flex-grow: 1;
   display: flex;
   width: 100%;
   height: 50px;
   flex-direction: column-reverse;
   overflow-y: auto;
+  margin-top: 3px;
 }
 
 #convoAreaInner {

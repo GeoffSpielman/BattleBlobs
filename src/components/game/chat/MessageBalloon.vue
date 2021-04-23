@@ -1,6 +1,6 @@
 <template>
   <div id="messageBalloonOutermost" :class="{'rightAlign': myMessage}">
-    <h6 id="senderAliasH" v-if="isPublic && !myMessage"> {{senderAlias}} </h6>
+    <h6 id="senderAliasH" v-if="isPublic && !myMessage && !repeatSender"> {{senderAlias}} </h6>
     <p id="messageContentP" :class="{'pLeft': !myMessage, 'pRight': myMessage}">
     {{content}}
     </p>
@@ -18,6 +18,7 @@ export default class MessageBalloon extends Vue {
     @Prop({ required: true }) readonly senderAlias!: string;
     @Prop({ required: true }) readonly content!: string;
     @Prop({ required: true }) readonly isPublic!: boolean;
+    @Prop({ required: true }) readonly repeatSender!: boolean;
 
     get myMessage(): boolean{
       return this.$store.getters['playerStore/getMyAlias'] === this.senderAlias;
@@ -30,7 +31,7 @@ export default class MessageBalloon extends Vue {
  display:flex;
  flex-direction: column;
  width: 100%;
- margin: 6px 0px 6px 0px;
+ margin: 0px 0px 4px 0px;
 }
 
 #senderAliasH{
@@ -38,6 +39,7 @@ export default class MessageBalloon extends Vue {
   line-height: 1.5;
   font-size: 9pt;
   letter-spacing: 0.5px;
+  margin-top: 6px;
 }
 
 #messageContentP{
@@ -57,7 +59,6 @@ export default class MessageBalloon extends Vue {
 .pRight{
   margin-right: 4px;
   margin-left: 50px;
-  margin-top: 3px;
   background-color: #1976D2;
   color: white;
 }

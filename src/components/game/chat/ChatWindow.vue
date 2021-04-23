@@ -1,7 +1,7 @@
 <template>
   <div id="chatWindowOutermost">
     <v-tabs vertical v-model="tab" id="tabsOutermostDOM">
-      <v-tab id="dummyTab">te</v-tab>
+      <v-tab id="dummyTab">hidden</v-tab>
       <v-tab class="tabOuter"> <div class="tabInner">Public</div></v-tab>
       <v-tab class="tabOuter" v-for="chat in chatsToShow" :key="chat.pairingKey + 'tab'"> <div class="tabInner">{{chat.otherPlayerAlias}}</div> </v-tab>
       
@@ -73,7 +73,7 @@ export default class ChatWindow extends Vue {
 #dummyTab {
   width: 30px !important;
   min-width: 30px !important;
-  height: 25px !important;
+  height: 23px !important;
   visibility: hidden;
 }
 
