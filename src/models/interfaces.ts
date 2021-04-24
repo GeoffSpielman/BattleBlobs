@@ -51,3 +51,9 @@ export interface MessageEntry{
     content: string;
     repeatSender: boolean;
 }
+
+export interface ChatEntry{
+    pairingKey: string; 
+    otherPlayerAlias: string;
+    otherPlayerColour: string;
+}

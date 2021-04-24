@@ -3,4 +3,5 @@ When 'players' does not exist in the database (I deleted all players) and a new 
     The second is as you would expect
     Has something to do with already being on the page when I press save in visual studio or refresh
 
-    
+
+If your name or alias is too long, you can still click 'ready to start'    

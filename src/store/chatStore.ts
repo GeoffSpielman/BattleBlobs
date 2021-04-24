@@ -1,6 +1,7 @@
 import firebase from './firebase'
 import { Module } from 'vuex'
 import { RootState } from './RootState'
+import {ChatEntry} from "@/models/interfaces"
 
 interface ChatState {
     pairings: { [key: string]: string[] };
@@ -18,11 +19,15 @@ const chatStore: Module<ChatState, RootState> = {
         },
 
         getMyPairings: (state, getters, rootState, rootGetters) => (recKey: string) => {
-            let pairingList: {'pairingKey': string; 'otherPlayerAlias': string}[] = [];
+            let pairingList: ChatEntry[] = [];
             for (const [pairingKey, participantsList] of Object.entries(state.pairings)) {
                 if (participantsList.includes(recKey)) {
                     const otherPlayerKey = participantsList[0] === recKey ? participantsList[1] : participantsList[0];
-                    pairingList.push({'pairingKey': pairingKey, 'otherPlayerAlias': rootGetters['playerStore/getAliasUsingKey'](otherPlayerKey)});
+                    pairingList.push({
+                        'pairingKey': pairingKey, 
+                        'otherPlayerAlias': rootGetters['playerStore/getAliasUsingKey'](otherPlayerKey),
+                        'otherPlayerColour': rootGetters['playerStore/getColourUsingKey'](otherPlayerKey)
+                    });
                 }
             }
             return pairingList;
@@ -53,7 +58,7 @@ const chatStore: Module<ChatState, RootState> = {
             }
         },
 
-        deleteAllChats(_){
+        deleteAllChats(_) {
             firebase.database.ref('chat').set(null);
             console.log("nuking chats");
         }

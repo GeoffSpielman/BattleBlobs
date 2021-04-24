@@ -65,6 +65,10 @@ const playerStore: Module<PlayerState, RootState> = {
       return state.players.find((player) => player.key === recKey)?.alias;
     },
 
+    getColourUsingKey: (state) => (recKey: string) => {
+      return state.players.find((player) => player.key === recKey)?.colour;
+    },
+
   },
 
   mutations: {
