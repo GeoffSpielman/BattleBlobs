@@ -55,6 +55,12 @@ export default class App extends Vue {
   }
 
   created() {
+
+
+    /*
+
+
+
     //put the user back on the home page if they clicked 'refresh'
     if (this.$route.name !== "Start" && this.$route.name !== "Host") {
       this.$router.push("/");
@@ -146,6 +152,11 @@ export default class App extends Vue {
         .onDisconnect()
         .set(this.$store.getters["playerStore/getMyKey"]);
     });
+
+
+    */
+
+
   }
 }
 </script>

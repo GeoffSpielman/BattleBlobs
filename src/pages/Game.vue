@@ -4,7 +4,9 @@
       <div id="chatColumn">
           <chat-window></chat-window>   
       </div>
-      <div id="mapColumn">Map</div>
+      <div id="mapColumn">
+        <game-grid></game-grid>
+      </div>
       <div id="powerupsColumn">Powerups</div>
     </div>
     <div id="playersBottomRow">Players</div>
@@ -39,8 +41,6 @@ export default class Game extends Vue {
 </script>
 
 <style scoped>
-.outermostDiv {
-}
 
 #mainTopRow {
   flex-grow: 1;
@@ -64,14 +64,8 @@ export default class Game extends Vue {
 #powerupsColumn {
   display: flex;
   width: 150px;
-  background-color: blue;
+  background-color: lightgray;
 }
 
-#chatContainer {
-  flex-grow: 1;
-  height: 10px;
-  width: 100%;
-  display: flex;
-}
 
 </style>
