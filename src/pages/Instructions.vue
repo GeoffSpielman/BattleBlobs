@@ -1,69 +1,136 @@
 <template>
-  <div class="outermostDiv">
-    <div id="mainTopRow">
-      <div id="leftColumn">I am left column</div>
-      <div id="centerColumn">
-  
-          <div id="gridOuterSquare">
-            I am the content
-            <br />
-            that goes in
-            <br />
-            the square
-          </div>
-      </div>
-      <div id="rightColumn">I am right column</div>
+  <div id="gameOutermost">
+    <div id="chatContainer"></div>
+    <div id="mapContainer">
+      
+      <!--
+      <section class="grid">
+        <aside class="aspect-ratio"></aside>
+        <article>
+          <ul class="grid absolute-fill">
+            <li class="aspect-ratio">
+              <div class="absolute-fill">content 1</div>
+            </li>
+          </ul>
+        </article>
+      </section>
     </div>
-    <div id="bottomRow">I am bottom row</div>
+    -->
+
+    <div id="test">
+      I am the content
+    </div>
+    </div>
+    <div id="powerupsContainer"></div>
+    <div id="playerDisplayContainer"></div>
   </div>
 </template>
 
 
 <style scoped>
-.outermostDiv {
+#gameOutermost {
+  display: grid;
+  grid-template-columns: 25vw 1fr 150px;
+  grid-template-rows: 1fr 120px;
+  width: 100%;
   height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
-#mainTopRow {
-  flex-grow: 1;
-  display: flex;
+#chatContainer {
+  grid-column: 1/2;
+  grid-row: 1/2;
+  background-color: beige;
 }
-#bottomRow {
-  height: 120px;
-  width: 100%;
+
+#mapContainer {
+  grid-column: 2/3;
+  grid-row: 1/2;
   background-color: lightblue;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
 }
 
-#leftColumn {
-  width: 25vw;
-  background-color: lightgreen;
-}
-
-#centerColumn {
-  flex-grow: 1;
-  height: 10px;
-}
-
-#rightColumn {
-  width: 150px;
-  background-color: lightgray;
-}
-
-#gridOuterSquare {
+#outerSquare {
   background-color: red;
   width: 80%;
-  aspect-ratio: 1/1;
-  margin: auto;
 }
 
-#gridOuterSquareContent {
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  top: 10px;
-  bottom: 10px;
+#outerSquare::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 0;
+  padding-bottom: 100%;
 }
+
+#powerupsContainer {
+  grid-column: 3/4;
+  grid-row: 1/2;
+  background-color: beige;
+}
+
+#playerDisplayContainer {
+  grid-column: 1/4;
+  grid-row: 2/3;
+  background-color: beige;
+}
+
+#test{
+  aspect-ratio: 1;
+  background-color: red;
+  height: 100%;
+}
+
+/*
+
+*, *:before, *:after {
+	box-sizing: border-box;
+}
+
+
+section {
+	overflow: hidden;
+}
+
+article {
+	grid-row: 1 / -1;
+	grid-column: 1 / -1;
+	position: relative;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	grid-row-gap: 24px;
+}
+
+
+li {
+	position: relative;
+}
+
+.absolute-fill {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-column-gap: 24px;
+}
+
+.aspect-ratio {
+	padding-top: 100%;
+	
+}
+*/
+
 </style>
