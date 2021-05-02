@@ -100,6 +100,8 @@ export default class AliasEntry extends Vue {
 
 .textfieldPrompt {
   margin-top: 4px;
+  width: 55px;
+  text-align: right;
 }
 
 .textField {
@@ -113,15 +115,15 @@ export default class AliasEntry extends Vue {
 }
 
 .bulletList {
-  margin-left: 15px;
+  margin-left: 25px;
   margin-top: -6px;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 #aliasListContainer {
   height: 50px;
   flex-grow: 1;
-  margin-left: 25px;
+  margin-left: 50px;
 }
 
 .v-list {

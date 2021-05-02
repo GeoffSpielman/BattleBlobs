@@ -78,14 +78,17 @@ export default class NameEntry extends Vue {
 
 .textfieldPrompt {
   margin-top: 4px;
+  width: 55px;
+  text-align: right;
 }
 
 .textField {
   width: 100%;
+  flex-grow: 0;
 }
 
 .bulletList {
-  margin-left: 15px;
+  margin-left: 25px;
   margin-top: -6px;
   margin-bottom: 10px;
 }

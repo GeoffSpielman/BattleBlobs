@@ -1,72 +1,77 @@
-<template>
-  <div class="outermostDiv">
-    <h1 class="pageHeader">Lobby:</h1>
-    <div id="centralColumnOuter">
-      <div id="topRow">
-        <div id="textFieldsOuterColumn">
-          <div class="compRow">
-            <div class="iconColumn">
-              <img class="iconImg" :src="nameIconPath" />
-            </div>
-            <name-entry @namevalidupdate="nameValidUpdate"> </name-entry>
-          </div>
-          <div class="compRow bottomCompRow">
-            <div class="iconColumn">
-              <img class="iconImg" :src="aliasIconPath" />
-            </div>
-            <alias-entry @aliasvalidupdate="aliasValidUpdate"> </alias-entry>
-          </div>
-        </div>
-        <div id="colourAndShipsColumn">
-          <div class="compRow">
-            <div class="iconColumn">
-              <img class="iconImg" :src="colourIconPath" />
-            </div>
-            <colour-selector> </colour-selector>
-          </div>
-          <div class="compRow bottomCompRow">
-            <div class="iconColumn">
-              <img class="iconImg" :src="shipIconPath" />
-            </div>
-            <ship-entry @shipsvalidupdate="shipsValidUpdate"> </ship-entry>
-          </div>
-        </div>
-        <v-overlay id="disableOverlay" :value="lockedIn" opacity="0.2">
-        </v-overlay>
-      </div>
-      <div id="bottomRow">
-        <div id="readyButtonsDiv">
-          <v-btn
-            x-large
-            elevation="2"
-            color="success"
-            class="mt-10"
-            @click="startBtnClicked"
-            :disabled="lockedIn"
-            >{{
-              lockedIn
-                ? "Locked In - Waiting for Other Players..."
-                : "Ready to Start"
-            }}
-          </v-btn>
-          <p id="errorMessage">{{ errorMessage }}</p>
-          <v-btn
+<template>  
+  <div id="lobbyOutermost">
+    <v-overlay id="disableOverlay" :value="lockedIn" opacity="0.2">
+    </v-overlay>
+
+    <h1 id="lobbyHeader" class="pageHeader">
+      Lobby:
+    </h1>
+
+    <div id="nameIconContainer">
+       <img class="iconImg" :src="nameIconPath" />
+    </div>
+    <section id="nameEntryContainer">
+      <name-entry @namevalidupdate="nameValidUpdate"> </name-entry>
+    </section>
+
+    <div id="aliasIconContainer">
+      <img class="iconImg" :src="aliasIconPath" />
+    </div>
+    <section id="aliasEntryContainer">
+      <alias-entry @aliasvalidupdate="aliasValidUpdate"> </alias-entry>
+    </section>
+
+    <div id="colorIconContainer">
+      <img class="iconImg" :src="colourIconPath" />
+    </div>
+    <section id="colourEntryContainer">
+      <colour-selector> </colour-selector>
+    </section>
+
+    <div id="shipIconContainer">
+      <img class="iconImg" :src="shipIconPath" />
+    </div>
+    <section id="shipEntryContainer">
+      <ship-entry @shipsvalidupdate="shipsValidUpdate"> </ship-entry>
+    </section>
+
+    <section id="readyButtonsContainer">
+      <div id="readyButtonsTop">
+      <v-btn
+        x-large
+        elevation="2"
+        color="success"
+        class="mt-10"
+        @click="startBtnClicked"
+        :disabled="lockedIn"
+        >
+        {{
+          lockedIn
+            ? "Locked In - Waiting for Other Players..."
+            : "Ready to Start"
+        }}
+      </v-btn>
+
+      <p id="errorMessage">{{ errorMessage }}</p>
+      <v-btn
             class="mt-2"
             small
             :style="{
-              display: lockedIn ? 'flex' : 'none',
+              display: lockedIn ? 'inline' : 'none',
             }"
             @click="changedMindBtnClicked"
           >
             I changed my mind
-          </v-btn>
-        </div>
-
-        <div id="playersReadyDiv">
-          <h3 class="mb-1">{{numPlayersReadyToStart}} Players Ready to Start</h3>
-        </div>
+      </v-btn>
       </div>
-    </div>
+
+      <div id="playersReadyDiv">
+        <h3 class="mb-1">{{numPlayersReadyToStart}} Players Ready to Start</h3>
+      </div>
+
+    </section>
+
+
   </div>
 </template>
 
@@ -112,7 +117,7 @@ export default class Lobby extends Vue {
       : true;
   }
 
-  get numPlayersReadyToStart(){
+  get numPlayersReadyToStart() {
     return this.$store.getters["playerStore/getPlayersReadyCount"];
   }
 
@@ -143,14 +148,20 @@ export default class Lobby extends Vue {
       this.errorMessage = "";
       this.lockedIn = true;
 
-      this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.ReadyToStart);
+      this.$store.dispatch(
+        "playerStore/setMyStatus",
+        PlayerStatus.ReadyToStart
+      );
       this.$store.dispatch("playerStore/lockedInUploadData");
     }
   }
 
   changedMindBtnClicked() {
     this.lockedIn = false;
-    this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.CreatingProfile);
+    this.$store.dispatch(
+      "playerStore/setMyStatus",
+      PlayerStatus.CreatingProfile
+    );
   }
 
   mounted() {
@@ -163,70 +174,66 @@ export default class Lobby extends Vue {
 </script>
 
 <style scoped>
-.outermostDiv {
-  align-items: center;
-}
 
-#centralColumnOuter {
-  width: 70%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  align-items: center;
-}
-
-#topRow {
-  width: 100%;
-  display: flex;
-  flex-grow: 1;
-}
-
-#textFieldsOuterColumn {
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-}
-
-#colourAndShipsColumn {
-  display: flex;
-  flex-grow: 1;
-  flex-basis: 0;
-  flex-direction: column;
-  padding-left: 65px;
-}
-
-.compRow {
-  display: flex;
-}
-
-.bottomCompRow {
-  margin-top: 50px;
-  display: flex;
-  flex-grow: 1;
-}
-
-.iconColumn {
-  width: 8vw;
-  max-width: 80px;
-  padding-right: 8px;
-}
-
-.iconImg {
+#lobbyOutermost {
+  display: grid;
+  grid-template-columns: [leftmost] 12vw [leftIconsStart] 80px [leftIconsEnd] 0.45fr [spacerStart] 70px [rightIconsStart] 80px [rightIconsEnd] 0.55fr [horizontalContentEnd] 12vw [rightmost];
+  grid-template-rows: [topmost] 55px [headerEnd] 0.45fr [midLine] 0.55fr [readyButtonsStart] 190px [bottommost];
+  height: 100%;
   width: 100%;
 }
 
-#bottomRow {
-  width: 100%;
-  display: flex;
-  height: 200px;
-  flex-direction: column;
+#lobbyHeader {
+  grid-column: leftmost/rightmost;
+  grid-row: topmost/headerEnd;
 }
 
-#readyButtonsDiv {
+#nameIconContainer {
+  grid-column: leftIconsStart/leftIconsEnd;
+  grid-row: headerEnd/midLine;
+}
+
+#nameEntryContainer {
+  grid-column: leftIconsEnd/spacerStart;
+  grid-row: headerEnd/midLine;
+}
+
+#aliasIconContainer {
+  grid-column: leftIconsStart/leftIconsEnd;
+  grid-row: midLine/readyButtonsStart;
+}
+
+#aliasEntryContainer {
+  grid-column: leftIconsEnd/spacerStart;
+  grid-row: midLine/readyButtonsStart;
+}
+
+#colorIconContainer {
+  grid-column: rightIconsStart/rightIconsEnd;
+  grid-row: headerEnd/midLine;
+}
+
+#colourEntryContainer {
+  grid-column: rightIconsEnd/horizontalContentEnd;
+  grid-row: headerEnd/midLine;
+}
+
+#shipIconContainer {
+  grid-column: rightIconsStart/rightIconsEnd;
+  grid-row: midLine/readyButtonsStart;
+}
+
+#shipEntryContainer {
+  grid-column: rightIconsEnd/horizontalContentEnd;
+  grid-row: midLine/readyButtonsStart;
+}
+
+#readyButtonsContainer {
+  grid-column: leftmost/rightmost;
+  grid-row: readyButtonsStart/bottommost;
+
   display: flex;
-  align-items: center;
   flex-direction: column;
-  flex-grow: 1;
 }
 
 #errorMessage {
@@ -235,13 +242,24 @@ export default class Lobby extends Vue {
   font-weight: bold;
 }
 
+#readyButtonsTop{
+  display: block;
+  text-align: center;
+  flex-grow: 1;
+}
+
 #playersReadyDiv {
   display: flex;
   justify-content: center;
 }
 
+.iconImg {
+  width: 100%;
+}
+
 #disableOverlay {
   top: 40px;
-  bottom: 180px;
+  bottom: 170px;
 }
+
 </style>
