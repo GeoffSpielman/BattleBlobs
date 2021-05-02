@@ -1,15 +1,14 @@
 <template>
-  <div class="outermostDiv">
-    <div id="mainTopRow">
-      <div id="chatColumn">
-          <chat-window></chat-window>   
-      </div>
-      <div id="mapColumn">
-        <game-grid></game-grid>
-      </div>
-      <div id="powerupsColumn">Powerups</div>
+  <div id="gameOutermost">
+    <div id="chatContainer">
+      <chat-window></chat-window>
     </div>
-    <div id="playersBottomRow">Players</div>
+    <div id="mapContainer">
+      <div id="mapSquare"><game-map></game-map></div>
+    </div>
+
+    <div id="powerupsContainer">powerups</div>
+    <div id="playerDisplayContainer">who's turn?</div>
   </div>
 </template>
 
@@ -18,8 +17,8 @@
 import { Component, Vue } from "vue-property-decorator";
 import { PlayerStatus } from "@/models/enums";
 import ChatWindow from "@/components/game/chat/ChatWindow.vue";
-import SoundboardBar from "@/components/game/SoundboardBar.vue"
-import GameGrid from "@/components/game/GameGrid.vue";
+import SoundboardBar from "@/components/game/SoundboardBar.vue";
+import GameMap from "@/components/game/GameMap.vue";
 import PowerupsDisplay from "@/components/game/PowerupsDisplay.vue";
 import PlayersBar from "@/components/game/PlayersBar.vue";
 
@@ -28,7 +27,7 @@ import PlayersBar from "@/components/game/PlayersBar.vue";
   components: {
     ChatWindow,
     SoundboardBar,
-    GameGrid,
+    GameMap,
     PowerupsDisplay,
     PlayersBar,
   },
@@ -41,31 +40,42 @@ export default class Game extends Vue {
 </script>
 
 <style scoped>
-
-#mainTopRow {
-  flex-grow: 1;
-  display: flex;
-}
-#playersBottomRow {
-  height: 120px;
+#gameOutermost {
+  display: grid;
+  grid-template-columns: 25vw 1fr 150px;
+  grid-template-rows: 1fr 110px;
   width: 100%;
+  height: 100%;
 }
 
-#chatColumn {
-  display: flex;
-  width: 25vw;
+#chatContainer {
+  grid-column: 1/2;
+  grid-row: 1/2;
 }
 
-#mapColumn {
-  display: flex;
-  flex-grow: 1;
+#mapContainer {
+  grid-column: 2/3;
+  grid-row: 1/2;
+
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
 }
 
-#powerupsColumn {
-  display: flex;
-  width: 150px;
-  background-color: lightgray;
+#powerupsContainer {
+  grid-column: 3/4;
+  grid-row: 1/2;
 }
 
+#playerDisplayContainer {
+  grid-column: 1/4;
+  grid-row: 2/3;
+}
 
+#mapSquare {
+  aspect-ratio: 1;
+  height: 100%;
+}
 </style>
