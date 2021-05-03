@@ -43,7 +43,7 @@ export default class Game extends Vue {
 #gameOutermost {
   display: grid;
   grid-template-columns: 25vw 1fr 150px;
-  grid-template-rows: 1fr 110px;
+  grid-template-rows: 1fr 120px;
   width: 100%;
   height: 100%;
 }
