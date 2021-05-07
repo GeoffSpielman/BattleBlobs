@@ -183,7 +183,6 @@ export default class App extends Vue {
   font-size: 26pt;
   font-family: Tahoma, sans-serif;
   margin-left: 18px;
-  width: 100%;
   text-align: left;
 }
 
