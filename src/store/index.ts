@@ -9,6 +9,7 @@ import clientSpecificStore from './clientSpecificStore'
 import shipsStore from './shipsStore'
 import gameStore from './gameStore'
 import chatStore from './chatStore'
+import powerupStore from './powerupStore'
  
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ export default new Vuex.Store<RootState>({
     clientSpecificStore: clientSpecificStore,
     shipsStore: shipsStore,
     gameStore: gameStore,
-    chatStore: chatStore
+    chatStore: chatStore,
+    powerupStore: powerupStore,
   },
 
   state: {

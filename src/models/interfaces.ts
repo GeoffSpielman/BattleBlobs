@@ -57,3 +57,9 @@ export interface ChatEntry{
     otherPlayerAlias: string;
     otherPlayerColour: string;
 }
+
+export interface PowerupEntry{
+    name: string;
+    remaining: number;
+    deployed: number;
+}

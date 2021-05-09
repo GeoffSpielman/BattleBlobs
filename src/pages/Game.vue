@@ -7,7 +7,9 @@
       <div id="mapSquare"><game-map></game-map></div>
     </div>
 
-    <div id="powerupsContainer">powerups</div>
+    <div id="powerupsContainer">
+      <powerups-display></powerups-display>
+    </div>
     <div id="playerDisplayContainer">who's turn?</div>
   </div>
 </template>
@@ -19,7 +21,7 @@ import { PlayerStatus } from "@/models/enums";
 import ChatWindow from "@/components/game/chat/ChatWindow.vue";
 import SoundboardBar from "@/components/game/SoundboardBar.vue";
 import GameMap from "@/components/game/GameMap.vue";
-import PowerupsDisplay from "@/components/game/PowerupsDisplay.vue";
+import PowerupsDisplay from "@/components/game/powerups/PowerupsDisplay.vue";
 import PlayersBar from "@/components/game/PlayersBar.vue";
 
 @Component({
@@ -56,6 +58,7 @@ export default class Game extends Vue {
 #mapContainer {
   grid-column: 2/3;
   grid-row: 1/2;
+  padding: 6px;
 
   display: grid;
   align-items: center;

@@ -66,6 +66,12 @@ export default class ImageCredits extends Vue {
     },
 
     {
+      path: require("@/assets/imageCredits/sea_backdrop.gif"),
+      caption: "Azure Sea by Geya Shvecova from We Heart It",
+      link: "https://weheartit.com/entry/305625382",
+    },
+
+    {
       path: require("@/assets/imageCredits/sneak_a_peak.png"),
       caption: "Satelite by Arunika from The Noun Project",
       link: "https://thenounproject.com/search/?q=satelite&i=2137227",
@@ -81,6 +87,24 @@ export default class ImageCredits extends Vue {
       path: require("@/assets/imageCredits/missile.png"),
       caption: "Missile by Vectorstall from the Noun Project",
       link: "https://thenounproject.com/search/?q=missile&i=3679591",
+    },
+
+    {
+      path: require("@/assets/imageCredits/move_it_minor.png"),
+      caption: "Move by Shashank Singh from the Noun Project",
+      link: "https://thenounproject.com/term/move/1663257/",
+    },
+
+    {
+      path: require("@/assets/imageCredits/move_it_major.png"),
+      caption: "Redo by Designify.me from the Noun Project",
+      link: "https://thenounproject.com/search/?q=redo&i=149818",
+    },
+
+    {
+      path: require("@/assets/imageCredits/uh_oh.png"),
+      caption: "Spiral by Alexander Skowalsky from the Noun Project",
+      link: "https://thenounproject.com/search/?q=spiral&i=253084",
     },
   ];
 }

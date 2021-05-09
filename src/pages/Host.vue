@@ -187,6 +187,7 @@ export default class Host extends Vue {
   width: 100%;
   display: flex;
   justify-content: space-evenly;
-  margin-top: 30px;
+  margin-top: 20px;
+  height: 60px;
 }
 </style>
