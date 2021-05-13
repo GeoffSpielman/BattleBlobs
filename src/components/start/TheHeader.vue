@@ -34,6 +34,7 @@ export default class TheHeader extends Vue {
 
 <style scoped>
 #headerOuterDiv {
+  z-index: 2;
   display: flex;
   align-items: center;
   flex-direction: column;

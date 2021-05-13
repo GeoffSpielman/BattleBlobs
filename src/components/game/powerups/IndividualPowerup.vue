@@ -1,10 +1,16 @@
 <template>
     
+    <div id="individualPowerupOutermost">
     <v-card width="130" elevation="3" id="cardOutermost" :style="{order: displayDetails.displayOrder}">
         <p id="powerupName"> {{powerupDetails.name}} </p>
         <img id="iconImg" :src="displayDetails.iconPath" />
         <p id="countDisplay"> {{powerupDetails.remaining}} / {{powerupDetails.deployed}} </p>
     </v-card>
+    <div id="popout">
+
+    </div>
+    </div>
+  
 
 </template>
 
@@ -53,6 +59,7 @@ export default class IndividualPowerup extends Vue {
 #cardOutermost{
     text-align: center;
     margin-top: 5px;
+    margin: auto;
 }
 
 #powerupName{
@@ -67,6 +74,16 @@ export default class IndividualPowerup extends Vue {
 #countDisplay{
     font-size: 12pt;
     margin: 1px 0px 4px 0px;
+}
+
+#popout{
+  position: relative;
+  top: -102px;
+  right:200px;
+  width: 190px;
+  height: 98px;
+  background-color: red;
+  margin-bottom: -98px;
 }
 
 </style>
