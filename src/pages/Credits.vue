@@ -1,9 +1,19 @@
 <template>
   <div id="imageCreditsOutermost">
     <div id="scrollingContent">
-      <h1 class="pageHeader">Image Credits:</h1>
 
-      <v-container id="centerColumn">
+      <h1 class="pageHeader">People:</h1>
+      
+      <v-container class="centerColumn">
+        <div class="personCreditRow" v-for="person in people" :key="person.name">
+        <h4 class="personName">{{person.name}}: </h4>
+        <p> {{person.credit}} </p>
+      </div>
+      </v-container>
+
+      <h1 class="pageHeader">Images:</h1>
+
+      <v-container class="centerColumn">
         <v-row>
           <v-col v-for="image in images" :key="image.path" cols="3">
             <a :href="image.link" target="_blank">
@@ -27,6 +37,14 @@ import { Component, Vue } from "vue-property-decorator";
   name: "ImageCredits",
 })
 export default class ImageCredits extends Vue {
+
+  people: {'name': string; 'credit': string}[] = [
+    {'name': 'Krista Lawson', 'credit': "24/7 proffesional grade tech support - when I need to call in 'the big guns'"},
+    {'name': 'Ryan Lawson', 'credit': "an endless wealth of Vue and Vuetify knowledge"},
+    {'name': 'Will Clark', 'credit': "for getting me started with web development in the early days"},
+    {'name': 'Garrett Lajoie', 'credit': "for user testing - many hours of 'okay refresh the page, now how does it look?'"}
+    ];
+
   images: Array<object> = [
     {
       path: require("@/assets/home/homepage.jpg"),
@@ -128,8 +146,19 @@ export default class ImageCredits extends Vue {
   flex-direction: column;
 }
 
-#centerColumn{
+.centerColumn{
   width: 75%;
+}
+
+.personCreditRow{
+  height: 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.personName{
+  margin-right: 5px;
 }
 
 .picCaption {

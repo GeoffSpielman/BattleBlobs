@@ -29,9 +29,9 @@
           color="#e3f2fd"
           class="text-none"
           height="31px"
-          @click="imageCreditsBtnClicked()"
+          @click="creditsBtnClicked()"
         >
-          Image Credits
+          Credits
         </v-btn>
       </div>
       <div id="sourceCodeDiv" class="footerDiv">
@@ -54,8 +54,8 @@ import { Route } from "vue-router";
 export default class TheFooter extends Vue {
   showFooter: boolean = true;
 
-  imageCreditsBtnClicked() {
-    this.$router.push("/imageCredits");
+  creditsBtnClicked() {
+    this.$router.push("/credits");
   }
 
   @Watch("$route", { immediate: true })
