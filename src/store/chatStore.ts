@@ -26,7 +26,8 @@ const chatStore: Module<ChatState, RootState> = {
                     pairingList.push({
                         'pairingKey': pairingKey, 
                         'otherPlayerAlias': rootGetters['playerStore/getAliasUsingKey'](otherPlayerKey),
-                        'otherPlayerColour': rootGetters['playerStore/getColourUsingKey'](otherPlayerKey)
+                        'otherPlayerColour': rootGetters['playerStore/getColourUsingKey'](otherPlayerKey), 
+                        'showNotification': false
                     });
                 }
             }

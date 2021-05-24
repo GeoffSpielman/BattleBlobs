@@ -56,6 +56,7 @@ export interface ChatEntry{
     pairingKey: string; 
     otherPlayerAlias: string;
     otherPlayerColour: string;
+    showNotification: boolean;
 }
 
 export interface PowerupEntry{

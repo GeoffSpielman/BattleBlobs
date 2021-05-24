@@ -1,16 +1,16 @@
 <template>
   <div id="chatWindowOutermost">
-    <v-tabs vertical v-model="tab" id="tabsOutermostDOM" show-arrows>
-      <v-tab class="tabOuter"> <div class="tabInner">Public</div></v-tab>
+    <v-tabs vertical v-model="currentTab" id="tabsOutermostDOM" @change="activeChatChanged">
+      <v-tab class="tabOuter"> <div class="tabInner">Public <v-icon  v-if="publicShowNotification">mdi-message-alert</v-icon></div></v-tab>
       <v-tab
         class="tabOuter"
         v-for="chat in chatsToShow"
         :key="chat.pairingKey + 'tab'"
-        :style="{backgroundColor: '#' + chat.otherPlayerColour}"
+        :style="{ backgroundColor: '#' + chat.otherPlayerColour }"
       >
         <div class="tabInner">
-          {{ chat.otherPlayerAlias }}
-          </div>
+          {{ chat.otherPlayerAlias }} <v-icon v-if="chat.showNotification">mdi-message-alert</v-icon>
+        </div>
       </v-tab>
 
       <v-tab-item :transition="chatTransition" class="chatItem">
@@ -38,9 +38,10 @@
 
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch} from "vue-property-decorator";
 import IndividualChatPane from "@/components/game/chat/IndividualChatPane.vue";
 import {ChatEntry} from "@/models/interfaces"
+import firebase from "@/store/firebase";
 
 @Component({
   name: "ChatWindow",
@@ -51,13 +52,70 @@ import {ChatEntry} from "@/models/interfaces"
 export default class ChatWindow extends Vue {
   chatTransition: string = "fade-transition";
   headerText: string = "Public Chat";
-  tab: number = 1;
+  currentTab: number = 0;
+  chatsToShow: ChatEntry[] = [];
+  publicShowNotification: boolean = false;
 
-  get chatsToShow(): ChatEntry[] {
-    return this.$store.getters["chatStore/getMyPairings"](
-      this.$store.getters["playerStore/getMyKey"]
-    );
+
+  mounted(){
+    this.chatsToShow = this.$store.getters["chatStore/getMyPairings"](this.$store.getters["playerStore/getMyKey"]);
+
+    // listen to private chats
+    this.chatsToShow.forEach(chat => {
+      firebase.database
+      .ref("chat/convos/" + chat.pairingKey)
+      .on("child_added", (data) => {
+        if (data.val().senderAlias === chat.otherPlayerAlias){
+          this.newMessageInChat(chat.pairingKey, chat.otherPlayerAlias)
+        }     
+      });
+    });
+
+    //listen to the public chat
+    firebase.database
+      .ref("chat/convos/public")
+      .on("child_added", (data) => {
+        if (data.val().senderAlias !== this.$store.getters["playerStore/getMyAlias"]){
+          this.newMessageInChat("public", data.val().senderAlias);
+        }     
+      });
   }
+
+  newMessageInChat(convoKey: string, senderAlias: string){    
+    if (convoKey === "public" && this.currentTab !== 0){
+      this.publicShowNotification = true;
+      console.log("new message in public that you have not seen")
+    }
+    else if (this.currentTab !== this.chatsToShow.findIndex((chat) => chat.pairingKey === convoKey)  + 1){
+      console.log("new message received from " + senderAlias + " in chat " + convoKey + " that you have not seen");  
+      let updatedChatEntry = this.chatsToShow.find((chat) => chat.pairingKey === convoKey);
+      if (updatedChatEntry !== undefined){
+        updatedChatEntry.showNotification = true;
+        this.chatsToShow.splice(this.chatsToShow.findIndex((chat) => chat.pairingKey === convoKey), 1, updatedChatEntry);
+      }
+      else{
+        console.log("Error: couldn't find chat entry that needs to be updated")
+      }
+      
+    }
+  }
+
+  activeChatChanged(){
+    if (this.currentTab === 0 && this.publicShowNotification){
+      this.publicShowNotification = false;
+          console.log("clearing notification for tab index " + this.currentTab);
+    }
+    else if (this.currentTab > 0 && this.chatsToShow[this.currentTab - 1].showNotification){
+      let updatedChatEntry: ChatEntry = this.chatsToShow[this.currentTab - 1];
+      updatedChatEntry.showNotification = false;
+      this.chatsToShow.splice(this.currentTab - 1, 1, updatedChatEntry);
+          console.log("clearing notification for tab index " + this.currentTab);
+    }
+
+
+
+  }
+
 }
 </script>
 
@@ -77,7 +135,7 @@ export default class ChatWindow extends Vue {
 }
 
 #chatWindowOutermost >>> .v-tabs-slider {
-  max-height: 100px;
+  max-height: 140px;
 }
 
 #chatWindowOutermost >>> .v-tabs-bar__content {
@@ -98,9 +156,9 @@ export default class ChatWindow extends Vue {
 .tabInner {
   transform: rotate(-90deg);
   padding: 2px 6px 2px 6px;
-  background-color: rgba(255,255,255,0.65);
+  background-color: rgba(255, 255, 255, 0.65);
   border-radius: 5px;
-  color:rgba(0,0,0,0.8);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 #tabsOutermostDOM >>> .v-window__container {
