@@ -22,10 +22,12 @@ const powerupStore: Module<PowerupState, RootState> = {
     mutations: {
         addPowerup(state, newPowerup: PowerupEntry) {
             state.powerupsList.push(newPowerup);
+            state.powerupsList.sort((a,b) => a.sortOrder - b.sortOrder);
         },
 
         modifyPowerup(state, modifiedPowerup: PowerupEntry){
             state.powerupsList.splice(state.powerupsList.findIndex((powerup)=> powerup.name === modifiedPowerup.name), 1,  modifiedPowerup)
+            state.powerupsList.sort((a,b) => a.sortOrder - b.sortOrder);
         }
     },
 
@@ -33,11 +35,11 @@ const powerupStore: Module<PowerupState, RootState> = {
         //firebase listeners
         getFirebaseDatabase(context) {
             firebase.database.ref('game/powerups').on('child_added', function (data) {
-                context.commit('addPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining});
+                context.commit('addPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining, 'sortOrder': data.val().sortOrder});
             }),
 
             firebase.database.ref('game/powerups').on('child_changed', function (data) {
-                context.commit('addPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining});
+                context.commit('modifyPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining, 'sortOrder': data.val().sortOrder});
             })
 
         },

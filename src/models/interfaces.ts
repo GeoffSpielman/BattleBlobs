@@ -63,4 +63,5 @@ export interface PowerupEntry{
     name: string;
     remaining: number;
     deployed: number;
+    sortOrder: number;
 }

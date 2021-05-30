@@ -31,7 +31,7 @@ export default class PowerupsDisplay extends Vue {
 
 #powerupsRemainingTitle{
   text-decoration: underline;
-  font-size: 11pt;
+  font-size: 13pt;
   margin-top: 3px;
 }
 

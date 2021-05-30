@@ -1,23 +1,24 @@
 <template>
-    
-    <div id="individualPowerupOutermost">
-    <v-card width="130" elevation="3" id="cardOutermost" :style="{order: displayDetails.displayOrder}">
-        <p id="powerupName"> {{powerupDetails.name}} </p>
-        <img id="iconImg" :src="displayDetails.iconPath" />
-        <p id="countDisplay"> {{powerupDetails.remaining}} / {{powerupDetails.deployed}} </p>
+  <div id="individualPowerupOutermost">
+    <v-card width="130" elevation="3" id="cardOutermost" @click="cardClicked">
+      <p id="powerupName">{{ powerupDetails.name }}</p>
+      <img id="iconImg" :src="iconPath" />
+      <p id="countDisplay">
+        {{ powerupDetails.remaining }} / {{ powerupDetails.deployed }}
+      </p>
     </v-card>
-    <div id="popout">
-
-    </div>
-    </div>
-  
-
+    <transition name="popOutTrans">
+      <div id="popout" :style="{ display: showInfo ? 'block' : 'none' }">
+        I am information about the powerup
+      </div>
+    </transition>
+  </div>
 </template>
 
 
 <script lang="ts">
 import { PowerupEntry } from "@/models/interfaces";
-import { Component, Vue, Prop} from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 
 @Component({
   name: "IndividualPowerup",
@@ -25,65 +26,101 @@ import { Component, Vue, Prop} from "vue-property-decorator";
 export default class IndividualPowerup extends Vue {
   @Prop({ required: true }) readonly powerupDetails!: PowerupEntry;
 
-  get displayDetails(): {'iconPath': string; 'displayOrder': number} {
-    switch(this.powerupDetails.name){
+  showInfo: boolean = false;
+
+  get iconPath(): string {
+    switch (this.powerupDetails.name) {
       case "Sneak-A-Peak":
-        return {'iconPath': require("@/assets/game/sneak_a_peak.png"), 'displayOrder': 1};
+        return require("@/assets/game/sneak_a_peak.png");
 
       case "Umbrella":
-        return {'iconPath': require("@/assets/game/umbrella.png"), 'displayOrder': 2};
+        return require("@/assets/game/umbrella.png");
 
       case "Big Shot":
-        return {'iconPath': require("@/assets/game/missile.png"), 'displayOrder': 3};
-      
+        return require("@/assets/game/missile.png");
+
       case "Move It Minor":
-        return {'iconPath': require("@/assets/game/move_it_minor.png"), 'displayOrder': 4};
+        return require("@/assets/game/move_it_minor.png");
 
       case "Move It Major":
-        return {'iconPath': require("@/assets/game/move_it_major.png"), 'displayOrder': 5};
+        return require("@/assets/game/move_it_major.png");
 
       case "Uh-Oh":
-        return {'iconPath': require("@/assets/game/uh_oh.png"), 'displayOrder': 6};
-      
+        return require("@/assets/game/uh_oh.png");
+
       default:
-        return {'iconPath': 'ERROR', 'displayOrder': 50}
+        return "ERROR";
     }
   }
-  
 
-
+  cardClicked() {
+    this.showInfo = !this.showInfo;
+  }
 }
 </script>
 
 <style scoped>
-#cardOutermost{
-    text-align: center;
-    margin-top: 5px;
-    margin: auto;
+#cardOutermost {
+  text-align: center;
+  margin-top: 5px;
+  margin: auto;
 }
 
-#powerupName{
+#individualPowerupOutermost >>> .v-card--link:focus:before {
+  opacity: 0 !important;
+}
+
+#powerupName {
   font-weight: bold;
   font-size: 11pt;
   margin: 5px 0px 4px 0px;
+  padding-top: 2px;
 }
 
-#iconImg{
-    width: 40px;
+#iconImg {
+  width: 40px;
 }
-#countDisplay{
-    font-size: 12pt;
-    margin: 1px 0px 4px 0px;
+#countDisplay {
+  font-size: 12pt;
+  margin: 1px 0px 4px 0px;
 }
 
-#popout{
+#popout {
   position: relative;
-  top: -102px;
-  right:200px;
-  width: 190px;
-  height: 98px;
-  background-color: red;
-  margin-bottom: -98px;
+  /* these must match */
+  top: -104px;
+  margin-bottom: -104px;
+  /*  ****   */
+  right: 190px;
+  width: 200px;
+  height: 100px;
+  background-color: rgba(240, 240, 240, 0.5);
+
+  border: 1px solid silver;
+  border-radius: 10px 2px 2px 10px;
+  box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%),
+    0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%) !important;
 }
 
+
+
+
+/* tranisitons */
+.popOutTrans-enter {
+  right: 0px !important;
+}
+
+.popOutTrans-enter-active {
+  right: 190px;
+  transition: right 0.5s !important;
+}
+
+.popOutTrans-leave-active {
+  transition: right 0.5s ease;
+  right: 0px !important;
+}
+
+.popOutTrans-leave-to {
+  height: 0px !important;
+}
 </style>
