@@ -11,6 +11,7 @@ export interface PlayerEntry {
     captainNum: number;
     shipOneKey: string;
     shipTwoKey: string;
+    powerups: {};
 }
 
 export interface ColourEntry {
@@ -39,27 +40,27 @@ export interface Coord {
     col: number;
 }
 
-export interface ShipSpawnRange{
+export interface ShipSpawnRange {
     rowMin: number;
     rowMax: number;
     colMin: number;
     colMax: number;
 }
 
-export interface MessageEntry{
+export interface MessageEntry {
     senderAlias: string;
     content: string;
     repeatSender: boolean;
 }
 
-export interface ChatEntry{
-    pairingKey: string; 
+export interface ChatEntry {
+    pairingKey: string;
     otherPlayerAlias: string;
     otherPlayerColour: string;
     showNotification: boolean;
 }
 
-export interface PowerupEntry{
+export interface PowerupEntry {
     name: string;
     remaining: number;
     deployed: number;

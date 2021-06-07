@@ -3,6 +3,7 @@ import { Module } from 'vuex'
 import { RootState } from './RootState'
 import { PlayerEntry } from '@/models/interfaces'
 import { PlayerStatus } from '@/models/enums'
+import { PowerupName } from '@/models/enums'
 
 interface PlayerState {
   myKey: string;
@@ -67,6 +68,14 @@ const playerStore: Module<PlayerState, RootState> = {
 
     getColourUsingKey: (state) => (recKey: string) => {
       return state.players.find((player) => player.key === recKey)?.colour;
+    },
+
+    getCaptainNumUsingKey: (state) => (recKey: string) => {
+      return state.players.find((player) => player.key === recKey)?.captainNum;
+    },
+
+    getPowerupsUsingKey: (state) => (recKey: string) => {
+      return state.players.find((player) => player.key === recKey)?.powerups;
     },
 
   },
@@ -137,7 +146,8 @@ const playerStore: Module<PlayerState, RootState> = {
           'colour': '',
           'captainNum': -1,
           'shipOneKey': '',
-          'shipTwoKey': ''
+          'shipTwoKey': '',
+          'powerups': {[PowerupName.None]: -1},
         }
         context.commit('setMyKey', newClientRef.key)
         newClientRef.set(newPlayerEntry);

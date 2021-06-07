@@ -2,7 +2,7 @@
   <div id="individualPowerupOutermost">
     <v-card width="130" elevation="3" id="cardOutermost" @click="cardClicked">
       <p id="powerupName">{{ powerupDetails.name }}</p>
-      <img id="iconImg" :src="iconPath" />
+      <img id="iconImg" :src="myIconPath" />
       <p id="countDisplay">
         {{ powerupDetails.remaining }} / {{ powerupDetails.deployed }}
       </p>
@@ -18,39 +18,19 @@
 
 <script lang="ts">
 import { PowerupEntry } from "@/models/interfaces";
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
+import { PowerupIconPathMixin } from "@/mixins/PowerupIconPathMixin";
 
 @Component({
   name: "IndividualPowerup",
 })
-export default class IndividualPowerup extends Vue {
+export default class IndividualPowerup extends Mixins(PowerupIconPathMixin) {
   @Prop({ required: true }) readonly powerupDetails!: PowerupEntry;
 
   showInfo: boolean = false;
 
-  get iconPath(): string {
-    switch (this.powerupDetails.name) {
-      case "Sneak-A-Peak":
-        return require("@/assets/game/sneak_a_peak.png");
-
-      case "Umbrella":
-        return require("@/assets/game/umbrella.png");
-
-      case "Big Shot":
-        return require("@/assets/game/missile.png");
-
-      case "Move It Minor":
-        return require("@/assets/game/move_it_minor.png");
-
-      case "Move It Major":
-        return require("@/assets/game/move_it_major.png");
-
-      case "Uh-Oh":
-        return require("@/assets/game/uh_oh.png");
-
-      default:
-        return "ERROR";
-    }
+  get myIconPath(): string {
+    return this.iconPath(this.powerupDetails.name);
   }
 
   cardClicked() {
@@ -105,7 +85,7 @@ export default class IndividualPowerup extends Vue {
 
 
 
-/* tranisitons */
+/* tranisitons - TODO: actually implement with animations*/
 .popOutTrans-enter {
   right: 0px !important;
 }

@@ -10,7 +10,9 @@
     <div id="powerupsContainer">
       <powerups-display></powerups-display>
     </div>
-    <div id="playerDisplayContainer">who's turn?</div>
+    <div id="playerDisplayContainer">
+      <players-bar></players-bar>
+    </div>
   </div>
 </template>
 
@@ -22,7 +24,7 @@ import ChatWindow from "@/components/game/chat/ChatWindow.vue";
 import SoundboardBar from "@/components/game/SoundboardBar.vue";
 import GameMap from "@/components/game/GameMap.vue";
 import PowerupsDisplay from "@/components/game/powerups/PowerupsDisplay.vue";
-import PlayersBar from "@/components/game/PlayersBar.vue";
+import PlayersBar from "@/components/game/WhoseTurn/PlayersBar.vue";
 
 @Component({
   name: "Game",

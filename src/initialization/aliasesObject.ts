@@ -1,7 +1,7 @@
 const aliasesInitialObject = {
     "Augustus Gloop": "available",
     "Baby Yoda": "available",
-    "BeachBabe97": "available",
+    "BeachBabe181": "available",
     "Ben Derhover": "available",
     "Ben Geller": "available",
     "Buddy the Elf": "available",

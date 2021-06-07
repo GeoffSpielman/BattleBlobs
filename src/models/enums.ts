@@ -29,3 +29,13 @@ export enum GameStatus{
     WaitingOnPlayers = "Waiting on Players",
     GameInProgress= "Game in Progress"
 }
+
+export enum PowerupName {
+    SneakAPeak = "Sneak-A-Peak",
+    BigShot = "Big Shot",
+    MoveItMinor = "Move It Minor",
+    MoveItMajor = "Move It Major",
+    Umbrella = "Umbrella",
+    UhOh = "Uh-Oh",
+    None = "None",
+}
