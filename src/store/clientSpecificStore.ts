@@ -9,6 +9,7 @@ interface ClientSpecificState {
   selectedColourHex: string;
   shipOneOffsets: number[][];
   shipTwoOffsets: number[][];
+  colourAssistanceOn: boolean;
 }
 
 const playerStore: Module<ClientSpecificState, RootState> = {
@@ -19,7 +20,8 @@ const playerStore: Module<ClientSpecificState, RootState> = {
     colourIconPath: require("@/assets/lobby/colour_icon_black.png"),
     selectedColourHex: "#252525",
     shipOneOffsets: [],
-    shipTwoOffsets: []
+    shipTwoOffsets: [],
+    colourAssistanceOn: false,
   },
 
   getters: {
@@ -46,6 +48,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
       else if (recShipNum === 2){
         return state.shipTwoOffsets; 
       }
+    },
+
+    getColourAssitanceOn(state): boolean {
+      return state.colourAssistanceOn;
     }
 
 
@@ -74,6 +80,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
       } else if (payload.whichShip === 2){
         state.shipTwoOffsets = payload.offsets;
       }
+    },
+
+    setColourAssitanceOn(state, recVal: boolean){
+      state.colourAssistanceOn = recVal;
     }
   },
 
@@ -97,6 +107,10 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setShipOffsets(context, payload){
       context.commit('setShipOffsets', payload);
+    },
+
+    setColourAssistanceOn(context, recVal: boolean){
+      context.commit('setColourAssitanceOn', recVal);
     }
   },
 }

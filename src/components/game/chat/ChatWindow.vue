@@ -1,7 +1,7 @@
 <template>
   <div id="chatWindowOutermost">
     <v-tabs vertical v-model="currentTab" id="tabsOutermostDOM" @change="activeChatChanged">
-      <v-tab class="tabOuter"> <div class="tabInner">Public <v-icon  v-if="publicShowNotification">mdi-message-alert</v-icon></div></v-tab>
+      <v-tab class="tabOuter" style="maxHeight: 80px !important"> <div class="tabInner">Public <v-icon  v-if="publicShowNotification">mdi-message-alert</v-icon></div></v-tab>
       <v-tab
         class="tabOuter"
         v-for="chat in chatsToShow"
@@ -148,7 +148,7 @@ export default class ChatWindow extends Vue {
   max-height: 140px !important;
   min-width: 30px !important;
   width: 30px !important;
-  padding: 0px 2px 0px 0px;
+  padding: 0px 2px 0px 1px;
   overflow: hidden;
   font-size: 10pt;
 }

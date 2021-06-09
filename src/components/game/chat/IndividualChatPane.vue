@@ -2,7 +2,7 @@
   <div id="individualChatPaneOutermost">
     <h5
       id="chatHeader"
-      :style="{ backgroundColor: isPublic ? '#FF8F00' : '#bbdefb' }"
+      :style="{ backgroundColor: isPublic ? '#2b436b' : '#bbdefb', color: isPublic? '#ffffff': '#000000', letterSpacing: isPublic? '2px': 'normal' }"
     >
       {{ ChatTitle }}
     </h5>

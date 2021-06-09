@@ -60,7 +60,7 @@ export default class Game extends Vue {
 #mapContainer {
   grid-column: 2/3;
   grid-row: 1/2;
-  padding: 6px;
+  padding-top: 6px;
 
   display: grid;
   align-items: center;

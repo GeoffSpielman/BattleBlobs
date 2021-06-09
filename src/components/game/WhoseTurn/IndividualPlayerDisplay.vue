@@ -1,9 +1,9 @@
 <template>
   <div id="individualPlayerDisplayOutermost">
-    <div id="topRow">{{ playerCaptainNum }}</div>
-    <v-card elevation="3" id="cardOutermost">
+    <div id="topRow"><p v-if="colourAssitanceModeOn" id="captainNum">{{ playerCaptainNum }}</p> <v-icon v-if="myTurn" large>mdi-arrow-down-bold</v-icon></div>
+    <v-card elevation="3" id="cardOutermost" :style="{backgroundColor: '#' + playerColour}">
       <div id="aliasRow">
-        <h3 id="alias">{{ playerAlias }}</h3>
+        <h3 id="alias" :class="{whitestAliasBackdrop: aliasBackdropTone === 'whitest', mediumAliasBackdrop: aliasBackdropTone === 'medium', faintAliasBackdrop: aliasBackdropTone === 'faint', }">{{ playerAlias }}</h3>
       </div>
       <div id="powerupsArea"> <img class="iconImg" v-for="(powerupIcon, i) in playerPowerups" :key=i :src="iconPath(powerupIcon)"/>
       </div>
@@ -13,7 +13,7 @@
 
 
 <script lang="ts">
-import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
+import { Component, Vue, Prop, Mixins} from "vue-property-decorator";
 import { PowerupIconPathMixin } from "@/mixins/PowerupIconPathMixin";
 import { PowerupName } from "@/models/enums";
 
@@ -25,8 +25,29 @@ export default class IndividualPlayerDisplay extends Mixins(
 ) {
   @Prop({ required: true }) readonly playerKey!: string;
 
+
   get playerAlias(): string {
     return this.$store.getters["playerStore/getAliasUsingKey"](this.playerKey);
+  }
+
+  get playerColour(): string{
+    // does not include # before the hex code
+    return this.$store.getters["playerStore/getColourUsingKey"](this.playerKey);    
+  }
+
+  get aliasBackdropTone() {
+    //dark colours
+    if (["e6194b", "f58231", "808000", "3cb44b", "4363d8", "911eb4"].includes(this.playerColour)){
+      //return rgba(255, 255, 255, 0.5);
+      return "whitest";
+    }
+    else if (["aaffc3", "42d4f4", "f032e6", "ffd8b1"].includes(this.playerColour)){
+      return "medium";
+    }
+    else {
+      return "faint"
+    }
+
   }
 
   get playerCaptainNum(): number {
@@ -36,7 +57,6 @@ export default class IndividualPlayerDisplay extends Mixins(
   }
 
   get playerPowerups(): string[] {
-    console.log(this.iconPath("test"));
     let powerupsList: string[] = [];
     let entirePowerupsObject = this.$store.getters[
       "playerStore/getPowerupsUsingKey"
@@ -49,6 +69,14 @@ export default class IndividualPlayerDisplay extends Mixins(
       }
     });
     return powerupsList;
+  }
+
+  get myTurn(): boolean{
+    return true;
+  }
+
+  get colourAssitanceModeOn(): boolean{
+    return this.$store.getters["clientSpecificStore/getColourAssitanceOn"];
   }
 }
 </script>
@@ -63,35 +91,65 @@ export default class IndividualPlayerDisplay extends Mixins(
 }
 
 #topRow {
-  height: 25px;
+  height: 38px;
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-top: 5px;
+}
+
+#captainNum{
+  margin: 0px;
 }
 
 #cardOutermost {
-  height: 100%;
+  flex-grow: 1;
+  flex-basis: 10px;
   width: 100%;
-  background-color: lightblue;
   border: 1px solid rgba(100, 100, 100, 0.05);
   display: flex;
   flex-direction: column;
+  border-radius: 10px;
 }
 
 #aliasRow {
   width: 100%;
-  height: 25px;
+  height: 30px;
   display: flex;
   justify-content: center;
+  padding-top: 2px;
 }
 
 #alias {
-  background-color: yellow;
+  padding: 0px 4px 4px 4px;
+  border-radius: 5px;
+}
+
+.whitestAliasBackdrop{
+  background-color: rgba(255, 255, 255, 0.45);
+}
+
+.mediumAliasBackdrop{
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.faintAliasBackdrop{
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 #powerupsArea {
   flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .iconImg{
-  width: 40px;
+  width: 38px;
+  height: 38px;
+  margin: 0px 8px 0px 8px;
 }
 </style>

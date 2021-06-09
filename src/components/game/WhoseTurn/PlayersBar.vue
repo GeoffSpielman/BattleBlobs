@@ -32,6 +32,7 @@ export default class PlayersBar extends Vue {
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
+  padding-bottom: 4px;
 }
 
 </style>
