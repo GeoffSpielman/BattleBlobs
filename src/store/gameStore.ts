@@ -6,6 +6,7 @@ import { GameStatus } from '@/models/enums'
 interface GameState {
     gameStatus: GameStatus;
     currentPlayers: string[];
+    whoseTurn: string;
 }
 
 const gameStore: Module<GameState, RootState> = {
@@ -13,6 +14,7 @@ const gameStore: Module<GameState, RootState> = {
     state: {
         gameStatus: GameStatus.WaitingOnPlayers,
         currentPlayers: [],
+        whoseTurn: "TBD",
     },
 
     getters: {
@@ -22,6 +24,10 @@ const gameStore: Module<GameState, RootState> = {
 
         getcurrentPlayersList(state): string[]{
             return state.currentPlayers;
+        },
+
+        getWhoseTurn(state): string{
+            return state.whoseTurn;
         }
     },
 
@@ -36,6 +42,10 @@ const gameStore: Module<GameState, RootState> = {
 
         removeCurrentPlayer(state, keyToRemove){
             state.currentPlayers.splice(state.currentPlayers.findIndex((playerKey) => keyToRemove === playerKey), 1);
+        },
+
+        setWhoseTurn(state, playerKey: string){
+            state.whoseTurn = playerKey;
         }
     },
 
@@ -45,14 +55,19 @@ const gameStore: Module<GameState, RootState> = {
         getFirebaseDatabase(context) {
             firebase.database.ref('game/status').on('value', function (snapshot) {
                 context.commit('setGameStatus', snapshot.val());
-            })
+            }),
+
             firebase.database.ref('game/currentPlayers').on('child_added', function (data) {
                 context.commit('addCurrentPlayer', data.val());
             }),
         
             firebase.database.ref('game/currentPlayers').on('child_removed', function (data){
                 context.commit('removeCurrentPlayer', data.key);
-            })              
+            }),
+
+            firebase.database.ref('game/whoseTurn').on('value', function (snapshot) {
+                context.commit('setWhoseTurn', snapshot.val());
+            })
         },
 
 
@@ -71,6 +86,18 @@ const gameStore: Module<GameState, RootState> = {
 
         removeCurrentPlayer(context, keyToRemove){
             context.commit('removeCurrentPlayer', keyToRemove);
+        },
+
+        setWhoseTurn(_, playerKey){
+            firebase.database.ref('game/whoseTurn').set(playerKey);
+        },
+
+        incrementWhoseTurn(context){
+            let nextIndex: number = context.state.currentPlayers.findIndex((playerKey) => (playerKey === context.state.whoseTurn)) + 1;
+            if (nextIndex >= context.state.currentPlayers.length){
+                nextIndex = 0;
+            }
+            context.dispatch('setWhoseTurn', context.state.currentPlayers[nextIndex]);
         }
     },
 }

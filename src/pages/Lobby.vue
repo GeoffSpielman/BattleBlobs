@@ -66,7 +66,7 @@
       </div>
 
       <div id="playersReadyDiv">
-        <h3 class="mb-1">{{numPlayersReadyToStart}} Players Ready to Start</h3>
+        <h3 class="mb-1">{{numPlayersReadyToStart}} {{numPlayersReadyToStart > 1 ? 'Players': 'Player'}} Ready to Start</h3>
       </div>
 
     </section>

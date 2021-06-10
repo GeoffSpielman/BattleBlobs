@@ -5,15 +5,15 @@
       <div id="statusColumn">
         <v-card class="statusCard" outlined elevation="2">
           <v-card-title class="justify-center py-1"> Game Status </v-card-title>
-          <v-card-text class="text-center font-weight-medium text-h5 pt-0 pb-2">
+          <v-card-text class="text-center font-weight-medium text-h6 pt-0 pb-2">
             {{ gameStatus }}
           </v-card-text>
         </v-card>
 
         <v-card class="statusCard" outlined elevation="2">
           <v-card-title class="justify-center py-1"> Whose Turn? </v-card-title>
-          <v-card-text class="text-center font-weight-medium text-h5 pt-0 pb-2">
-            Garry
+          <v-card-text class="text-center font-weight-medium text-h6 pt-0 pb-2">
+            {{whoseTurn}}
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn
@@ -77,7 +77,7 @@
           >
         </div>
       </div>
-      <div id="configColumn">config</div>
+      <div id="configColumn">powerup config</div>
     </div>
   </div>
 </template>
@@ -105,6 +105,16 @@ export default class Host extends Vue {
     return this.$store.getters["gameStore/getGameStatus"];
   }
 
+  get whoseTurn(): string{
+    let whoseTurnPlayerKey = this.$store.getters["gameStore/getWhoseTurn"];
+    if (whoseTurnPlayerKey === "TBD"){
+      return "TBD"
+    }
+    else{
+      return this.$store.getters["playerStore/getAliasUsingKey"](whoseTurnPlayerKey);
+    }
+  }
+
   skipBtnClicked() {
     console.log("skipped current player");
   }
@@ -128,6 +138,7 @@ export default class Host extends Vue {
     this.$store.dispatch('shipsStore/deleteAllShips');
     this.$store.dispatch('gameStore/setCurrentPlayersList', null);
     this.$store.dispatch('chatStore/deleteAllChats');
+    this.$store.dispatch('gameStore/setWhoseTurn', "TBD");
   }
 }
 </script>

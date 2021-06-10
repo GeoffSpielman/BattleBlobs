@@ -63,7 +63,14 @@ const playerStore: Module<PlayerState, RootState> = {
     },
 
     getAliasUsingKey: (state) => (recKey: string) => {
-      return state.players.find((player) => player.key === recKey)?.alias;
+      let potentialPlayer = state.players.find((player) => player.key === recKey);
+      if (potentialPlayer !== undefined){
+        return potentialPlayer.alias;
+      }
+      else{
+        console.log("ERROR: requested alias from player store but provided in valid player key")
+        return "ERROR: bad key"
+      }
     },
 
     getColourUsingKey: (state) => (recKey: string) => {

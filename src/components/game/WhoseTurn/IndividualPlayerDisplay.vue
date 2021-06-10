@@ -1,6 +1,6 @@
 <template>
   <div id="individualPlayerDisplayOutermost">
-    <div id="topRow"><p v-if="colourAssitanceModeOn" id="captainNum">{{ playerCaptainNum }}</p> <v-icon v-if="myTurn" large>mdi-arrow-down-bold</v-icon></div>
+    <div id="topRow"><p v-if="colourAssitanceModeOn" id="captainNum">{{ playerCaptainNum }}</p> <v-icon v-if="itsMyTurn" large>mdi-arrow-down-bold</v-icon></div>
     <v-card elevation="3" id="cardOutermost" :style="{backgroundColor: '#' + playerColour}">
       <div id="aliasRow">
         <h3 id="alias" :class="{whitestAliasBackdrop: aliasBackdropTone === 'whitest', mediumAliasBackdrop: aliasBackdropTone === 'medium', faintAliasBackdrop: aliasBackdropTone === 'faint', }">{{ playerAlias }}</h3>
@@ -71,8 +71,8 @@ export default class IndividualPlayerDisplay extends Mixins(
     return powerupsList;
   }
 
-  get myTurn(): boolean{
-    return true;
+  get itsMyTurn(): boolean{
+    return this.$store.getters["playerStore/getMyKey"] === this.$store.getters["gameStore/getWhoseTurn"];
   }
 
   get colourAssitanceModeOn(): boolean{

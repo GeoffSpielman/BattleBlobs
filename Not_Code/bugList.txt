@@ -7,9 +7,6 @@ When 'players' does not exist in the database (I deleted all players) and a new 
 If your name or alias is too long, you can still click 'ready to start'    
 
 
-On 'public' chat header, change colour from orange to dark grey/blue with white text;
-
-
 Increate the max tab width in the chat
 
 
