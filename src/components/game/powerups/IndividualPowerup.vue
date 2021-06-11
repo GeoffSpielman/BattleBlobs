@@ -8,7 +8,7 @@
       </p>
     </v-card>
     <transition name="popOutTrans">
-      <div id="popout" :style="{ display: showInfo ? 'block' : 'none' }">
+      <div id="popout" v-if="showInfo">
         I am information about the powerup
       </div>
     </transition>
@@ -44,6 +44,7 @@ export default class IndividualPowerup extends Mixins(PowerupIconPathMixin) {
   text-align: center;
   margin-top: 5px;
   margin: auto;
+  z-index: 2;
 }
 
 #individualPowerupOutermost >>> .v-card--link:focus:before {
@@ -74,7 +75,7 @@ export default class IndividualPowerup extends Mixins(PowerupIconPathMixin) {
   right: 190px;
   width: 200px;
   height: 100px;
-  background-color: rgba(240, 240, 240, 0.5);
+  background-color: rgba(240, 240, 240, 0.6);
 
   border: 1px solid silver;
   border-radius: 10px 2px 2px 10px;
@@ -82,25 +83,34 @@ export default class IndividualPowerup extends Mixins(PowerupIconPathMixin) {
     0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%) !important;
 }
 
-
-
-
-/* tranisitons - TODO: actually implement with animations*/
-.popOutTrans-enter {
-  right: 0px !important;
-}
-
 .popOutTrans-enter-active {
-  right: 190px;
-  transition: right 0.5s !important;
+  animation: slide-in-info 0.4s ease-out;
+  animation-fill-mode: backwards;
+}
+@keyframes slide-in-info {
+  from {
+    right: 60px;
+    opacity: 0
+  }
+  to {
+    right: 190px;
+    opacity: 1;
+  }
 }
 
 .popOutTrans-leave-active {
-  transition: right 0.5s ease;
-  right: 0px !important;
+  animation: slide-out-info 0.4s ease-out;
+  animation-fill-mode: backwards;
+}
+@keyframes slide-out-info {
+  from {
+    right: 190px;
+    opacity: 1
+  }
+  to {
+    right: 60px;
+    opacity: 0;
+  }
 }
 
-.popOutTrans-leave-to {
-  height: 0px !important;
-}
 </style>
