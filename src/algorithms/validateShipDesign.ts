@@ -1,4 +1,4 @@
-export function validateShipDesign(shipOffsets: number[][], numSegsInShip: number): {'message': string; 'valid': boolean} {
+export function validateShipDesign(shipOffsets: number[][], numSegsInShip: number): { 'message': string; 'valid': boolean } {
 
     //'traversed index' and 'traversed segments of ship'
     let travIdx = 0;
@@ -58,11 +58,11 @@ export function validateShipDesign(shipOffsets: number[][], numSegsInShip: numbe
     }
     //valid ship
     if (travIdx === numSegsInShip) {
-        let possibleConfirmations = ["Looks great captain!", "She's a beauty!", "What a gorgeous vessel!", "Heck ya, flawless!", "What a gem! Beautiful!", "This ship is downright swanky!", "You've discovered the optimal ship", "Creative! Looks great!", "The S.S. Magnificent right here", "Looks like a winner!", "Perfect, just perfect!", "Love it!", "Best ship I've ever seen"];
+        let possibleConfirmations = ["Looks great captain!", "She's a beauty!", "What a gorgeous vessel!", "Heck ya, flawless!", "What a gem! Beautiful!", "This ship is downright swanky!", "You've discovered the optimal ship", "Creative! Looks great!", "The S.S. Magnificent right here", "Looks like a winner!", "Perfect, just perfect!", "Love it!", "Best ship I've ever seen", "Bold move, I like it", "The Cadillac of ships", "Ahoy!", "Swanky!"];
         let randIndex = Math.floor(Math.random() * possibleConfirmations.length);
-        return {'message': possibleConfirmations[randIndex], 'valid': true};
+        return { 'message': possibleConfirmations[randIndex], 'valid': true };
     } else {
-        return {'message': "All segments must be connected by shared edges", 'valid': false};
+        return { 'message': "All segments must be connected by shared edges", 'valid': false };
     }
 
 }

@@ -3,6 +3,7 @@ import { Module } from 'vuex'
 import { RootState } from './RootState'
 import { ShipEntry } from '@/models/interfaces'
 import { ShipStatus } from '@/models/enums'
+import { determineShipOffsets } from "@/algorithms/determineShipOffsets";
 
 interface ShipsState {
   ships: ShipEntry[];

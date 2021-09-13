@@ -51,7 +51,7 @@
               <td class="text-center">{{ player.captainNum }}</td>
               <td class="text-center">{{ player.key }}</td>
               <td class="text-center">
-                <v-btn
+                <v-btn v-if="player.key !== myKey"
                   :key="player.key + 'removeBtn'"
                   @click="removeBtnClicked(player.key)"
                   small
@@ -95,6 +95,7 @@ import { GameStatus } from '@/models/enums'
 export default class Host extends Vue {
   mounted() {
     this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.Hosting);
+    this.$store.dispatch("playerStore/setMyName", "== HOST ==");
   }
 
   get playersList(): PlayerEntry[] {
@@ -113,6 +114,10 @@ export default class Host extends Vue {
     else{
       return this.$store.getters["playerStore/getAliasUsingKey"](whoseTurnPlayerKey);
     }
+  }
+
+  get myKey(): string{
+    return this.$store.getters["playerStore/getMyKey"];
   }
 
   skipBtnClicked() {

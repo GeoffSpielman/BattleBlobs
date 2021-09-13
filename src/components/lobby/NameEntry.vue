@@ -48,7 +48,11 @@ export default class NameEntry extends Vue {
     } else if (!this.name.replace(/\s/g, "").length) {
       this.nameErrorMessage = "Names cannot be blank spaces. Nice try ;)";
       this.$emit("namevalidupdate", false);
-    } else {
+    }
+    else if (this.name.length > 18){
+      this.$emit("namevalidupdate", false);
+    }
+    else {
       this.$store.dispatch("lobbyStore/allocateName", this.name).then(
         (response) => {
           //console.log(response);
@@ -58,7 +62,7 @@ export default class NameEntry extends Vue {
         (error) => {
           //console.log(error);
           this.nameErrorMessage =
-            "Unfortunately this name is taken. Maybe add your last initial?";
+            "Unfortunately this name is taken";
             this.$emit("namevalidupdate", false);
         }
       );

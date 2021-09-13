@@ -126,7 +126,7 @@ export default class App extends Vue {
           }
         }
       }
-      //disconnect
+      //disconnected
       else if (this.$store.getters["playerStore/getMyKey"] !== "") {
         this.showDisconnectedDialog = true;
       }

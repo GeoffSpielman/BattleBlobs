@@ -62,15 +62,12 @@ const playerStore: Module<PlayerState, RootState> = {
       return counter;
     },
 
+    getPlayerKeyInDatabase: (state) => (recKey: string) => {
+      return (state.players.findIndex((player) => player.key === recKey) === -1) ? false : true;
+    },
+
     getAliasUsingKey: (state) => (recKey: string) => {
-      let potentialPlayer = state.players.find((player) => player.key === recKey);
-      if (potentialPlayer !== undefined){
-        return potentialPlayer.alias;
-      }
-      else{
-        console.log("ERROR: requested alias from player store but provided in valid player key")
-        return "ERROR: bad key"
-      }
+      return state.players.find((player) => player.key === recKey)?.alias;
     },
 
     getColourUsingKey: (state) => (recKey: string) => {
@@ -169,11 +166,7 @@ const playerStore: Module<PlayerState, RootState> = {
       //first make sure you haven't been removed from the database
       if (context.state.players.findIndex((playerObj) => (playerObj.key === context.state.myKey)) !== -1){
         firebase.database.ref('players/' + context.state.myKey + '/status').set(recStatus);
-      }
-      else{
-        console.log("you were deleted :(")
-      }
-      
+      }      
     },
 
     setMyName(context, recName: string){
@@ -225,10 +218,13 @@ const playerStore: Module<PlayerState, RootState> = {
 
     addPlayersToGame(context){
       let readyPlayerIDsList: string[] = [];
+      let captainNum: number = 1;
       context.state.players.forEach(playerObj => {
         if (playerObj.status === PlayerStatus.ReadyToStart){
           readyPlayerIDsList.push(String(playerObj.key));
           firebase.database.ref('players/' + playerObj.key + '/status').set(PlayerStatus.InGame);
+          firebase.database.ref('players/' + playerObj.key + '/captainNum').set(captainNum);
+          captainNum ++;
         }
       });
       context.dispatch('gameStore/setCurrentPlayersList', readyPlayerIDsList, {root: true});

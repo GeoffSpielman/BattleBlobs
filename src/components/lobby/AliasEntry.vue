@@ -67,7 +67,11 @@ export default class AliasEntry extends Vue {
     else if (!this.alias.replace(/\s/g, "").length) {
       this.aliasErrorMessage = "Aliases cannot be blank spaces. Nice try ;)";
       this.$emit("aliasvalidupdate", false);
-    } else {
+    }
+    else if (this.alias.length > 18){
+      this.$emit("aliasvalidupdate", false);
+    }
+    else {
       this.$store.dispatch("lobbyStore/allocateAlias", this.alias).then(
         (response) => {
           //console.log(response);

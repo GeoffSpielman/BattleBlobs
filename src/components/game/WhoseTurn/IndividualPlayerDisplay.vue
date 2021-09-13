@@ -27,12 +27,23 @@ export default class IndividualPlayerDisplay extends Mixins(
 
 
   get playerAlias(): string {
-    return this.$store.getters["playerStore/getAliasUsingKey"](this.playerKey);
+    if (this.$store.getters["playerStore/getPlayerKeyInDatabase"](this.playerKey)){
+      return this.$store.getters["playerStore/getAliasUsingKey"](this.playerKey);
+    }
+    else{
+      return "Removed from Database :("
+    }
+    
   }
 
   get playerColour(): string{
-    // does not include # before the hex code
-    return this.$store.getters["playerStore/getColourUsingKey"](this.playerKey);    
+    if (this.$store.getters["playerStore/getPlayerKeyInDatabase"](this.playerKey)){
+      // does not include # before the hex code
+      return this.$store.getters["playerStore/getColourUsingKey"](this.playerKey);  
+    }
+    else{
+      return "FFFFFF"
+    }  
   }
 
   get aliasBackdropTone() {
@@ -51,24 +62,30 @@ export default class IndividualPlayerDisplay extends Mixins(
   }
 
   get playerCaptainNum(): number {
-    return this.$store.getters["playerStore/getCaptainNumUsingKey"](
-      this.playerKey
-    );
+    if (this.$store.getters["playerStore/getPlayerKeyInDatabase"](this.playerKey)){
+      return this.$store.getters["playerStore/getCaptainNumUsingKey"](this.playerKey);
+    }
+    else {
+      return -1;
+    }
   }
 
   get playerPowerups(): string[] {
-    let powerupsList: string[] = [];
-    let entirePowerupsObject = this.$store.getters[
-      "playerStore/getPowerupsUsingKey"
-    ](this.playerKey);
-    Object.keys(entirePowerupsObject).forEach((powerup: string) => {
-      if (powerup !== PowerupName.None) {
-        for (let i = 0; i < entirePowerupsObject[powerup]; i++) {
-          powerupsList.push(powerup);
+    if (this.$store.getters["playerStore/getPlayerKeyInDatabase"](this.playerKey)){
+      let powerupsList: string[] = [];
+      let entirePowerupsObject = this.$store.getters["playerStore/getPowerupsUsingKey"](this.playerKey);
+      Object.keys(entirePowerupsObject).forEach((powerup: string) => {
+        if (powerup !== PowerupName.None) {
+          for (let i = 0; i < entirePowerupsObject[powerup]; i++) {
+            powerupsList.push(powerup);
+          }
         }
-      }
-    });
-    return powerupsList;
+      });
+      return powerupsList;
+    }
+    else {
+      return [];
+    }
   }
 
   get itsMyTurn(): boolean{
