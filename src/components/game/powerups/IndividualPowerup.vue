@@ -9,7 +9,7 @@
     </v-card>
     <transition name="popOutTrans">
       <div id="popout" v-if="showInfo">
-        I am information about the powerup
+        I am information about the powerup.
       </div>
     </transition>
   </div>
@@ -78,7 +78,7 @@ export default class IndividualPowerup extends Mixins(PowerupIconPathMixin) {
   background-color: rgba(240, 240, 240, 0.6);
 
   border: 1px solid silver;
-  border-radius: 10px 2px 2px 10px;
+  border-radius: 6px 2px 2px 6px;
   box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%),
     0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%) !important;
 }

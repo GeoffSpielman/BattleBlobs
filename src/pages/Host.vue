@@ -12,8 +12,8 @@
 
         <v-card class="statusCard" outlined elevation="2">
           <v-card-title class="justify-center py-1"> Whose Turn? </v-card-title>
-          <v-card-text class="text-center font-weight-medium text-h6 pt-0 pb-2">
-            {{whoseTurn}}
+          <v-card-text class="text-center font-weight-medium text-h6 pt-1 pb-2">
+            {{ whoseTurn }}
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn
@@ -45,13 +45,21 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="player in playersList" :key="player.key">
+            <tr
+              v-for="player in playersList"
+              :key="player.key"
+              :style="{
+                color:
+                  player.status === PlayerStatus.Disconnected ? 'red' : 'black',
+              }"
+            >
               <td>{{ player.name }}</td>
               <td class="text-center">{{ player.status }}</td>
               <td class="text-center">{{ player.captainNum }}</td>
               <td class="text-center">{{ player.key }}</td>
               <td class="text-center">
-                <v-btn v-if="player.key !== myKey"
+                <v-btn
+                  v-if="player.key !== myKey"
                   :key="player.key + 'removeBtn'"
                   @click="removeBtnClicked(player.key)"
                   small
@@ -73,11 +81,47 @@
             players to lobby)</v-btn
           >
           <v-btn elevation="2" color="warning" @click="resetDatabaseClicked">
-            <v-icon dense class="pr-3"> mdi-delete-alert</v-icon>Reset Database</v-btn
+            <v-icon dense class="pr-3"> mdi-delete-alert</v-icon>Reset
+            Database</v-btn
           >
         </div>
       </div>
-      <div id="configColumn">powerup config</div>
+      <div id="powerupConfigColumn">
+        <v-card
+          class="statusCard"
+          outlined
+          elevation="2"
+          :disabled="gameStatus === GameStatus.GameInProgress"
+        >
+          <v-card-title class="justify-center py-1"> Map Size </v-card-title>
+          <v-text-field
+            class="pl-5 pr-5"
+            type="number"
+            outlined
+            dense
+            :rules="[
+              mapSizeRules.greaterThanZero,
+              mapSizeRules.lessThanTen,
+              mapSizeRules.validInteger,
+            ]"
+            v-model="mapSizeVal"
+            @change="mapSizeChanged()"
+          ></v-text-field>
+        </v-card>
+        <v-card
+          class="statusCard"
+          outlined
+          elevation="2"
+          :disabled="gameStatus === GameStatus.GameInProgress"
+        >
+          <v-card-title class="justify-center py-1"> Powerups</v-card-title>
+          <powerup-config
+            v-for="(powerup, i) in powerupsList"
+            :key="i"
+            :powerupDetails="powerup"
+          ></powerup-config>
+        </v-card>
+      </div>
     </div>
   </div>
 </template>
@@ -87,15 +131,29 @@
 import { Component, Vue } from "vue-property-decorator";
 import { PlayerEntry } from "@/models/interfaces";
 import { PlayerStatus } from "@/models/enums";
-import { GameStatus } from '@/models/enums'
+import { GameStatus } from "@/models/enums";
+import powerupConfig from "@/components/host/powerupConfig.vue";
+import { PowerupEntry } from "@/models/interfaces";
 
 @Component({
   name: "Host",
+  components: {
+    powerupConfig,
+  },
 })
 export default class Host extends Vue {
+  PlayerStatus = PlayerStatus;
+  GameStatus = GameStatus;
+
+  mapSizeVal: number = 16;
+
+  powerupsList: PowerupEntry[] =
+    this.$store.getters["powerupStore/getPowerupsList"];
+
   mounted() {
     this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.Hosting);
     this.$store.dispatch("playerStore/setMyName", "== HOST ==");
+    this.mapSizeVal = this.mapSize;
   }
 
   get playersList(): PlayerEntry[] {
@@ -106,17 +164,21 @@ export default class Host extends Vue {
     return this.$store.getters["gameStore/getGameStatus"];
   }
 
-  get whoseTurn(): string{
+  get mapSize(): number {
+    return this.$store.getters["mapStore/getMapSize"];
+  }
+  get whoseTurn(): string {
     let whoseTurnPlayerKey = this.$store.getters["gameStore/getWhoseTurn"];
-    if (whoseTurnPlayerKey === "TBD"){
-      return "TBD"
-    }
-    else{
-      return this.$store.getters["playerStore/getAliasUsingKey"](whoseTurnPlayerKey);
+    if (whoseTurnPlayerKey === "TBD") {
+      return "TBD";
+    } else {
+      return this.$store.getters["playerStore/getAliasUsingKey"](
+        whoseTurnPlayerKey
+      );
     }
   }
 
-  get myKey(): string{
+  get myKey(): string {
     return this.$store.getters["playerStore/getMyKey"];
   }
 
@@ -126,46 +188,62 @@ export default class Host extends Vue {
 
   removeBtnClicked(playerKey: string) {
     this.$store.dispatch("playerStore/removePlayer", playerKey);
+    if (this.gameStatus === GameStatus.GameInProgress) {
+      this.$store.dispatch("gameStore/removeCurrentPlayer", playerKey);
+    }
   }
 
-  startBtnClicked(){
-    console.log("start the game!")
-    this.$store.dispatch('playerStore/addPlayersToGame');
-    this.$store.dispatch('gameStore/setGameStatus', GameStatus.GameInProgress);
+  startBtnClicked() {
+    console.log("start the game!");
+    this.$store.dispatch("playerStore/addPlayersToGame");
+    this.$store.dispatch("gameStore/setGameStatus", GameStatus.GameInProgress);
   }
 
-  resetDatabaseClicked(){
-    //TODO: add an 'are you sure' prompty
-    this.$store.dispatch('playerStore/deleteAllPlayersExceptMe');
-    this.$store.dispatch('lobbyStore/resetColoursInDatabase');
-    this.$store.dispatch('lobbyStore/resetAliasesInDatabase');
-    this.$store.dispatch('gameStore/setGameStatus', GameStatus.WaitingOnPlayers);
-    this.$store.dispatch('shipsStore/deleteAllShips');
-    this.$store.dispatch('gameStore/setCurrentPlayersList', null);
-    this.$store.dispatch('chatStore/deleteAllChats');
-    this.$store.dispatch('gameStore/setWhoseTurn', "TBD");
+  resetDatabaseClicked() {
+    //TODO: add an 'are you sure' prompt
+    this.$store.dispatch("playerStore/deleteAllPlayersExceptMe");
+    this.$store.dispatch("lobbyStore/resetColoursInDatabase");
+    this.$store.dispatch("lobbyStore/resetAliasesInDatabase");
+    this.$store.dispatch(
+      "gameStore/setGameStatus",
+      GameStatus.WaitingOnPlayers
+    );
+    this.$store.dispatch("shipsStore/deleteAllShips");
+    this.$store.dispatch("gameStore/setCurrentPlayersList", null);
+    this.$store.dispatch("chatStore/deleteAllChats");
+    this.$store.dispatch("gameStore/setWhoseTurn", "TBD");
+  }
+
+  mapSizeRules = {
+    greaterThanZero: (value: number) => value >= 8 || "Minimum is 8",
+    lessThanTen: (value: number) => value <= 20 || "Maximum is 20",
+    validInteger: (value: number) =>
+      Number.isInteger(Number(value)) || "Invalid integer",
+  };
+
+  mapSizeChanged() {
+    if (
+      this.mapSizeVal >= 8 &&
+      this.mapSizeVal <= 20 &&
+      Number.isInteger(Number(this.mapSizeVal))
+    ) {
+      this.$store.dispatch("mapStore/updateMapSize", Number(this.mapSizeVal));
+    }
   }
 }
 </script>
 
 <style scoped>
-.outermostDiv {
-  align-items: center;
-}
-
-#pageTitle {
-  text-align: center;
-  margin-top: 10px;
-}
-
 #hostContentDiv {
   display: flex;
   flex-direction: row;
   width: 90vw;
   height: 200px;
   flex-grow: 1;
-  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
+
 #statusColumn {
   display: flex;
   flex-direction: column;
@@ -178,17 +256,21 @@ export default class Host extends Vue {
   flex-direction: column;
   flex-grow: 1;
 }
-#configColumn {
+
+#powerupConfigColumn {
   display: flex;
-  width: 250px;
+  flex-direction: column;
+  width: 200px;
+  margin-left: 50px;
 }
 
 .statusCard {
   max-width: 100%;
   margin: 10px;
+  border-radius: 10px;
 }
 
-#playersTable{
+#playersTable {
   overflow-y: auto;
 }
 #playersTable th {

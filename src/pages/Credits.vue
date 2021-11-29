@@ -103,25 +103,25 @@ export default class ImageCredits extends Vue {
 
     {
       path: require("@/assets/imageCredits/missile.png"),
-      caption: "Missile by Vectorstall from the Noun Project",
+      caption: "Missile by Vectorstall from The Noun Project",
       link: "https://thenounproject.com/search/?q=missile&i=3679591",
     },
 
     {
       path: require("@/assets/imageCredits/move_it_minor.png"),
-      caption: "Move by Shashank Singh from the Noun Project",
+      caption: "Move by Shashank Singh from The Noun Project",
       link: "https://thenounproject.com/term/move/1663257/",
     },
 
     {
       path: require("@/assets/imageCredits/move_it_major.png"),
-      caption: "Redo by Designify.me from the Noun Project",
+      caption: "Redo by Designify.me from The Noun Project",
       link: "https://thenounproject.com/search/?q=redo&i=149818",
     },
 
     {
       path: require("@/assets/imageCredits/uh_oh.png"),
-      caption: "Spiral by Alexander Skowalsky from the Noun Project",
+      caption: "Spiral by Alexander Skowalsky from The Noun Project",
       link: "https://thenounproject.com/search/?q=spiral&i=253084",
     },
   ];

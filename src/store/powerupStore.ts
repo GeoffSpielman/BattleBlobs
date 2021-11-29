@@ -1,5 +1,5 @@
 import firebase from './firebase'
-import { Module } from 'vuex'
+import { ActionContext, Module } from 'vuex'
 import { RootState } from './RootState'
 import {PowerupEntry} from "@/models/interfaces"
 
@@ -42,6 +42,10 @@ const powerupStore: Module<PowerupState, RootState> = {
                 context.commit('modifyPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining, 'sortOrder': data.val().sortOrder});
             })
 
+        },
+
+        updatePowerupDeployed(_, payload: {'powerupName': string; 'newDeployedVal': number}){
+            firebase.database.ref('game/powerups/' + payload.powerupName + '/deployed').set(payload.newDeployedVal);
         },
         
     },

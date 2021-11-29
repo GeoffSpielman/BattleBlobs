@@ -10,6 +10,7 @@ import shipsStore from './shipsStore'
 import gameStore from './gameStore'
 import chatStore from './chatStore'
 import powerupStore from './powerupStore'
+import mapStore from './mapStore'
  
 Vue.use(Vuex)
 
@@ -22,6 +23,7 @@ export default new Vuex.Store<RootState>({
     gameStore: gameStore,
     chatStore: chatStore,
     powerupStore: powerupStore,
+    mapStore: mapStore,
   },
 
   state: {

@@ -139,6 +139,7 @@ export default class App extends Vue {
     this.$store.dispatch("gameStore/getFirebaseDatabase");
     this.$store.dispatch("chatStore/getFirebaseDatabase");
     this.$store.dispatch("powerupStore/getFirebaseDatabase");
+    this.$store.dispatch("mapStore/getFirebaseDatabase");
 
     //initilize client instance (player object) in database
     this.$store.dispatch("playerStore/intializeClient").then(() => {

@@ -8,7 +8,7 @@
     </div>
 
     <div id="powerupsContainer">
-      <powerups-display></powerups-display>
+      <powerups-display displayMode="Game"></powerups-display>
     </div>
     <div id="playerDisplayContainer">
       <players-bar></players-bar>
