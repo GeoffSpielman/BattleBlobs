@@ -1,5 +1,5 @@
 import firebase from './firebase'
-import { ActionContext, Module } from 'vuex'
+import {Module } from 'vuex'
 import { RootState } from './RootState'
 
 interface MapState {

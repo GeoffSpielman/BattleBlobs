@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import firebase from './firebase'
 import {RootState} from './RootState'
 
 import playerStore from './playerStore'
