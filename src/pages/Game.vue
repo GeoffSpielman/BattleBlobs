@@ -13,6 +13,7 @@
     <div id="playerDisplayContainer">
       <players-bar></players-bar>
     </div>
+
   </div>
 </template>
 
@@ -72,6 +73,8 @@ export default class Game extends Vue {
 #powerupsContainer {
   grid-column: 3/4;
   grid-row: 1/2;
+  display: flex;
+  flex-direction: column;
 }
 
 #playerDisplayContainer {

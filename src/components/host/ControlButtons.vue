@@ -23,16 +23,6 @@ import { GameStatus } from "@/models/enums";
   components: {},
 })
 export default class ControlsButtons extends Vue {
-  removeBtnClicked(playerKey: string) {
-    this.$store.dispatch("playerStore/removePlayer", playerKey);
-    if (
-      this.$store.getters["gameStore/getGameStatus"] ===
-      GameStatus.GameInProgress
-    ) {
-      this.$store.dispatch("gameStore/removeCurrentPlayer", playerKey);
-    }
-  }
-
   startBtnClicked() {
     console.log("start the game!");
     this.$store.dispatch("playerStore/addPlayersToGame");

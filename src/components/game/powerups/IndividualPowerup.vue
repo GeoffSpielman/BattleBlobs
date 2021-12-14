@@ -44,7 +44,7 @@ export default class IndividualPowerup extends Mixins(PowerupIconPathMixin) {
   text-align: center;
   margin-top: 5px;
   margin: auto;
-  z-index: 2;
+  z-index: 1;
 }
 
 #individualPowerupOutermost >>> .v-card--link:focus:before {

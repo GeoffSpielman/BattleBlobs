@@ -46,6 +46,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { PlayerEntry } from "@/models/interfaces";
 import { PlayerStatus } from "@/models/enums";
+import { GameStatus } from "@/models/enums";
 
 @Component({
   name: "ClientsTable",
@@ -62,6 +63,16 @@ export default class ClientsTable extends Vue {
 
   get myKey(): string {
     return this.$store.getters["playerStore/getMyKey"];
+  }
+
+  removeBtnClicked(playerKey: string) {
+    this.$store.dispatch("playerStore/removePlayer", playerKey);
+    if (
+      this.$store.getters["gameStore/getGameStatus"] ===
+      GameStatus.GameInProgress
+    ) {
+      this.$store.dispatch("gameStore/removeCurrentPlayer", playerKey);
+    }
   }
 }
 </script>
