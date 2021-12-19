@@ -4,7 +4,7 @@
       <v-text-field
         v-model="alias"
         :rules="aliasRules"
-        counter="18"
+        counter="14"
         solo
         class="textField"
         @change="aliasEntryChanged()"
@@ -51,7 +51,7 @@ export default class AliasEntry extends Vue {
 
   aliasRules = [
     (v: string) =>
-      v.length <= 18 || "Sorry, aliases are limited to 18 characters max",
+      v.length <= 14 || "Sorry, aliases are limited to 14 characters max",
   ];
 
   get availableAliasesList() {
@@ -68,7 +68,7 @@ export default class AliasEntry extends Vue {
       this.aliasErrorMessage = "Aliases cannot be blank spaces. Nice try ;)";
       this.$emit("aliasvalidupdate", false);
     }
-    else if (this.alias.length > 18){
+    else if (this.alias.length > 14){
       this.$emit("aliasvalidupdate", false);
     }
     else {

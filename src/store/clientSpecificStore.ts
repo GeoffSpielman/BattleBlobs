@@ -9,7 +9,7 @@ interface ClientSpecificState {
   selectedColourHex: string;
   shipOneOffsets: number[][];
   shipTwoOffsets: number[][];
-  colourAssistanceOn: boolean;
+  colourAssistanceMode: boolean;
 }
 
 const playerStore: Module<ClientSpecificState, RootState> = {
@@ -21,7 +21,7 @@ const playerStore: Module<ClientSpecificState, RootState> = {
     selectedColourHex: "#252525",
     shipOneOffsets: [],
     shipTwoOffsets: [],
-    colourAssistanceOn: false,
+    colourAssistanceMode: false,
   },
 
   getters: {
@@ -50,8 +50,8 @@ const playerStore: Module<ClientSpecificState, RootState> = {
       }
     },
 
-    getColourAssitanceOn(state): boolean {
-      return state.colourAssistanceOn;
+    getColourAssistanceMode(state): boolean {
+      return state.colourAssistanceMode;
     }
 
 
@@ -82,8 +82,8 @@ const playerStore: Module<ClientSpecificState, RootState> = {
       }
     },
 
-    setColourAssitanceOn(state, recVal: boolean){
-      state.colourAssistanceOn = recVal;
+    setColourAssistanceMode(state, recVal: boolean){
+      state.colourAssistanceMode = recVal;
     }
   },
 
@@ -109,8 +109,8 @@ const playerStore: Module<ClientSpecificState, RootState> = {
       context.commit('setShipOffsets', payload);
     },
 
-    setColourAssistanceOn(context, recVal: boolean){
-      context.commit('setColourAssitanceOn', recVal);
+    setColourAssistanceMode(context, recVal: boolean){
+      context.commit('setColourAssistanceMode', recVal);
     }
   },
 }

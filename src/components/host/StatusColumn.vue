@@ -73,7 +73,7 @@ export default class StatusColumn extends Vue {
 }
 
 .statusCard {
-  width: 170px;
+  width: 190px;
   margin: 10px;
   border-radius: 10px;
 }

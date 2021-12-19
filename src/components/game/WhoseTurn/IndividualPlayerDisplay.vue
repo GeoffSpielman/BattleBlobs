@@ -1,7 +1,7 @@
 <template>
   <div id="individualPlayerDisplayOutermost">
     <div id="topRow">
-      <p v-if="colourAssitanceModeOn" id="captainNum">{{ playerCaptainNum }}</p>
+      <h4 v-if="colourAssitanceModeOn" id="captainNum">{{ playerCaptainNum }}</h4>
       <v-icon v-if="itsMyTurn" large>mdi-arrow-down-bold</v-icon>
     </div>
     <v-card
@@ -131,7 +131,7 @@ export default class IndividualPlayerDisplay extends Mixins(
   }
 
   get colourAssitanceModeOn(): boolean {
-    return this.$store.getters["clientSpecificStore/getColourAssitanceOn"];
+    return this.$store.getters["clientSpecificStore/getColourAssistanceMode"];
   }
 }
 </script>
@@ -147,7 +147,6 @@ export default class IndividualPlayerDisplay extends Mixins(
 
 #topRow {
   height: 38px;
-  text-align: center;
   display: flex;
   flex-direction: row;
   align-items: center;

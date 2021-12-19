@@ -48,7 +48,7 @@ export default class Host extends Vue {
 #hostContentDiv {
   display: grid;
   grid-template-rows: 1fr min-content;
-  grid-template-columns: minmax(190px, 1fr) 3fr minmax(170px, 1fr);
+  grid-template-columns: minmax(210px, 1fr) 2.5fr minmax(170px, 1fr);
   flex-grow: 1;
   height:100px;
 }

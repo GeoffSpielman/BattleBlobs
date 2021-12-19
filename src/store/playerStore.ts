@@ -229,6 +229,7 @@ const playerStore: Module<PlayerState, RootState> = {
       });
       context.dispatch('gameStore/setCurrentPlayersList', readyPlayerIDsList, {root: true});
       context.dispatch('chatStore/generateChatPairings', readyPlayerIDsList, {root: true});
+      context.dispatch('gameStore/setWhoseTurn', readyPlayerIDsList[0], {root: true});
     }
   },
 }
