@@ -39,3 +39,10 @@ export enum PowerupName {
     UhOh = "Uh-Oh",
     None = "None",
 }
+
+export enum MapType {
+    Water = "Water",
+    PowerUp = "Powerup",
+    Ship = "Ship",
+    Whirlpool = "Whirlpool",
+}

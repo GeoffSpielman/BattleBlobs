@@ -1,6 +1,8 @@
 import { PlayerStatus } from "@/models/enums"
 import { ColourStatus } from "@/models/enums"
 import { ShipStatus } from "@/models/enums"
+import { MapType } from "@/models/enums"
+import { PowerupName } from "@/models/enums"
 
 export interface PlayerEntry {
     key: string | null;
@@ -27,7 +29,7 @@ export interface ColourUpdateObject {
 
 export interface ShipEntry {
     key: string | null;
-    captainNum: number;
+    captainKey: string;
     status: ShipStatus;
     intactOffsets: number[][];
     damagedOffsets: number[][];
@@ -65,4 +67,13 @@ export interface PowerupEntry {
     remaining: number;
     deployed: number;
     sortOrder: number;
+}
+
+export interface GridSquare {
+    row: number;
+    col: number;    
+    revealed: boolean;
+    mapType: MapType;
+    powerup: PowerupName;
+    captains: string[];
 }

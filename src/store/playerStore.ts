@@ -82,6 +82,10 @@ const playerStore: Module<PlayerState, RootState> = {
       return state.players.find((player) => player.key === recKey)?.powerups;
     },
 
+    getShipKeysUsingKey: (state) => (recKey: string) => {
+      return [state.players.find((player) => player.key === recKey)?.shipOneKey, state.players.find((player) => player.key === recKey)?.shipTwoKey]
+    }
+
   },
 
   mutations: {
@@ -195,7 +199,7 @@ const playerStore: Module<PlayerState, RootState> = {
       for (let i = 1; i < 3; i++){
         //If client's ship key has never been set, create a new entry in ships store
         if (context.getters.getMyShipKey(i) === ""){
-          const payloadForCreation = {'offsets': context.rootGetters['clientSpecificStore/getShipOffsets'](i), 'shipNum': i}
+          const payloadForCreation = {'offsets': context.rootGetters['clientSpecificStore/getShipOffsets'](i), 'captainKey': context.state.myKey, 'shipNum': i}
           context.dispatch('shipsStore/createShipOffsetsOnly', payloadForCreation, {root: true});
           
           //otherwise modify the entry in the ships store

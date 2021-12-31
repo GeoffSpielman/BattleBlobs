@@ -2,8 +2,8 @@ import firebase from './firebase'
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 import { ShipEntry } from '@/models/interfaces'
+import { ShipSpawnRange } from '@/models/interfaces'
 import { ShipStatus } from '@/models/enums'
-import { determineShipOffsets } from "@/algorithms/determineShipOffsets";
 
 interface ShipsState {
   ships: ShipEntry[];
@@ -19,6 +19,14 @@ const shipsStore: Module<ShipsState, RootState> = {
 
     getShipsList(state): ShipEntry[] {
       return state.ships;
+    },
+
+    getIntactOffsetsUsingKey: (state) => (recKey: string) => {
+      return state.ships.find((ship) => ship.key === recKey)?.intactOffsets;
+    },
+
+    getShipUsingKey: (state) => (recKey: string) => {
+      return state.ships.find((ship) => ship.key === recKey);
     },
 
   },
@@ -65,7 +73,7 @@ const shipsStore: Module<ShipsState, RootState> = {
           else {
               const newShipEntry: ShipEntry = {
                   'key': newShipRef.key,
-                  'captainNum': -1,
+                  'captainKey': payload.captainKey,
                   'status': ShipStatus.Incomplete,
                   'intactOffsets': payload.offsets,
                   'damagedOffsets': [],
@@ -79,12 +87,16 @@ const shipsStore: Module<ShipsState, RootState> = {
     },
 
     overwriteShipOffsets(context, payload: {'shipKey': string; 'offsets': number[][]}){
-      firebase.database.ref('ships/' + payload.shipKey+ '/intactOffsets').set(payload.offsets);
+      firebase.database.ref('ships/' + payload.shipKey + '/intactOffsets').set(payload.offsets);
     },
 
     deleteAllShips(context){
       firebase.database.ref('ships').set({'ghostShip': 'empty'});
-    }
+    },
+
+    overwriteShipSpawnRange(context, payload: {'shipKey': string; 'spawnRange': ShipSpawnRange}){
+      firebase.database.ref('ships/' + payload.shipKey + '/spawnRange').set(payload.spawnRange);
+    },
 
 
       

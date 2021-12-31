@@ -6,14 +6,14 @@
     <div class="SettingsRow">
       <h3>Music</h3>
       <div class="sliderContainter">
-        <v-slider v-model="media" dense prepend-icon="mdi-music"></v-slider>
+        <v-slider v-model="musicVolume" dense prepend-icon="mdi-music"></v-slider>
       </div>
     </div>
     <div class="SettingsRow">
       <h3>Effects</h3>
       <div class="sliderContainter">
         <v-slider
-          v-model="media"
+          v-model="soundsVolume"
           dense
           prepend-icon="mdi-volume-high"
         ></v-slider>
@@ -37,6 +37,10 @@ import { Component, Vue } from "vue-property-decorator";
   components: {},
 })
 export default class SettingsPane extends Vue {
+  
+  musicVolume: number = 50;
+  soundsVolume: number = 50;
+  
   get colourAssistanceMode(): boolean {
     return this.$store.getters["clientSpecificStore.getColourAssistanceMode"];
   }
