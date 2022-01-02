@@ -98,8 +98,14 @@ const shipsStore: Module<ShipsState, RootState> = {
       firebase.database.ref('ships/' + payload.shipKey + '/spawnRange').set(payload.spawnRange);
     },
 
+    overwriteShipAnchorPoint(context, payload: {'shipKey': string; 'anchorPoint': {'row': number; 'col': number}}){
+      firebase.database.ref('ships/' + payload.shipKey + '/anchorPoint').set(payload.anchorPoint);
+    },
 
-      
+    overwriteShipStatus(context, payload: {'shipKey': string; 'status': ShipStatus}){
+      firebase.database.ref('ships/' + payload.shipKey + '/status').set(payload.status);
+    },
+  
   },
 }
 

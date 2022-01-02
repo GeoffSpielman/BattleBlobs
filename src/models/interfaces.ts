@@ -77,3 +77,9 @@ export interface GridSquare {
     powerup: PowerupName;
     captains: string[];
 }
+
+export interface AddShipToMapReturn {
+    successful: boolean;
+    mapData: {[coords: string]: GridSquare};
+    anchorPoint: {row: number; col: number};
+}

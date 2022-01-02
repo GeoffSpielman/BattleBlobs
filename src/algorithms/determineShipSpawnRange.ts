@@ -2,7 +2,6 @@
 import { ShipSpawnRange } from "@/models/interfaces";
 
 export function determineShipSpawnRange(shipOffsets: number[][], mapSize: number): ShipSpawnRange {
-    console.log("received the following offsets:" + shipOffsets);
     
     const maxShipDim: number = 4;
 

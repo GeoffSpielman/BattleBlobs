@@ -22,8 +22,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { PlayerStatus } from "@/models/enums";
 import ChatWindow from "@/components/game/chat/ChatWindow.vue";
-import SoundboardBar from "@/components/game/SoundboardBar.vue";
-import GameMap from "@/components/game/GameMap.vue";
+import GameMap from "@/components/game/map/GameMap.vue";
 import PowerupsDisplay from "@/components/game/powerups/PowerupsDisplay.vue";
 import PlayersBar from "@/components/game/WhoseTurn/PlayersBar.vue";
 
@@ -31,7 +30,6 @@ import PlayersBar from "@/components/game/WhoseTurn/PlayersBar.vue";
   name: "Game",
   components: {
     ChatWindow,
-    SoundboardBar,
     GameMap,
     PowerupsDisplay,
     PlayersBar,

@@ -42,6 +42,10 @@ const playerStore: Module<PlayerState, RootState> = {
       return state.players.find((player) => player.key === state.myKey)?.alias;
     },
 
+    getMyColour(state): string | undefined{
+      return state.players.find((player) => player.key === state.myKey)?.colour;
+    },
+
     getMyShipKey: (state) => (recShipNum: number) => {
       const playerObj = state.players.find((player) => player.key === state.myKey);
       if (recShipNum === 1){
@@ -136,8 +140,8 @@ const playerStore: Module<PlayerState, RootState> = {
       firebase.database.ref('players/' + recKey).remove()
     },
 
-    modifyPlayer(_, modifedPlayer: PlayerEntry){
-      firebase.database.ref('players/' + modifedPlayer.key).set(modifedPlayer);
+    modifyPlayer(_, modifiedPlayer: PlayerEntry){
+      firebase.database.ref('players/' + modifiedPlayer.key).set(modifiedPlayer);
     },
 
     intializeClient(context) {

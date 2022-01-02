@@ -4,4 +4,4 @@ When 'players' does not exist in the database (I deleted all players) and a new 
     Has something to do with already being on the page when I press save in visual studio or refresh
 
 
-Increase the max tab width in the chat
+When a player is removed, release their colour/alias so that other players can use them

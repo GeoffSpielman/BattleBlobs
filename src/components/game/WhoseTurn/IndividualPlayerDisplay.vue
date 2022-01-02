@@ -79,7 +79,6 @@ export default class IndividualPlayerDisplay extends Mixins(
         this.playerColour
       )
     ) {
-      //return rgba(255, 255, 255, 0.5);
       return "whitest";
     } else if (
       ["aaffc3", "42d4f4", "f032e6", "ffd8b1"].includes(this.playerColour)

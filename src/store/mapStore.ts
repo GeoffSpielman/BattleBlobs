@@ -3,9 +3,8 @@ import {Module } from 'vuex'
 import { RootState } from './RootState'
 import { determineShipSpawnRange } from "@/algorithms/determineShipSpawnRange";
 import { addShipToMap } from "@/algorithms/addShipToMap";
-import { ShipSpawnRange } from "@/models/interfaces";
-import { GridSquare } from "@/models/interfaces";
-import { MapType, PowerupName } from "@/models/enums"
+import { ShipSpawnRange, GridSquare, AddShipToMapReturn } from "@/models/interfaces";
+import { MapType, PowerupName, ShipStatus } from "@/models/enums"
 
 interface MapState {
     mapSize: number;
@@ -74,9 +73,8 @@ const mapStore: Module<MapState, RootState> = {
 
         initializeMap(context){
 
-            //create a new, empty map
+            //create a new, empty map and populate it
             let newMap: {[coords: string]: GridSquare} = {};
-            
             for (let rowIdx = 0; rowIdx < context.state.mapSize; rowIdx ++){
                 for (let colIdx = 0; colIdx < context.state.mapSize; colIdx ++){
                     newMap[rowIdx + "," + colIdx] = {row: rowIdx, col: colIdx, revealed: false, mapType: MapType.Water, powerup: PowerupName.None, captains: []};
@@ -96,7 +94,17 @@ const mapStore: Module<MapState, RootState> = {
                     context.dispatch('shipsStore/overwriteShipSpawnRange', {'shipKey': shipKey, 'spawnRange': spawnRange}, {root: true});
 
                     //Add the ship to the map
-                    newMap = addShipToMap(context.rootGetters["shipsStore/getShipUsingKey"](shipKey), newMap, context.state.mapSize);
+                    let result: AddShipToMapReturn = addShipToMap(context.rootGetters["shipsStore/getShipUsingKey"](shipKey), newMap, context.state.mapSize);
+
+                    if (result.successful){
+                        newMap = result.mapData;
+                        //update the ship with it's new anchor point and status
+                        context.dispatch('shipsStore/overwriteShipAnchorPoint', {'shipKey': shipKey, 'anchorPoint': result.anchorPoint}, {root: true});
+                        context.dispatch('shipsStore/overwriteShipStatus', {'shipKey': shipKey, 'status': ShipStatus.Hidden}, {root: true});
+                    }
+                    else{
+                        console.log("Uh oh, algorithm couldn't place ship " + shipKey);
+                    }
                 })
             })
 

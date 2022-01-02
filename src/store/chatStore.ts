@@ -61,7 +61,6 @@ const chatStore: Module<ChatState, RootState> = {
 
         deleteAllChats(_) {
             firebase.database.ref('chat').set(null);
-            console.log("nuking chats");
         }
 
     },
