@@ -2,8 +2,9 @@
   <button
     class="squareBtn"
     @click="squareClicked()"
-    @mouseover="suqareHovered()"
-    :style="{ backgroundColor: squareBackgroundColor, opacity: buttonOpacity }"
+    @mouseover="squareHovered()"
+    :style="{ backgroundColor: squareBackgroundColor, opacity: buttonOpacity, cursor: itsMyTurn? 'pointer': 'not-allowed'}"
+    :class="{hoverableClass: itsMyTurn && squareData.revealed === false, blackBorder: squareBlackBorder}"
   >
     <img class="squareImage" src="@/assets/game/fog.png" :style="{opacity: imageOpacity}" />
   </button>
@@ -21,17 +22,25 @@ import { MapType } from "@/models/enums";
 })
 export default class MapSquare extends Vue {
 
-  testModeShowAll = true;
+  testModeShowAll = false;
 
   @Prop({ required: true }) readonly squareData!: GridSquare;
 
   squareClicked() {
-    console.log("I was clicked");
+    if (this.itsMyTurn){
+      this.$store.dispatch("mapStore/revealSquare", [this.squareData.row, this.squareData.col].join(","));
+      this.$store.dispatch("gameStore/incrementWhoseTurn");
+    }
+    
 
   }
 
-  suqareHovered() {
+  squareHovered() {
     this.$emit("squareHovered", this.squareData.row, this.squareData.col);
+  }
+
+  get itsMyTurn(): boolean {
+    return this.$store.getters["playerStore/getMyKey"] === this.$store.getters["gameStore/getWhoseTurn"];
   }
 
   get squareBackgroundColor(): string{
@@ -112,19 +121,38 @@ export default class MapSquare extends Vue {
       this.squareData.mapType === MapType.Ship &&
       this.squareData.captains.includes(this.$store.getters["playerStore/getMyKey"])
     ){
-      
-      //darkest colours
-      if (["e6194b", "f58231", "808000", "3cb44b", "4363d8", "911eb4"].includes(this.$store.getters["playerStore/getMyColour"])){
-       return 0.5; 
+
+      switch (this.$store.getters["playerStore/getMyColour"]){
+        
+        case "e6194b": //red
+        case "ffe119": //yellow
+        case "f032e6": //magenta
+          return 0.75;
+        
+        case "fffac8": //faint yellow
+        case "808000": //olive
+        case "ffd8b1": //peach
+        case "911eb4": //purple
+          return 0.7;
+
+        case "f58231": //orange
+        case "bfef45": //lime green
+        case "aaffc3": //mint green
+          return 0.65;
+
+        case "fabed4": //pink
+          return 0.6;
+
+        case "3cb44b": //dark green (pine)
+        case "dcbeff": //lilac
+        case "42d4f4": //sky blue
+          return 0.55;
+
+        case "4363d8": //deep blue
+          return 0.5;
+        
       }
-      //medium colours
-      else if (["aaffc3", "42d4f4", "f032e6", "ffd8b1"].includes(this.$store.getters["playerStore/getMyColour"])){
-        return 0.3;
-      }
-      //lightest 
-      else{
-        return 0.2;
-      }
+      return 0.1;
     }
 
     //revelaed ship(s) - transparent
@@ -144,6 +172,12 @@ export default class MapSquare extends Vue {
     //ToDo - overlapping ships, powerup buoys
     return  "@/assets/game/fog.png";
   }
+
+  get squareBlackBorder(): boolean{
+    return this.squareData.revealed && this.squareData.mapType === MapType.Ship;
+  }
+
+  
 }
 </script>
 
@@ -160,9 +194,15 @@ export default class MapSquare extends Vue {
   flex-grow: 1;
 }
 
-button:hover{
-  border-width: 2px;
+.hoverableClass:hover{
+  border-width: 3px;
   border-style: solid;
   border-color: red;
+}
+
+.blackBorder{
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
 }
 </style>

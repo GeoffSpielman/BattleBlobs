@@ -55,7 +55,7 @@ export default class IndividualPlayerDisplay extends Mixins(
         this.playerKey
       );
     } else {
-      return "Removed from Database :(";
+      return "Removed :(";
     }
   }
 
@@ -124,7 +124,7 @@ export default class IndividualPlayerDisplay extends Mixins(
 
   get itsMyTurn(): boolean {
     return (
-      this.$store.getters["playerStore/getMyKey"] ===
+      this.playerKey ===
       this.$store.getters["gameStore/getWhoseTurn"]
     );
   }

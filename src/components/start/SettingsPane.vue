@@ -89,7 +89,8 @@ h2 {
 
 .SettingsRow h3 {
   flex-grow: 1;
-  padding-left: 10px;
+  padding-left: 14px;
+  font-size: 14pt;
 }
 
 #switchContainter {

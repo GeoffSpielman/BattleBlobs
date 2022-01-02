@@ -110,11 +110,10 @@ const mapStore: Module<MapState, RootState> = {
 
             //upload the initialized map
             firebase.database.ref('map/mapData').set(newMap);
+        },
 
-            
-            
-
-
+        revealSquare(context, coordString: string){
+            firebase.database.ref('map/mapData/' + coordString + '/revealed').set(true);
         }
 
 
