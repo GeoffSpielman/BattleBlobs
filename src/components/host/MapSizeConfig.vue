@@ -41,11 +41,11 @@ export default class MapSizeConfig extends Vue {
   }
 
   plusButtonClicked(){
-    if (this.mapSize < 20 ){
+    if (this.mapSize < 24 ){
        this.$store.dispatch("mapStore/updateMapSize", this.mapSize + 1);
     }
     else {
-      this.errorMessage = "Max size is 20";
+      this.errorMessage = "Max size is 24";
       clearTimeout(this.timeoutID);
       this.timeoutID = setTimeout(this.clearErrorMessage, 1700);
     }

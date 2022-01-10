@@ -1,5 +1,11 @@
 $cf-blue: #024988;
+$text-background-whitest: rgba(255, 255, 255, 0.45);
+$text-background-medium: rgba(255, 255, 255, 0.25);
+$text-background-faint: rgba(255, 255, 255, 0.15);
 
 :export {
     primary: $cf-blue;
+    textBackgroundWhitest: $text-background-whitest;
+    textBackgroundMedium: $text-background-medium;
+    textBackgroundFaint: $text-background-faint;
 }

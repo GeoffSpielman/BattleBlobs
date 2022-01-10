@@ -37,13 +37,15 @@
 <script lang="ts">
 import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
 import { PowerupIconPathMixin } from "@/mixins/PowerupIconPathMixin";
+import { TextBackgroundColourMixin } from "@/mixins/TextBackgroundColourMixin"
 import { PowerupName } from "@/models/enums";
 
 @Component({
   name: "IndividualPlayerDisplay",
 })
 export default class IndividualPlayerDisplay extends Mixins(
-  PowerupIconPathMixin
+  PowerupIconPathMixin,
+  TextBackgroundColourMixin
 ) {
   @Prop({ required: true }) readonly playerKey!: string;
 
@@ -72,21 +74,8 @@ export default class IndividualPlayerDisplay extends Mixins(
     }
   }
 
-  get aliasBackdropTone() {
-    //dark colours
-    if (
-      ["e6194b", "f58231", "808000", "3cb44b", "4363d8", "911eb4"].includes(
-        this.playerColour
-      )
-    ) {
-      return "whitest";
-    } else if (
-      ["aaffc3", "42d4f4", "f032e6", "ffd8b1"].includes(this.playerColour)
-    ) {
-      return "medium";
-    } else {
-      return "faint";
-    }
+  get aliasBackdropTone(): string {
+    return this.textBackgroundClass(this.playerColour)
   }
 
   get playerCaptainNum(): number {
@@ -135,7 +124,7 @@ export default class IndividualPlayerDisplay extends Mixins(
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #individualPlayerDisplayOutermost {
   display: flex;
   flex-direction: column;
@@ -181,15 +170,15 @@ export default class IndividualPlayerDisplay extends Mixins(
 }
 
 .whitestAliasBackdrop {
-  background-color: rgba(255, 255, 255, 0.45);
+  background-color: $text-background-whitest
 }
 
 .mediumAliasBackdrop {
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: $text-background-medium
 }
 
 .faintAliasBackdrop {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: $text-background-faint
 }
 
 #powerupsArea {

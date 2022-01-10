@@ -56,6 +56,10 @@ const playerStore: Module<PlayerState, RootState> = {
       }
     },
 
+    getMyCaptainNumber(state): number | undefined{
+      return state.players.find((player) => player.key === state.myKey)?.captainNum;
+    },
+
     getPlayersReadyCount(state): number{
       let counter: number = 0;
       state.players.forEach(player => {
@@ -88,7 +92,11 @@ const playerStore: Module<PlayerState, RootState> = {
 
     getShipKeysUsingKey: (state) => (recKey: string) => {
       return [state.players.find((player) => player.key === recKey)?.shipOneKey, state.players.find((player) => player.key === recKey)?.shipTwoKey]
-    }
+    },
+
+    getCaptainNumberUsingKey: (state) => (recKey: string) => {
+      return state.players.find((player) => player.key === recKey)?.captainNum;
+    },
 
   },
 

@@ -3,36 +3,60 @@
     class="squareBtn"
     @click="squareClicked()"
     @mouseover="squareHovered()"
-    :style="{ backgroundColor: squareBackgroundColor, opacity: buttonOpacity, cursor: itsMyTurn? 'pointer': 'not-allowed'}"
-    :class="{hoverableClass: itsMyTurn && squareData.revealed === false, blackBorder: squareBlackBorder}"
+    :style="{
+      backgroundColor: squareBackgroundColor,
+      opacity: buttonOpacity,
+      cursor: itsMyTurn ? 'pointer' : 'not-allowed',
+    }"
+    :class="{
+      hoverableClass: itsMyTurn && squareData.revealed === false,
+      blackBorder: squareBlackBorder,
+    }"
   >
-    <img class="squareImage" src="@/assets/game/fog.png" :style="{opacity: imageOpacity}" />
+    <img
+      class="squareImage"
+      src="@/assets/game/fog.png"
+      :style="{ opacity: imageOpacity }"
+    />
+    <div
+      class="squareText"
+      :class="{
+        whitestTextBackdrop: captainNumBackdropClass === 'whitest',
+        mediumTextBackdrop: captainNumBackdropClass === 'medium',
+        faintTextBackdrop: captainNumBackdropClass === 'faint',
+      }"
+    >
+      {{ textToShow }}
+    </div>
   </button>
 </template>
 
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
 import { GridSquare } from "@/models/interfaces";
 import { MapType } from "@/models/enums";
+import { TextBackgroundColourMixin } from "@/mixins/TextBackgroundColourMixin"
 
 @Component({
   name: "MapSquare",
   components: {},
 })
-export default class MapSquare extends Vue {
-
+export default class MapSquare extends Mixins(
+  TextBackgroundColourMixin
+) {
   testModeShowAll = false;
 
   @Prop({ required: true }) readonly squareData!: GridSquare;
 
   squareClicked() {
-    if (this.itsMyTurn){
-      this.$store.dispatch("mapStore/revealSquare", [this.squareData.row, this.squareData.col].join(","));
+    if (this.itsMyTurn) {
+      this.$store.dispatch(
+        "mapStore/revealSquare",
+        [this.squareData.row, this.squareData.col].join(",")
+      );
       this.$store.dispatch("gameStore/incrementWhoseTurn");
     }
-    
-
   }
 
   squareHovered() {
@@ -40,22 +64,30 @@ export default class MapSquare extends Vue {
   }
 
   get itsMyTurn(): boolean {
-    return this.$store.getters["playerStore/getMyKey"] === this.$store.getters["gameStore/getWhoseTurn"];
+    return (
+      this.$store.getters["playerStore/getMyKey"] ===
+      this.$store.getters["gameStore/getWhoseTurn"]
+    );
   }
 
-  get squareBackgroundColor(): string{
-
+  get squareBackgroundColor(): string {
     //TEST MODE - SHOW ALL SHIPS
-    if (this.squareData.mapType === MapType.Ship && this.testModeShowAll){
-      return "#" + this.$store.getters["playerStore/getColourUsingKey"](this.squareData.captains[0])
+    if (this.squareData.mapType === MapType.Ship && this.testModeShowAll) {
+      return (
+        "#" +
+        this.$store.getters["playerStore/getColourUsingKey"](
+          this.squareData.captains[0]
+        )
+      );
     }
-
 
     //hidden and your own ship - show it only to you
     if (
       this.squareData.revealed === false &&
       this.squareData.mapType === MapType.Ship &&
-      this.squareData.captains.includes(this.$store.getters["playerStore/getMyKey"])
+      this.squareData.captains.includes(
+        this.$store.getters["playerStore/getMyKey"]
+      )
     ) {
       return "#" + this.$store.getters["playerStore/getMyColour"];
     }
@@ -63,20 +95,24 @@ export default class MapSquare extends Vue {
     //revealed and only one ship on the square - show the ship colour
     else if (
       this.squareData.revealed === true &&
-      this.squareData.mapType === MapType.Ship && 
+      this.squareData.mapType === MapType.Ship &&
       this.squareData.captains.length === 1
     ) {
-        return "#" + this.$store.getters["playerStore/getColourUsingKey"](this.squareData.captains[0])
-      }
+      return (
+        "#" +
+        this.$store.getters["playerStore/getColourUsingKey"](
+          this.squareData.captains[0]
+        )
+      );
+    }
 
     //otherwise the square is plain fog or transparent so it doesn't matter
     return "#CCCCCC";
   }
 
   get buttonOpacity(): number {
-
     //TEST MODE - SHOW ALL SHIPS
-    if (this.squareData.mapType === MapType.Ship && this.testModeShowAll){
+    if (this.squareData.mapType === MapType.Ship && this.testModeShowAll) {
       return 1.0;
     }
 
@@ -84,24 +120,27 @@ export default class MapSquare extends Vue {
     if (
       this.squareData.revealed === false &&
       this.squareData.mapType === MapType.Ship &&
-      this.squareData.captains.includes(this.$store.getters["playerStore/getMyKey"])
-    ){
+      this.squareData.captains.includes(
+        this.$store.getters["playerStore/getMyKey"]
+      )
+    ) {
       return 1.0;
     }
 
     //revealed and a ship - completely opaque
     else if (
-      this.squareData.revealed === true && 
+      this.squareData.revealed === true &&
       this.squareData.mapType === MapType.Ship
-    ){
+    ) {
       return 1.0;
     }
-    
+
     //revealed and water or a powerup buoy - transparent
     else if (
       this.squareData.revealed === true &&
-      (this.squareData.mapType === MapType.Water || this.squareData.mapType === MapType.PowerUp)
-    ){
+      (this.squareData.mapType === MapType.Water ||
+        this.squareData.mapType === MapType.PowerUp)
+    ) {
       return 0;
     }
     //otherwise fog
@@ -109,26 +148,25 @@ export default class MapSquare extends Vue {
   }
 
   get imageOpacity(): number {
-    
     //TEST MODE - SHOW ALL SHIPS
-    if (this.squareData.mapType === MapType.Ship && this.testModeShowAll){
+    if (this.squareData.mapType === MapType.Ship && this.testModeShowAll) {
       return 0;
     }
-    
+
     //hidden and your own shape - somewhat transparent based on the colour
     if (
       this.squareData.revealed === false &&
       this.squareData.mapType === MapType.Ship &&
-      this.squareData.captains.includes(this.$store.getters["playerStore/getMyKey"])
-    ){
-
-      switch (this.$store.getters["playerStore/getMyColour"]){
-        
+      this.squareData.captains.includes(
+        this.$store.getters["playerStore/getMyKey"]
+      )
+    ) {
+      switch (this.$store.getters["playerStore/getMyColour"]) {
         case "e6194b": //red
         case "ffe119": //yellow
         case "f032e6": //magenta
           return 0.75;
-        
+
         case "fffac8": //faint yellow
         case "808000": //olive
         case "ffd8b1": //peach
@@ -150,17 +188,22 @@ export default class MapSquare extends Vue {
 
         case "4363d8": //deep blue
           return 0.5;
-        
       }
       return 0.1;
     }
 
-    //revelaed ship(s) - transparent
-    else if (this.squareData.revealed === true && this.squareData.mapType === MapType.Ship){
+    //revealed ship(s) - transparent
+    else if (
+      this.squareData.revealed === true &&
+      this.squareData.mapType === MapType.Ship
+    ) {
       return 0;
     }
     //revealed powerup buoy - opaque to show image
-    else if (this.squareData.revealed === true && this.squareData.mapType === MapType.PowerUp){
+    else if (
+      this.squareData.revealed === true &&
+      this.squareData.mapType === MapType.PowerUp
+    ) {
       return 1.0;
     }
 
@@ -168,24 +211,73 @@ export default class MapSquare extends Vue {
     return 1.0;
   }
 
-  get imagePath(): string{
+  get imagePath(): string {
     //ToDo - overlapping ships, powerup buoys
-    return  "@/assets/game/fog.png";
+    return "@/assets/game/fog.png";
   }
 
-  get squareBlackBorder(): boolean{
+  get squareBlackBorder(): boolean {
     return this.squareData.revealed && this.squareData.mapType === MapType.Ship;
   }
 
-  
+  get textToShow(): string {
+    if (!this.$store.getters["clientSpecificStore/getColourAssistanceMode"]) {
+      return "";
+    }
+    //your own ship
+    if (
+      this.squareData.mapType === MapType.Ship &&
+      this.squareData.captains.includes(
+        this.$store.getters["playerStore/getMyKey"]
+      )
+    ) {
+      return this.$store.getters["playerStore/getMyCaptainNumber"].toString();
+    }
+
+    //someone else's revealed ship
+    if (
+      this.squareData.revealed === true &&
+      this.squareData.mapType === MapType.Ship
+    ) {
+      //if there is only one ship here
+      if (this.squareData.captains.length === 1) {
+        return this.$store.getters["playerStore/getCaptainNumberUsingKey"](
+          this.squareData.captains[0]
+        );
+      }
+      //there are multiple ships here
+      else {
+        return "M";
+      }
+    }
+    return "";
+  }
+
+  get captainNumBackdropClass(): string {
+    
+    if (this.squareData.mapType === MapType.Ship && this.squareData.revealed && this.$store.getters["clientSpecificStore/getColourAssistanceMode"])
+    {
+      //if there is only one captain
+      if (this.squareData.captains.length === 1){
+        return this.textBackgroundClass(this.$store.getters["playerStore/getColourUsingKey"](this.squareData.captains[0]));
+      }
+      //for multiple captains
+      else{
+        return 'medium'
+      }
+    }
+    //not a ship
+    return "";
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .squareBtn {
   flex-grow: 1;
   flex-basis: 10px;
   display: flex;
+  position: relative;
 }
 
 .squareImage {
@@ -194,15 +286,38 @@ export default class MapSquare extends Vue {
   flex-grow: 1;
 }
 
-.hoverableClass:hover{
+.hoverableClass:hover {
   border-width: 3px;
   border-style: solid;
   border-color: red;
 }
 
-.blackBorder{
+.blackBorder {
   border-width: 1px;
   border-style: solid;
   border-color: black;
+}
+
+.squareText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 13px;
+  height: 21px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.whitestTextBackdrop {
+  background-color: $text-background-whitest
+  }
+
+.mediumTextBackdrop {
+  background-color:  $text-background-medium
+}
+
+.faintTextBackdrop {
+  background-color:  $text-background-faint
 }
 </style>
