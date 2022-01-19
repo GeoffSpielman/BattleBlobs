@@ -32,17 +32,25 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { PlayerStatus } from "@/models/enums"
 
 @Component({
   name: "ImageCredits",
 })
 export default class ImageCredits extends Vue {
 
+  mounted() {
+    this.$store.dispatch(
+      "playerStore/setMyStatus",
+      PlayerStatus.ReadingCredits
+    );
+  }
+
   people: {'name': string; 'credit': string}[] = [
+    {'name': 'Chris Matthews', 'credit': "initial game design brainstorming"},
     {'name': 'Krista Lawson', 'credit': "24/7 proffesional grade tech support - when I need to call in 'the big guns'"},
     {'name': 'Ryan Lawson', 'credit': "an endless wealth of Vue and Vuetify knowledge"},
-    {'name': 'Will Clark', 'credit': "for getting me started with web development in the early days"},
-    {'name': 'Garrett Lajoie', 'credit': "for user testing - many hours of 'okay refresh the page, now how does it look?'"}
+    {'name': 'Elsie Clark', 'credit': "for getting me started with web development in the early days"},
     ];
 
   images: Array<object> = [
@@ -123,6 +131,12 @@ export default class ImageCredits extends Vue {
       path: require("@/assets/imageCredits/uh_oh.png"),
       caption: "Spiral by Alexander Skowalsky from The Noun Project",
       link: "https://thenounproject.com/search/?q=spiral&i=253084",
+    },
+
+    {
+      path: require("@/assets/imageCredits/fog.png"),
+      caption: "White Fog Isolated On Dark Transparent Background from Clip Art Max",
+      link: "https://www.clipartmax.com/download/m2i8H7b1d3b1b1b1_white-fog-isolated-on-dark-transparent-background-portable-network-graphics/",
     },
   ];
 }

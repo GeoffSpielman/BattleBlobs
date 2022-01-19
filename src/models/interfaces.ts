@@ -83,3 +83,9 @@ export interface AddShipToMapReturn {
     mapData: {[coords: string]: GridSquare};
     anchorPoint: {row: number; col: number};
 }
+
+export interface SelectedSquareData{
+    top: number; 
+    left: number; 
+    width: number;
+}

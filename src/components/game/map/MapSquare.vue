@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
-import { GridSquare } from "@/models/interfaces";
+import { GridSquare} from "@/models/interfaces";
 import { MapType } from "@/models/enums";
 import { TextBackgroundColourMixin } from "@/mixins/TextBackgroundColourMixin"
 
@@ -56,6 +56,9 @@ export default class MapSquare extends Mixins(
         [this.squareData.row, this.squareData.col].join(",")
       );
       this.$store.dispatch("gameStore/incrementWhoseTurn");
+      let clickedSquareObj: DOMRect = this.$el.getBoundingClientRect();
+      this.$emit("powerupRevealed", {'top': clickedSquareObj.top, 'left': clickedSquareObj.left, 'width': clickedSquareObj.width});
+      
     }
   }
 

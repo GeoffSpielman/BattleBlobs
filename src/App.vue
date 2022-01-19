@@ -103,10 +103,10 @@ export default class App extends Vue {
             );
             break;
           }
-          case "Image Credits": {
+          case "Credits": {
             this.$store.dispatch(
               "playerStore/setMyStatus",
-              PlayerStatus.ReadingImageCredits
+              PlayerStatus.ReadingCredits
             );
             break;
           }

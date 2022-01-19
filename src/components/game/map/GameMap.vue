@@ -33,10 +33,21 @@
           :key="rowNum + ',' + colNum"
           :squareData="mapData[rowIdx + ',' + colIdx]"
           @squareHovered="squareHovered"
+          @powerupRevealed="showPowerupAnimation"
         >
         </map-square>
       </div>
     </div>
+    <powerup-to-map-center
+    :selectedSquareData="selectedSquareData"
+    :mapCenterTop="mapCenterTop"
+    :mapCenterLeft="mapCenterLeft"
+    :showAnimation="showSelectedToCenterPowerupAnimation"
+    @animationComplete="selectedToCenterAnimationComplete">
+    
+    </powerup-to-map-center>
+
+
   </div>
 </template>
 
@@ -44,16 +55,23 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import MapSquare from "@/components/game/map/MapSquare.vue";
-import { GridSquare } from "@/models/interfaces";
+import powerupToMapCenter from "@/components/game/map/powerupToMapCenter.vue";
+import { GridSquare, SelectedSquareData } from "@/models/interfaces";
+
 
 @Component({
   name: "GameMap",
-  components: { MapSquare },
+  components: { MapSquare, powerupToMapCenter},
 })
 export default class GameMap extends Vue {
   alphabet: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   hoveredRowIdx: number = -1;
   hoveredColIdx: number = -1;
+  
+  showSelectedToCenterPowerupAnimation: boolean = false;
+  selectedSquareData: SelectedSquareData = {'top': -1, 'left': -1, 'width': -1};
+  mapCenterTop: number = -1;
+  mapCenterLeft: number = -1;
 
   get mapSize(): number {
     return this.$store.getters["mapStore/getMapSize"];
@@ -71,6 +89,21 @@ export default class GameMap extends Vue {
   mouseLeftMapArea() {
     this.hoveredRowIdx = -1;
     this.hoveredColIdx = -1;
+  }
+
+  showPowerupAnimation(payload: SelectedSquareData) {
+    this.selectedSquareData = payload;
+    let mapObj: DOMRect = document
+      .getElementById("mapArea")!
+      .getBoundingClientRect();
+    this.mapCenterTop = mapObj.top + mapObj.height/2;
+    this.mapCenterLeft = mapObj.left + mapObj.width/2;
+    this. showSelectedToCenterPowerupAnimation = true;   
+  }
+
+  selectedToCenterAnimationComplete(){
+    console.log("top level sees animation is finished");
+    this.showSelectedToCenterPowerupAnimation = false;
   }
 }
 </script>

@@ -2,7 +2,7 @@ export enum PlayerStatus{
     StartScreen = "On Start Screen",
     ReadingInstructions = "Reading Instructions",
     CreatingProfile = "Creating Profile",
-    ReadingImageCredits = "Reading Image Credits",
+    ReadingCredits = "Reading Credits",
     ReadyToStart = "Ready to Start",
     InGame = "In Game",
     Spectating = "Spectating",
