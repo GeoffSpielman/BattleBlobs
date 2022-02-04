@@ -93,11 +93,12 @@ export default class GameMap extends Vue {
 
   showPowerupAnimation(payload: SelectedSquareData) {
     this.selectedSquareData = payload;
-    let mapObj: DOMRect = document
-      .getElementById("mapArea")!
-      .getBoundingClientRect();
-    this.mapCenterTop = mapObj.top + mapObj.height/2;
-    this.mapCenterLeft = mapObj.left + mapObj.width/2;
+    let MapDomElement: HTMLElement | null = document.getElementById("mapArea");
+    if (MapDomElement){
+      let mapObj: DOMRect = MapDomElement.getBoundingClientRect();
+      this.mapCenterTop = mapObj.top + mapObj.height/2;
+      this.mapCenterLeft = mapObj.left + mapObj.width/2;
+    }
     this. showSelectedToCenterPowerupAnimation = true;   
   }
 

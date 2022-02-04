@@ -10,7 +10,7 @@
            <h2> Connection Lost </h2>
            Uh oh! You have been disconnected from the game. Don't worry, I've deployed my fleet of nano robots to reconnect you as quickly as possible. 
            <br><br>
-           Please don't close this tab or refresh the page.
+           Please <strong>do not </strong> close this tab or refresh the page.
         </div>
       </div>
       </v-card>

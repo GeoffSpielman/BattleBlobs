@@ -57,6 +57,7 @@ export default class PowerupToMapCenter extends Mixins(PowerupIconPathMixin) {
   centeredDivTop: number = 0;
   centeredDivLeft: number = 0;
 
+  
   beforeEnter(el: HTMLFormElement) {
     //put the entire div over the selected square
     el.style.top = this.selectedSquareData.top + "px";
@@ -66,12 +67,17 @@ export default class PowerupToMapCenter extends Mixins(PowerupIconPathMixin) {
     this.initialWidth = this.selectedSquareData.width;
   }
 
-  enter(el: HTMLFormElement, done: any) {
+  enter(el: HTMLFormElement, done: Function) {
     console.log("enter!");
 
-    //make the icon the same size as the square
-    document.getElementById("iconImage")!.style.width = this.selectedSquareData.width + "px";
-
+    //DOM element handles
+    let iconImgDomElement: HTMLElement | null = document.getElementById("iconImage");
+    let nameTextDomElement: HTMLElement | null = document.getElementById("iconName");
+    if (iconImgDomElement){
+      //make the icon the same size as the square
+      iconImgDomElement.style.width = this.selectedSquareData.width + "px";
+    }
+  
     //compute the final resting place of the outer div
     this.centeredDivTop = this.mapCenterTop - this.centeredDivHeight / 2;
     this.centeredDivLeft = this.mapCenterLeft - this.centeredDivWidth / 2;
@@ -99,12 +105,16 @@ export default class PowerupToMapCenter extends Mixins(PowerupIconPathMixin) {
         
 
         //image
-        document.getElementById("iconImage")!.style.width = String(this.selectedSquareData.width + (this.ceneteredIconWidth - this.selectedSquareData.width) * proportionOfAnimationComplete) + "px";
-        document.getElementById("iconImage")!.style.marginBottom = String(this.centeredImageBottomMargin * proportionOfAnimationComplete) + "px";
+        if (iconImgDomElement){
+          iconImgDomElement.style.width = String(this.selectedSquareData.width + (this.ceneteredIconWidth - this.selectedSquareData.width) * proportionOfAnimationComplete) + "px";
+          iconImgDomElement.style.marginBottom = String(this.centeredImageBottomMargin * proportionOfAnimationComplete) + "px";
+        }
 
         //text
-        document.getElementById("iconName")!.style.fontSize = String(this.centeredFontSize * proportionOfAnimationComplete) + "pt";
-        document.getElementById("iconName")!.style.marginBottom = String(this.centeredTextBottomMargin * proportionOfAnimationComplete) + "px";
+        if (nameTextDomElement){
+          nameTextDomElement.style.fontSize = String(this.centeredFontSize * proportionOfAnimationComplete) + "pt";
+          nameTextDomElement.style.marginBottom = String(this.centeredTextBottomMargin * proportionOfAnimationComplete) + "px";
+        }
       }
     }, Math.round((1 / this.framesPerSecond) * 1000));
   }

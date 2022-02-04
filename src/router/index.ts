@@ -7,6 +7,7 @@ import LobbyPage from '@/pages/Lobby.vue'
 import GamePage from '@/pages/Game.vue'
 import CreditsPage from '@/pages/Credits.vue'
 import HostPage from '@/pages/Host.vue'
+import LoginPage from '@/pages/Login.vue'
 import NotFoundPage from '@/pages/NotFound.vue'
 
 
@@ -39,9 +40,14 @@ const routes: Array<RouteConfig> = [
     component: CreditsPage
   },
   {
-    path: '/Host',
+    path: '/host',
     name: 'Host',
     component: HostPage
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginPage
   },
   {
     path: '/:notFound(.*)',

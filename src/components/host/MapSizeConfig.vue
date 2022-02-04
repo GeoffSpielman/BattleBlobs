@@ -20,22 +20,15 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { GameStatus } from "@/models/enums";
 
 @Component({
   name: "MapSizeConfig",
   components: {},
 })
 export default class MapSizeConfig extends Vue {
-  GameStatus = GameStatus;
   timeoutID: number = -1;
 
   errorMessage: string = "";
-
-  get gameStatus(): string {
-    return this.$store.getters["gameStore/getGameStatus"];
-  }
-
   get mapSize(): number {
     return this.$store.getters["mapStore/getMapSize"];
   }

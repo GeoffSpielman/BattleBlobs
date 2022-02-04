@@ -21,8 +21,8 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import TheHeader from "@/components/start/TheHeader.vue";
 import TheFooter from "@/components/start/TheFooter.vue";
 import DisconnectedCard from "@/components/start/DisconnectedCard.vue";
-import configuredDatabase from "@/store/firebase";
-import firebase from "firebase/app";
+import database from "@/store/firebase";
+import {ref, set, onValue, onDisconnect} from "firebase/database";
 import { PlayerStatus } from "@/models/enums";
 import { GameStatus } from "@/models/enums";
 
@@ -35,11 +35,12 @@ import { GameStatus } from "@/models/enums";
   },
 })
 export default class App extends Vue {
-  myPlayerStatusRef: firebase.database.Reference | null = null;
-  myPlayerKeyRef: firebase.database.Reference | null = null;
-  connectedRef: firebase.database.Reference = configuredDatabase.database.ref(
+
+  /*connectedRef = configuredDatabase.database.ref(
     ".info/connected"
   );
+  */
+  connectedRef = ref(database, ".info/connected");
 
   showDisconnectedDialog: boolean = false;
 
@@ -49,6 +50,7 @@ export default class App extends Vue {
 
   @Watch("gameStatus")
   gameStatusChanged(newVal: GameStatus) {
+    //Todo - only move 'locked in' players into the game
     if (newVal === GameStatus.GameInProgress && this.$route.name !== "Host") {
       this.$router.push("/play");
     }
@@ -60,14 +62,19 @@ export default class App extends Vue {
     
 
 
-
+    /*
     //put the user back on the home page if they clicked 'refresh'
     if (this.$route.name !== "Start" && this.$route.name !== "Host") {
       this.$router.push("/");
     }
+    */
+
+
 
     //react to disconnection/reconnection
-    this.connectedRef.on("value", (snapshot) => {
+
+    /*this.connectedRef.on("value", (snapshot) => {*/
+    onValue(this.connectedRef, (snapshot) => {
       //reconnect
       if (snapshot.val() === true) {
         this.showDisconnectedDialog = false;
@@ -141,28 +148,18 @@ export default class App extends Vue {
     this.$store.dispatch("powerupStore/getFirebaseDatabase");
     this.$store.dispatch("mapStore/getFirebaseDatabase");
 
-    //initilize client instance (player object) in database
+    //initialize client instance (player object) in database
     this.$store.dispatch("playerStore/intializeClient").then(() => {
-      this.myPlayerStatusRef = configuredDatabase.database.ref(
-        "players/" + this.$store.getters["playerStore/getMyKey"] + "/status"
-      );
-      this.myPlayerKeyRef = configuredDatabase.database.ref(
-        "players/" + this.$store.getters["playerStore/getMyKey"] + "/key"
-      );
-      this.myPlayerStatusRef.onDisconnect().set(PlayerStatus.Disconnected);
-      this.myPlayerKeyRef
-        .onDisconnect()
-        .set(this.$store.getters["playerStore/getMyKey"]);
+
+      /*
+      configuredDatabase.database.ref("players/" + this.$store.getters["playerStore/getMyKey"] + "/status").onDisconnect().set(PlayerStatus.Disconnected);
+      configuredDatabase.database.ref("players/" + this.$store.getters["playerStore/getMyKey"] + "/key").onDisconnect().set(this.$store.getters["playerStore/getMyKey"]);
+      */
+     
+     onDisconnect(ref(database, "players/" + this.$store.getters["playerStore/getMyKey"] + "/status")).set(PlayerStatus.Disconnected);
+     onDisconnect(ref(database, "players/" + this.$store.getters["playerStore/getMyKey"] + "/key")).set(this.$store.getters["playerStore/getMyKey"]);
+
     });
-
-/*
-*/
-
-
-    
-    
-
-
   }
 }
 </script>
