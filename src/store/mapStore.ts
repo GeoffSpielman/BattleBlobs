@@ -1,4 +1,5 @@
-import firebase from './firebase'
+import database from "@/store/firebase";
+import {ref, set, onValue, onChildAdded, onChildChanged, onChildRemoved} from "firebase/database";
 import {Module } from 'vuex'
 import { RootState } from './RootState'
 import { determineShipSpawnRange } from "@/algorithms/determineShipSpawnRange";
@@ -49,26 +50,26 @@ const mapStore: Module<MapState, RootState> = {
 
     actions: {
         //firebase listeners
-        getFirebaseDatabase(context) {
-            firebase.database.ref('map/mapSize').on('value', function (snapshot) {
+        initializeDatabaseListeners(context) {
+            onValue(ref(database, 'map/mapSize'), (snapshot) => {
                 context.commit('changeMapSize', snapshot.val());
-            }),
-
-            firebase.database.ref('map/mapData').on("child_added", function(data){
+            });
+            
+            onChildAdded(ref(database, 'map/mapData'), (data) => {
                 context.commit('addSquareToMap', data.val())
-            }),
+            });
 
-            firebase.database.ref('map/mapData').on('child_removed', function (data){
+            onChildRemoved(ref(database, 'map/mapData'), (data) => {
                 context.commit('removeSquareFromMap', data.key);
-            }),
+            });
 
-            firebase.database.ref('map/mapData').on('child_changed', function (data){
+            onChildChanged(ref(database, 'map/mapData'), (data) => {
                 context.commit('updateMapSquare', data.val());
-            })
+            });
         },
         
         updateMapSize(_, newMapSize: number){
-            firebase.database.ref('map/mapSize').set(newMapSize);
+            set(ref(database, 'map/mapSize'), newMapSize);
         },
 
         initializeMap(context){
@@ -109,14 +110,12 @@ const mapStore: Module<MapState, RootState> = {
             })
 
             //upload the initialized map
-            firebase.database.ref('map/mapData').set(newMap);
+            set(ref(database, 'map/mapData'), newMap);
         },
 
-        revealSquare(context, coordString: string){
-            firebase.database.ref('map/mapData/' + coordString + '/revealed').set(true);
+        revealSquare(_, coordString: string){
+            set(ref(database, 'map/mapData/' + + coordString + '/revealed'), true)
         }
-
-
     },
 }
 

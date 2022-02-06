@@ -29,7 +29,8 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import MessageInput from "@/components/game/chat/MessageInput.vue";
 import MessageBalloon from "@/components/game/chat/MessageBalloon.vue";
 import { MessageEntry } from "@/models/interfaces";
-import firebase from "@/store/firebase";
+import database from "@/store/firebase";
+import {ref, set, push, onChildAdded, onChildChanged, onChildRemoved} from "firebase/database";
 
 @Component({
   name: "IndividualChatPane",
@@ -54,24 +55,20 @@ export default class IndividualChatPane extends Vue {
   }
 
   sendMessage(recMessage: string) {
-    firebase.database
-      .ref("chat/convos/" + this.chatKey)
-      .push({
+    set(push(ref(database, ("chat/convos/" + this.chatKey))), {
         senderAlias: this.$store.getters["playerStore/getMyAlias"],
         content: recMessage,
       });
   }
 
   mounted() {
-    firebase.database
-      .ref("chat/convos/" + this.chatKey)
-      .on("child_added", (data) => {
+    onChildAdded(ref(database, "chat/convos/" + this.chatKey), (data) => {
         this.messageList.push({
           senderAlias: data.val().senderAlias,
           content: data.val().content,
           repeatSender: this.messageList[this.messageList.length - 1]?.senderAlias === data.val().senderAlias,
         });
-      });
+    });
   }
 }
 </script>

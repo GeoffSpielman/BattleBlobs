@@ -1,4 +1,5 @@
-import firebase from './firebase'
+import database from "@/store/firebase";
+import {ref, set, onChildAdded, onChildRemoved, onValue} from "firebase/database";
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 import { GameStatus } from '@/models/enums'
@@ -52,32 +53,35 @@ const gameStore: Module<GameState, RootState> = {
     actions: {
 
         //firebase listeners
-        getFirebaseDatabase(context) {
-            firebase.database.ref('game/status').on('value', function (snapshot) {
+        initializeDatabaseListeners(context) {
+            
+            onValue(ref(database,'game/status'), (snapshot) => {
                 context.commit('setGameStatus', snapshot.val());
-            }),
-
-            firebase.database.ref('game/currentPlayers').on('child_added', function (data) {
+            });
+            
+            
+            onChildAdded(ref(database, 'game/currentPlayers'), (data) => {
                 context.commit('addCurrentPlayer', data.val());
-            }),
-        
-            firebase.database.ref('game/currentPlayers').on('child_removed', function (data){
-                context.commit('removeCurrentPlayer', data.key);
-            }),
+            });
 
-            firebase.database.ref('game/whoseTurn').on('value', function (snapshot) {
+            onChildRemoved(ref(database, 'game/currentPlayers'), (data) =>{
+                context.commit('removeCurrentPlayer', data.key);
+            });
+        
+
+            onValue(ref(database,'game/whoseTurn'), (snapshot) => {
                 context.commit('setWhoseTurn', snapshot.val());
-            })
+            });
         },
 
 
         setGameStatus(_, recStatus: GameStatus) {
-            firebase.database.ref('game/status').set(recStatus);
+            set(ref(database, 'game/status'), recStatus)
         },
 
 
         setCurrentPlayersList(_, recPlayersList: string[]){
-            firebase.database.ref('game/currentPlayers').set(recPlayersList);
+            set(ref(database, 'game/currentPlayers'), recPlayersList);
         },
 
         addCurrentPlayer(context, newPlayerKey){
@@ -89,7 +93,7 @@ const gameStore: Module<GameState, RootState> = {
         },
 
         setWhoseTurn(_, playerKey){
-            firebase.database.ref('game/whoseTurn').set(playerKey);
+            set(ref(database, 'game/whoseTurn'), playerKey)
         },
 
         incrementWhoseTurn(context){

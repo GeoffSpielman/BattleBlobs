@@ -1,4 +1,5 @@
-import firebase from './firebase'
+import database from "@/store/firebase";
+import {ref, set, push, onChildAdded, onChildChanged, onChildRemoved} from "firebase/database";
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 import { PlayerEntry } from '@/models/interfaces'
@@ -125,35 +126,36 @@ const playerStore: Module<PlayerState, RootState> = {
   actions: {
 
     //firebase listeners
-    getFirebaseDatabase(context) {
-      firebase.database.ref('players').on('child_added', function (data) {
+    initializeDatabaseListeners(context) {
+
+      onChildAdded(ref(database, 'players'), (data) => {
         context.commit('addPlayer', data.val());
-      }),
+      });
 
-      firebase.database.ref('players').on('child_removed', function (data){
+      onChildRemoved(ref(database, 'players'), (data) => {
         context.commit('removePlayer', data.key);
-      })
+      });
 
-      firebase.database.ref('players').on('child_changed', function (data){
+      onChildChanged(ref(database, 'players'), (data) => {
         context.commit('modifyPlayer', data.val());
-      })
+      });
     },
 
+    
     addPlayer(_, newPlayer: PlayerEntry) {
-      const newPlayerRef = firebase.database.ref('players').push();
-      newPlayerRef.set(newPlayer);
+      set(push(ref(database, 'players')), newPlayer);
     },
 
     removePlayer(_, recKey: string) {
-      firebase.database.ref('players/' + recKey).remove()
+      set(ref(database, 'players/' + recKey), null);
     },
 
     modifyPlayer(_, modifiedPlayer: PlayerEntry){
-      firebase.database.ref('players/' + modifiedPlayer.key).set(modifiedPlayer);
+      set(ref(database, 'players/' + modifiedPlayer.key), modifiedPlayer);
     },
 
     intializeClient(context) {
-      const newClientRef = firebase.database.ref('players').push();
+      const newClientRef = push(ref(database, 'players'));
       if (newClientRef.key === null) {
         console.log("Error initializing new client. Firebase returned a 'null' key")
       }
@@ -170,7 +172,7 @@ const playerStore: Module<PlayerState, RootState> = {
           'powerups': {[PowerupName.None]: -1},
         }
         context.commit('setMyKey', newClientRef.key)
-        newClientRef.set(newPlayerEntry);
+        set(newClientRef, newPlayerEntry);
       }
     },
 
@@ -181,32 +183,32 @@ const playerStore: Module<PlayerState, RootState> = {
     setMyStatus(context, recStatus: PlayerStatus){
       //first make sure you haven't been removed from the database
       if (context.state.players.findIndex((playerObj) => (playerObj.key === context.state.myKey)) !== -1){
-        firebase.database.ref('players/' + context.state.myKey + '/status').set(recStatus);
+        set(ref(database, 'players/' + context.state.myKey + '/status'), recStatus);
       }      
     },
 
     setMyName(context, recName: string){
-      firebase.database.ref('players/' + context.state.myKey + '/name').set(recName);
+      set(ref(database, 'players/' + context.state.myKey + '/name'), recName);
     },
 
     setMyAlias(context, recAlias: string){
-      firebase.database.ref('players/' + context.state.myKey + '/alias').set(recAlias);
+      set(ref(database, 'players/' + context.state.myKey + '/alias'), recAlias);
     },
 
     setMyShipKey(context, payload: {'shipKey': string; 'shipNum': number}){
       if (payload.shipNum === 1){
-        firebase.database.ref('players/' + context.state.myKey + '/shipOneKey').set(payload.shipKey);
+        set(ref(database, 'players/' + context.state.myKey + '/shipOneKey'), payload.shipKey);
 
       }
       else if (payload.shipNum === 2){
-        firebase.database.ref('players/' + context.state.myKey + '/shipTwoKey').set(payload.shipKey);
+        set(ref(database, 'players/' + context.state.myKey + '/shipTwoKey'), payload.shipKey);
       }
     },
 
 
     lockedInUploadData(context){
       //set the colour hex code
-      firebase.database.ref('players/' + context.state.myKey + '/colour').set(context.rootGetters['clientSpecificStore/getSelectedColourHex'].substring(1));
+      set(ref(database, 'players/' + context.state.myKey + '/colour'), context.rootGetters['clientSpecificStore/getSelectedColourHex'].substring(1));
       
       for (let i = 1; i < 3; i++){
         //If client's ship key has never been set, create a new entry in ships store
@@ -225,7 +227,7 @@ const playerStore: Module<PlayerState, RootState> = {
     deleteAllPlayersExceptMe(context){
       const myPlayerObj = context.state.players.find((player) => player.key === context.state.myKey);
       if (myPlayerObj !== undefined){
-        firebase.database.ref('players/').set({[context.state.myKey]: myPlayerObj});
+        set(ref(database, 'players/'), {[context.state.myKey]: myPlayerObj});
       }
       else{
         console.log("Couldn't find host's own entry in the players database");
@@ -238,8 +240,8 @@ const playerStore: Module<PlayerState, RootState> = {
       context.state.players.forEach(playerObj => {
         if (playerObj.status === PlayerStatus.ReadyToStart){
           readyPlayerIDsList.push(String(playerObj.key));
-          firebase.database.ref('players/' + playerObj.key + '/status').set(PlayerStatus.InGame);
-          firebase.database.ref('players/' + playerObj.key + '/captainNum').set(captainNum);
+          set(ref(database, 'players/' + playerObj.key + '/status'), PlayerStatus.InGame);
+          set(ref(database, 'players/' + playerObj.key + '/captainNum'), captainNum);
           captainNum ++;
         }
       });

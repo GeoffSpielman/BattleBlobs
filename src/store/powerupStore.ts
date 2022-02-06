@@ -1,5 +1,6 @@
-import firebase from './firebase'
-import { ActionContext, Module } from 'vuex'
+import database from "@/store/firebase";
+import {ref, set, onChildAdded, onChildChanged} from "firebase/database";
+import { Module } from 'vuex'
 import { RootState } from './RootState'
 import {PowerupEntry} from "@/models/interfaces"
 
@@ -33,19 +34,19 @@ const powerupStore: Module<PowerupState, RootState> = {
 
     actions: {
         //firebase listeners
-        getFirebaseDatabase(context) {
-            firebase.database.ref('game/powerups').on('child_added', function (data) {
+        initializeDatabaseListeners(context) {
+            onChildAdded(ref(database, 'game/powerups'), (data) => {
                 context.commit('addPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining, 'sortOrder': data.val().sortOrder});
-            }),
+            });
 
-            firebase.database.ref('game/powerups').on('child_changed', function (data) {
+            onChildChanged(ref(database, 'game/powerups'), (data) => {
                 context.commit('modifyPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining, 'sortOrder': data.val().sortOrder});
             })
 
         },
 
         updatePowerupDeployed(_, payload: {'powerupName': string; 'newDeployedVal': number}){
-            firebase.database.ref('game/powerups/' + payload.powerupName + '/deployed').set(payload.newDeployedVal);
+            set(ref(database, 'game/powerups/' + payload.powerupName + '/deployed'), payload.newDeployedVal);
         },
         
     },

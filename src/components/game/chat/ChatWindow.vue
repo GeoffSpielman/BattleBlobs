@@ -41,7 +41,8 @@
 import { Component, Vue, Watch} from "vue-property-decorator";
 import IndividualChatPane from "@/components/game/chat/IndividualChatPane.vue";
 import {ChatEntry} from "@/models/interfaces"
-import firebase from "@/store/firebase";
+import database from "@/store/firebase";
+import {ref, onChildAdded} from "firebase/database";
 
 @Component({
   name: "ChatWindow",
@@ -62,9 +63,7 @@ export default class ChatWindow extends Vue {
 
     // listen to private chats
     this.chatsToShow.forEach(chat => {
-      firebase.database
-      .ref("chat/convos/" + chat.pairingKey)
-      .on("child_added", (data) => {
+      onChildAdded(ref(database, "chat/convos/" + chat.pairingKey), (data) => {
         if (data.val().senderAlias === chat.otherPlayerAlias){
           this.newMessageInChat(chat.pairingKey, chat.otherPlayerAlias)
         }     
@@ -72,13 +71,11 @@ export default class ChatWindow extends Vue {
     });
 
     //listen to the public chat
-    firebase.database
-      .ref("chat/convos/public")
-      .on("child_added", (data) => {
+    onChildAdded(ref(database, "chat/convos/public"), (data) => {
         if (data.val().senderAlias !== this.$store.getters["playerStore/getMyAlias"]){
           this.newMessageInChat("public", data.val().senderAlias);
         }     
-      });
+    });
   }
 
   newMessageInChat(convoKey: string, senderAlias: string){    

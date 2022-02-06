@@ -1,4 +1,5 @@
-import firebase from './firebase'
+import database from "@/store/firebase";
+import {ref, push, set, onChildAdded} from "firebase/database";
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 import {ChatEntry} from "@/models/interfaces"
@@ -33,7 +34,6 @@ const chatStore: Module<ChatState, RootState> = {
             }
             return pairingList;
         },
-
     },
 
     mutations: {
@@ -44,25 +44,23 @@ const chatStore: Module<ChatState, RootState> = {
 
     actions: {
         //firebase listeners
-        getFirebaseDatabase(context) {
-            firebase.database.ref('chat/pairings').on('child_added', function (data) {
+        initializeDatabaseListeners(context) {
+            onChildAdded(ref(database, 'chat/pairings'), (data) => {
                 context.commit('addPairing', { 'key': data.key, 'val': data.val() });
-            })
+            });
         },
 
         generateChatPairings(context, recIDsList) {
             for (let i = 0; i < recIDsList.length - 1; i++) {
                 for (let j = i + 1; j < recIDsList.length; j++) {
-                    let pairingRef = firebase.database.ref('chat/pairings').push()
-                    pairingRef.set([recIDsList[i], recIDsList[j]]);
+                    set(push(ref(database, 'chat/pairings')), [recIDsList[i], recIDsList[j]]); 
                 }
             }
         },
 
         deleteAllChats(_) {
-            firebase.database.ref('chat').set(null);
+            set(ref(database, 'chat'), null);
         }
-
     },
 }
 

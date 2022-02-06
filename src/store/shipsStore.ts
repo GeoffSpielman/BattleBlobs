@@ -1,4 +1,5 @@
-import firebase from './firebase'
+import database from "@/store/firebase";
+import {ref, set, push, onChildAdded, onChildChanged, onChildRemoved} from "firebase/database";
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 import { ShipEntry } from '@/models/interfaces'
@@ -51,22 +52,23 @@ const shipsStore: Module<ShipsState, RootState> = {
   actions: {
 
     //firebase listeners
-    getFirebaseDatabase(context) {
-      firebase.database.ref('ships').on('child_added', function (data) {
+    initializeDatabaseListeners(context) {
+      
+      onChildAdded(ref(database, 'ships'), (data) =>{
         context.commit('addShip', data.val());
-      }),
+      });
 
-      firebase.database.ref('ships').on('child_removed', function (data){
+      onChildRemoved(ref(database, 'ships'), (data) =>{
         context.commit('removeShip', data.key);
-      })
+      });
 
-      firebase.database.ref('ships').on('child_changed', function (data){
+      onChildChanged(ref(database, 'ships'), (data) =>{
         context.commit('modifyShip', data.val());
-      })
+      });
     },
 
     createShipOffsetsOnly(context, payload: {'offsets': number[][]; 'captainKey': string; 'shipNum': number}){
-        const newShipRef = firebase.database.ref('ships').push();
+        const newShipRef = push(ref(database, 'ships'));
         if (newShipRef.key === null) {
             console.log("Error initializing new ship. Firebase returned a 'null' key")
           }
@@ -80,32 +82,30 @@ const shipsStore: Module<ShipsState, RootState> = {
                   anchorPoint: {'row': -99, 'col': -99},
                   spawnRange: {'rowMin': -99, 'rowMax': -99, 'colMin': -99, 'colMax': -99}
               }
-              newShipRef.set(newShipEntry);
+              set(newShipRef, newShipEntry);
               context.dispatch('playerStore/setMyShipKey', {'shipKey': newShipRef.key, 'shipNum': payload.shipNum}, {root: true});
           }
-
     },
 
     overwriteShipOffsets(context, payload: {'shipKey': string; 'offsets': number[][]}){
-      firebase.database.ref('ships/' + payload.shipKey + '/intactOffsets').set(payload.offsets);
+      set(ref(database, 'ships/' + payload.shipKey + '/intactOffsets'), payload.offsets);
     },
 
     deleteAllShips(context){
-      firebase.database.ref('ships').set({'ghostShip': 'empty'});
+      set(ref(database, 'ships'), {'ghostShip': 'empty'});
     },
 
     overwriteShipSpawnRange(context, payload: {'shipKey': string; 'spawnRange': ShipSpawnRange}){
-      firebase.database.ref('ships/' + payload.shipKey + '/spawnRange').set(payload.spawnRange);
+      set(ref(database, 'ships/' + payload.shipKey + '/spawnRange'), payload.spawnRange);
     },
 
     overwriteShipAnchorPoint(context, payload: {'shipKey': string; 'anchorPoint': {'row': number; 'col': number}}){
-      firebase.database.ref('ships/' + payload.shipKey + '/anchorPoint').set(payload.anchorPoint);
+      set(ref(database, 'ships/' + payload.shipKey + '/anchorPoint'), payload.anchorPoint);
     },
 
     overwriteShipStatus(context, payload: {'shipKey': string; 'status': ShipStatus}){
-      firebase.database.ref('ships/' + payload.shipKey + '/status').set(payload.status);
+      set(ref(database, 'ships/' + payload.shipKey + '/status'), payload.status);
     },
-  
   },
 }
 

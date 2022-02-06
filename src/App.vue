@@ -22,7 +22,7 @@ import TheHeader from "@/components/start/TheHeader.vue";
 import TheFooter from "@/components/start/TheFooter.vue";
 import DisconnectedCard from "@/components/start/DisconnectedCard.vue";
 import database from "@/store/firebase";
-import {ref, set, onValue, onDisconnect} from "firebase/database";
+import {ref, onValue, onDisconnect} from "firebase/database";
 import { PlayerStatus } from "@/models/enums";
 import { GameStatus } from "@/models/enums";
 
@@ -35,12 +35,6 @@ import { GameStatus } from "@/models/enums";
   },
 })
 export default class App extends Vue {
-
-  /*connectedRef = configuredDatabase.database.ref(
-    ".info/connected"
-  );
-  */
-  connectedRef = ref(database, ".info/connected");
 
   showDisconnectedDialog: boolean = false;
 
@@ -72,9 +66,7 @@ export default class App extends Vue {
 
 
     //react to disconnection/reconnection
-
-    /*this.connectedRef.on("value", (snapshot) => {*/
-    onValue(this.connectedRef, (snapshot) => {
+    onValue(ref(database, ".info/connected"), (snapshot) => {
       //reconnect
       if (snapshot.val() === true) {
         this.showDisconnectedDialog = false;
@@ -140,25 +132,19 @@ export default class App extends Vue {
     });
 
     //initialize stores
-    this.$store.dispatch("playerStore/getFirebaseDatabase");
-    this.$store.dispatch("lobbyStore/getFirebaseDatabase");
-    this.$store.dispatch("shipsStore/getFirebaseDatabase");
-    this.$store.dispatch("gameStore/getFirebaseDatabase");
-    this.$store.dispatch("chatStore/getFirebaseDatabase");
-    this.$store.dispatch("powerupStore/getFirebaseDatabase");
-    this.$store.dispatch("mapStore/getFirebaseDatabase");
+    this.$store.dispatch("playerStore/initializeDatabaseListeners");
+    this.$store.dispatch("lobbyStore/initializeDatabaseListeners");
+    this.$store.dispatch("shipsStore/initializeDatabaseListeners");
+    this.$store.dispatch("gameStore/initializeDatabaseListeners");
+    this.$store.dispatch("chatStore/initializeDatabaseListeners");
+    this.$store.dispatch("powerupStore/initializeDatabaseListeners");
+    this.$store.dispatch("mapStore/initializeDatabaseListeners");
 
     //initialize client instance (player object) in database
     this.$store.dispatch("playerStore/intializeClient").then(() => {
-
-      /*
-      configuredDatabase.database.ref("players/" + this.$store.getters["playerStore/getMyKey"] + "/status").onDisconnect().set(PlayerStatus.Disconnected);
-      configuredDatabase.database.ref("players/" + this.$store.getters["playerStore/getMyKey"] + "/key").onDisconnect().set(this.$store.getters["playerStore/getMyKey"]);
-      */
-     
+      //if the user gets disconnected, the database needs to be aware to inform the host and other players
      onDisconnect(ref(database, "players/" + this.$store.getters["playerStore/getMyKey"] + "/status")).set(PlayerStatus.Disconnected);
      onDisconnect(ref(database, "players/" + this.$store.getters["playerStore/getMyKey"] + "/key")).set(this.$store.getters["playerStore/getMyKey"]);
-
     });
   }
 }

@@ -1,4 +1,5 @@
-import firebase from './firebase'
+import database from "@/store/firebase";
+import {ref, set, onChildAdded, onChildChanged} from "firebase/database";
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 import { ColourEntry } from '@/models/interfaces';
@@ -61,14 +62,15 @@ const lobbyStore: Module<LobbyState, RootState> = {
   actions: {
 
     //firebase listeners
-    getFirebaseDatabase(context) {
-      firebase.database.ref('lobby/aliases').on('child_added', function (data) {
+    initializeDatabaseListeners(context) {
+      
+      onChildAdded(ref(database, 'lobby/aliases'), (data) =>{
         if (data.val() === 'available' && context.state.availableAliases.indexOf(String(data.key)) === -1) {
           context.commit('addAvailableAlias', data.key);
         }
-      })
-
-      firebase.database.ref('lobby/aliases').on('child_changed', function (data) {
+      });
+      
+      onChildChanged(ref(database, 'lobby/aliases'), (data) => {
         if (data.val() === 'available' && context.state.availableAliases.indexOf(String(data.key)) === -1) {
           context.commit('addAvailableAlias', data.key);
         }
@@ -77,15 +79,16 @@ const lobbyStore: Module<LobbyState, RootState> = {
         }
       })
 
-      firebase.database.ref('lobby/colours').on('child_added', function (data) {
+      onChildAdded(ref(database, 'lobby/colours'), (data) =>{
         const updateObj: ColourUpdateObject = { hexCode: String(data.key), status: data.val() };
         context.dispatch('updateColours', updateObj);
-      })
+      });
+      
 
-      firebase.database.ref('lobby/colours').on('child_changed', function (data) {
+      onChildChanged(ref(database, 'lobby/colours'), (data) => {
         const updateObj: ColourUpdateObject = { hexCode: String(data.key), status: data.val() };
         context.dispatch('updateColours', updateObj);
-      })
+      });
     },
 
 
@@ -111,12 +114,14 @@ const lobbyStore: Module<LobbyState, RootState> = {
     },
 
 
+
+
     reserveAlias(context, recAlias: string) {
-      firebase.database.ref('lobby/aliases/' + recAlias).set(context.rootGetters['playerStore/getMyKey']);
+      set(ref(database, 'lobby/aliases/' + recAlias), context.rootGetters['playerStore/getMyKey']);
     },
 
     releaseAlias(_, recAlias: string) {
-      firebase.database.ref('lobby/aliases/' + recAlias).set('available');
+      set(ref(database, 'lobby/aliases/' + recAlias), 'available');
     },
 
     allocateAlias(context, recAlias: string) {
@@ -231,11 +236,11 @@ const lobbyStore: Module<LobbyState, RootState> = {
         //release the colour previously selected if necessary
         const oldColour = context.getters['getColoursList'].find((element: ColourEntry) => element.status === ColourStatus.Mine);
         if (oldColour !== undefined) {
-          firebase.database.ref('lobby/colours/' + oldColour.hexCode.substring(1)).set("available");
+          set(ref(database, 'lobby/colours/' + oldColour.hexCode.substring(1)), 'available');
         }
 
         //reserve the new colour selection
-        firebase.database.ref('lobby/colours/' + recHexCode.substring(1)).set(context.rootGetters['playerStore/getMyKey']);
+        set(ref(database, 'lobby/colours/' + recHexCode.substring(1)), context.rootGetters['playerStore/getMyKey']);
       }
     },
 
@@ -245,11 +250,11 @@ const lobbyStore: Module<LobbyState, RootState> = {
       initialColoursArray.forEach((colour) => {
         colourOverwriteObj[colour.hexCode.substring(1)] = "available";
       })
-      firebase.database.ref('lobby/colours').set(colourOverwriteObj);
+      set(ref(database, 'lobby/colours'), colourOverwriteObj);
     },
 
     resetAliasesInDatabase(context){
-      firebase.database.ref('lobby/aliases').set(aliasesInitialObject);
+      set(ref(database, 'lobby/aliases'), aliasesInitialObject);
     },
 
   },
