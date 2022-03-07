@@ -138,6 +138,12 @@ export default class ImageCredits extends Vue {
       caption: "White Fog Isolated On Dark Transparent Background from Clip Art Max",
       link: "https://www.clipartmax.com/download/m2i8H7b1d3b1b1b1_white-fog-isolated-on-dark-transparent-background-portable-network-graphics/",
     },
+
+    {
+      path: require("@/assets/imageCredits/generic_person.png"),
+      caption: "Dancer by Tippawan Sookruay from The Noun Project",
+      link: "https://thenounproject.com/icon/dancer-3925487/",
+    },
   ];
 }
 </script>

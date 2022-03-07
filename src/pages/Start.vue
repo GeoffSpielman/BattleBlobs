@@ -2,12 +2,11 @@
   <div class="outermostDiv">
     <div id="buttonsRow">
       <transition-group :name="transitionToUse" appear>
-        <v-btn key="instructionsBtn" @click="changePage('/instructions')" x-large color="primary" class="mx-10 px-5" elevation="7"
-          ><v-icon class="pr-3"> mdi-information-outline</v-icon>Learn How To
-          Play</v-btn
+        <v-btn key="instructionsBtn" @click="instructionsClicked" x-large color="primary" class="mx-12 px-5" elevation="7" 
+          ><v-icon class="pr-3"> mdi-information-outline</v-icon>Learn How to Play</v-btn
         >
-        <v-btn key="lobbyBtn" @click="changePage('/lobby')" x-large color="primary" class="mx-10 px-5" elevation="7"
-          ><v-icon class="pr-3"> mdi-fast-forward</v-icon>Skip To Lobby</v-btn
+        <v-btn key="playBtn" @click="lobbyClicked" x-large color="primary" class="mx-12 px-5" elevation="7"
+          ><v-icon class="pr-3"> mdi-fast-forward</v-icon>Skip to Lobby</v-btn
         >
       </transition-group>
     </div>
@@ -27,11 +26,19 @@ export default class Home extends Vue {
     return this.$store.getters["clientSpecificStore/getStartPageButtonFade"];
   }
 
-
-  changePage(pagePath: string){
-    this.$router.push(pagePath);
+  instructionsClicked(){
     this.$store.dispatch("clientSpecificStore/setStartPageButtonFade", 'quickFade')
+    this.$router.push('/instructions');
+    
   }
+
+  lobbyClicked(){
+    this.$store.dispatch("clientSpecificStore/setStartPageButtonFade", 'quickFade')
+    this.$router.push('/lobby').catch(() => {console.log("User tried to enter lobby without signing in. Redirecting to sign in page.")});
+  }
+
+
+ 
 
   mounted(){
     this.$store.dispatch('playerStore/setMyStatus', PlayerStatus.StartScreen)

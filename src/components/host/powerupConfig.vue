@@ -3,7 +3,7 @@
     <div id="powerupName" class="mb-1">{{ powerupDetails.name }}</div>
     <div id="picAndQty">
       <img id="iconImg" class="ml-3" :src="myIconPath" />
-      <v-text-field class="ml-4 mr-3"
+      <v-text-field class="powerupInput"
         type="number"
         outlined
         dense
@@ -50,7 +50,7 @@ export default class PowerupConfig extends Mixins(PowerupIconPathMixin) {
 #powerupConfigOutermost {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 30px 65px;
+  grid-template-rows: 24px 65px;
 }
 
 #powerupName {
@@ -73,6 +73,10 @@ export default class PowerupConfig extends Mixins(PowerupIconPathMixin) {
 #iconImg {
   width: 35px;
   height: 35px;
+}
+
+.powerupInput{
+  margin: 0px 6px 0px 6px;
 }
 
 </style>

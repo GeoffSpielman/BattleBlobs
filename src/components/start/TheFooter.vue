@@ -55,6 +55,7 @@ export default class TheFooter extends Vue {
   showFooter: boolean = true;
 
   creditsBtnClicked() {
+    this.$store.dispatch("clientSpecificStore/setStartPageButtonFade", 'quickFade')
     this.$router.push("/credits");
   }
 

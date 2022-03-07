@@ -1,3 +1,4 @@
+import { startAfter } from 'firebase/database';
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 
@@ -10,6 +11,11 @@ interface ClientSpecificState {
   shipOneOffsets: number[][];
   shipTwoOffsets: number[][];
   colourAssistanceMode: boolean;
+  signedIn: boolean;
+  authDisplayName: string;
+  authEmail: string;
+  authImageURL: string;
+  signedInDestination: string;
 }
 
 const playerStore: Module<ClientSpecificState, RootState> = {
@@ -22,6 +28,11 @@ const playerStore: Module<ClientSpecificState, RootState> = {
     shipOneOffsets: [],
     shipTwoOffsets: [],
     colourAssistanceMode: false,
+    signedIn: false,
+    authDisplayName: "",
+    authEmail: "",
+    authImageURL: "",
+    signedInDestination: "Lobby",
   },
 
   getters: {
@@ -52,6 +63,26 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     getColourAssistanceMode(state): boolean {
       return state.colourAssistanceMode;
+    },
+
+    getSignedIn(state): boolean {
+      return state.signedIn;
+    },
+
+    getAuthDisplayName(state): string {
+      return state.authDisplayName;
+    },
+
+    getAuthEmail(state): string {
+      return state.authEmail;
+    },
+
+    getAuthImageURL(state): string {
+      return state.authImageURL;
+    },
+    
+    getSignedInDestination(state): string {
+      return state.signedInDestination;
     }
 
 
@@ -84,7 +115,28 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setColourAssistanceMode(state, recVal: boolean){
       state.colourAssistanceMode = recVal;
+    },
+
+    setSignedIn(state, recVal: boolean){
+      state.signedIn = recVal;
+    },
+
+    setAuthDisplayName(state, newDisplayName: string) {
+      state.authDisplayName = newDisplayName;
+    },
+
+    setAuthEmail(state, newAuthEmail: string) {
+      state.authEmail = newAuthEmail;
+    },
+
+    setAuthImageURL(state, newAuthImageURL: string) {
+      state.authImageURL = newAuthImageURL;
+    },
+
+    setSignedInDestination(state, newDesination: string){
+      state.signedInDestination = newDesination;
     }
+
   },
 
   actions: {   
@@ -111,6 +163,26 @@ const playerStore: Module<ClientSpecificState, RootState> = {
 
     setColourAssistanceMode(context, recVal: boolean){
       context.commit('setColourAssistanceMode', recVal);
+    },
+
+    setSignedIn(context, recVal: boolean){
+      context.commit('setSignedIn', recVal);
+    },
+
+    setAuthDisplayName(context, recVal: string) {
+      context.commit('setAuthDisplayName', recVal);
+    },
+
+    setAuthEmail(context, recVal: string) {
+      context.commit('setAuthEmail', recVal);
+    },
+
+    setAuthImageURL(context, recVal: string) {
+      context.commit('setAuthImageURL', recVal);
+    },
+
+    setSignedInDestination(context, recVal: string){
+      context.commit('setSignedInDestination', recVal);
     }
   },
 }

@@ -1,5 +1,7 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
 import {Database, getDatabase } from "firebase/database";
+import {getAuth, onAuthStateChanged } from "firebase/auth";
+import store from "@/store/index";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDhaA66yOLrw-2d57cOk7h5N1Bg6QRZlNY",
@@ -16,3 +18,29 @@ const firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
 const database: Database = getDatabase(firebaseApp);
 
 export default database
+
+const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    store.dispatch("clientSpecificStore/setSignedIn", true);
+    store.dispatch("clientSpecificStore/setAuthDisplayName", user.displayName);
+    store.dispatch("clientSpecificStore/setAuthEmail", user.email);
+    store.dispatch("clientSpecificStore/setAuthImageURL", user.photoURL);
+
+    console.log("User is signed in! UID: " + user.uid);
+    
+  } else {
+    store.dispatch("clientSpecificStore/setSignedIn", false);
+    console.log("User is not signed in")
+  }
+});
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+      const unsubscribe = onAuthStateChanged(auth, (userFirebase) => {
+          unsubscribe();
+          resolve(userFirebase);
+      }, reject);
+  })
+};

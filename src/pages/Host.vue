@@ -5,8 +5,8 @@
       <div id="statusColumnContainer">
         <status-column></status-column>
       </div>
-      <div id="clientsTableContainer">
-        <clients-table></clients-table>
+      <div id="tablesColumnContainer">
+        <tables-column></tables-column>
       </div>
       <div id="controlButtonsContainer">
         <control-buttons></control-buttons>
@@ -22,7 +22,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import StatusColumn from "@/components/host/StatusColumn.vue";
-import ClientsTable from "@/components/host/ClientsTable.vue";
+import TablesColumn from "@/components/host/TablesColumn.vue";
 import ControlButtons from "@/components/host/ControlButtons.vue";
 import ConfigColumn from "@/components/host/ConfigColumn.vue";
 import { PlayerStatus } from "@/models/enums";
@@ -31,7 +31,7 @@ import { PlayerStatus } from "@/models/enums";
   name: "Host",
   components: {
     StatusColumn,
-    ClientsTable,
+    TablesColumn,
     ControlButtons,
     ConfigColumn,
   },
@@ -47,20 +47,20 @@ export default class Host extends Vue {
 <style scoped>
 #hostContentDiv {
   display: grid;
-  grid-template-rows: 1fr min-content;
+  height: 100%;
+  grid-template-rows: 1fr 55px;
   grid-template-columns: minmax(210px, 1fr) 2.5fr minmax(170px, 1fr);
-  flex-grow: 1;
-  height:100px;
+ 
 }
 #statusColumnContainer {
   grid-column: 1/2;
   grid-row: 1/3;
 }
 
-#clientsTableContainer {
+#tablesColumnContainer {
   grid-column: 2/3;
   grid-row: 1/2;
-  overflow-y: auto;
+  
 }
 
 #controlButtonsContainer {

@@ -8,6 +8,7 @@ interface GameState {
     gameStatus: GameStatus;
     currentPlayers: string[];
     whoseTurn: string;
+    gameName: string;
 }
 
 const gameStore: Module<GameState, RootState> = {
@@ -16,6 +17,7 @@ const gameStore: Module<GameState, RootState> = {
         gameStatus: GameStatus.WaitingOnPlayers,
         currentPlayers: [],
         whoseTurn: "TBD",
+        gameName: "",
     },
 
     getters: {
@@ -29,6 +31,10 @@ const gameStore: Module<GameState, RootState> = {
 
         getWhoseTurn(state): string{
             return state.whoseTurn;
+        },
+
+        getGameName(state): string{
+            return state.gameName
         }
     },
 
@@ -47,6 +53,10 @@ const gameStore: Module<GameState, RootState> = {
 
         setWhoseTurn(state, playerKey: string){
             state.whoseTurn = playerKey;
+        },
+
+        setGameName(state, newGameName: string){
+            state.gameName = newGameName;
         }
     },
 
@@ -71,6 +81,11 @@ const gameStore: Module<GameState, RootState> = {
 
             onValue(ref(database,'game/whoseTurn'), (snapshot) => {
                 context.commit('setWhoseTurn', snapshot.val());
+            });
+
+            //Refactor note - this one is done!
+            onValue(ref(database,'configData/gameName'), (snapshot) => {
+                context.commit('setGameName', snapshot.val());
             });
         },
 

@@ -7,7 +7,7 @@
           elevation="2"
           :disabled="gameStatus === GameStatus.GameInProgress"
         >
-          <v-card-title class="justify-center py-1"> Powerups</v-card-title>
+          <v-card-title class="justify-center" id="powerupsTitle"> Powerups</v-card-title>
           <powerup-config
             v-for="(powerup, i) in powerupsList"
             :key="i"
@@ -55,7 +55,11 @@ export default class ConfigColumn extends Vue {
 
 .configColumnCard {
   width: 150px;
-  margin: 10px;
+  margin: 5px;
   border-radius: 10px;
+}
+
+#powerupsTitle{
+  padding: 0px 0px 5px 0px;
 }
 </style>

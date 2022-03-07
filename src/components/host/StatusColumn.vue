@@ -1,14 +1,14 @@
 <template>
   <div id="hostStatusColumOuterMost">
     <v-card class="statusCard" outlined elevation="2">
-      <v-card-title class="justify-center py-1"> Game Status </v-card-title>
+      <v-card-title class="justify-center cardTitle"> Game Status </v-card-title>
       <v-card-text class="text-center font-weight-medium text-h6 pt-0 pb-2">
         {{ gameStatus }}
       </v-card-text>
     </v-card>
 
     <v-card class="statusCard" outlined elevation="2">
-      <v-card-title class="justify-center py-1"> Whose Turn? </v-card-title>
+      <v-card-title class="justify-center cardTitle"> Whose Turn? </v-card-title>
       <v-card-text class="text-center font-weight-medium text-h6 pt-1 pb-2">
         {{ whoseTurn }}
       </v-card-text>
@@ -24,7 +24,7 @@
       </v-card-actions>
     </v-card>
     <v-card class="statusCard" outlined elevation="2">
-      <v-card-title class="justify-center py-1"> Round </v-card-title>
+      <v-card-title class="justify-center cardTitle"> Round </v-card-title>
       <v-card-text class="text-center font-weight-medium text-h5 pt-0 pb-2">
         5
       </v-card-text>
@@ -74,7 +74,11 @@ export default class StatusColumn extends Vue {
 
 .statusCard {
   width: 190px;
-  margin: 10px;
+  margin: 5px;
   border-radius: 10px;
+}
+
+.cardTitle{
+  padding: 1px 0px 0px 0px;
 }
 </style>

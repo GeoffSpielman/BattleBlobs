@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "email-existence": "^0.1.6",
     "firebase": "^9.6.4",
     "firebaseui": "^6.0.0",
     "vue": "^2.6.11",

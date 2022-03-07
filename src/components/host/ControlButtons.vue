@@ -52,7 +52,6 @@ export default class ControlsButtons extends Vue {
   width: 100%;
   display: flex;
   justify-content: space-evenly;
-  margin-top: 20px;
-  height: 60px;
+  margin-top: 10px;
 }
 </style>

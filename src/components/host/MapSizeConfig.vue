@@ -4,9 +4,9 @@
       class="configColumnCard"
       outlined
       elevation="2"
-      :disabled="gameStatus === GameStatus.GameInProgress"
+      :disabled="cardDisabled"
     >
-      <v-card-title class="justify-center py-1"> Map Size </v-card-title>
+      <v-card-title class="justify-center" id="mapSizeTitle"> Map Size </v-card-title>
       <div id="mapSizeArea">
         <div id="mapSizeOutput">{{ mapSize }} x {{ mapSize }}</div>
         <v-btn fab height=20px width=20px tile elevation=1 id="plusButton" class="mapSizeButton" @click="plusButtonClicked">+</v-btn>
@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { GameStatus } from "@/models/enums";
 
 @Component({
   name: "MapSizeConfig",
@@ -29,8 +30,13 @@ export default class MapSizeConfig extends Vue {
   timeoutID: number = -1;
 
   errorMessage: string = "";
+
   get mapSize(): number {
     return this.$store.getters["mapStore/getMapSize"];
+  }
+
+  get cardDisabled(): boolean{
+    return this.$store.getters["gameStore/getGameStatus"] === GameStatus.GameInProgress
   }
 
   plusButtonClicked(){
@@ -72,8 +78,13 @@ export default class MapSizeConfig extends Vue {
 
 .configColumnCard {
   width: 150px;
-  margin: 10px;
+  margin: 5px;
   border-radius: 10px;
+}
+
+
+#mapSizeTitle{
+  padding: 0px 0px 2px 0px;
 }
 
 #mapSizeArea{
@@ -81,7 +92,7 @@ export default class MapSizeConfig extends Vue {
   width: 100%;
   grid-template-columns: 2.4fr 1fr;
   grid-template-rows: 21px 21px 23px;
-  margin-top: 5px;
+  
 }
 
 #mapSizeOutput{
@@ -90,7 +101,7 @@ export default class MapSizeConfig extends Vue {
   justify-self: end;
   align-self: center;
   margin-right: 10px;
-  font-size: 16pt;
+  font-size: 15pt;
   font-weight: 450;
 }
 
