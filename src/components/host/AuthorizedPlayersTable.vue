@@ -8,13 +8,13 @@
         <v-simple-table id="authorizedPlayersTable" fixed-header height="100%">
           <thead>
             <tr>
-              <th class="text-left">Name</th>
+              <th class="text-left">Email</th>
               <th class="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="player in playersList" :key="player.key">
-              <td>{{ player.name }}</td>
+            <tr v-for="email in authorizedPlayerEmails" :key="email">
+              <td>{{ email }}</td>
               <td class="text-center">Reset Password --- Delete</td>
             </tr>
           </tbody>
@@ -22,17 +22,20 @@
       </div>
     </div>
     <div id="rightSide">
-      <p>Email address of new player:</p>
+      <div id="newPlayerArea">
+      <p id="newAuthorizationPrompt">Email address of new player:</p>
       <v-text-field
         outlined
         dense
         v-model="email"
         :error-messages="emailErrorMessage"
         @change="emailModified"
+        height="10px"
       ></v-text-field>
-      <v-btn>
+      <v-btn @click="authorizeClicked">
           Authorize
       </v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -49,6 +52,10 @@ export default class AuthorizedPlayersTable extends Vue {
   email: string = "";
   emailErrorMessage: string = "";
 
+  get authorizedPlayerEmails(): string[] {
+    return this.$store.getters["authDataStore/getAuthorizedPlayerEmails"];
+  }
+
   validEmailEnterered(): boolean {
     let emailTestRegex = new RegExp(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -61,6 +68,21 @@ export default class AuthorizedPlayersTable extends Vue {
       this.emailErrorMessage = "";
     }
   }
+
+  authorizeClicked(){
+    if (!this.validEmailEnterered()) {
+      this.emailErrorMessage = "Please enter a valid email address";
+      return;
+    }
+    if (this.authorizedPlayerEmails.includes(this.email)){
+      this.emailErrorMessage = "Email is already authorized";
+      return;
+    }
+    this.$store.dispatch("authDataStore/addAuthorizedPlayerEmail", this.email);
+    this.email = "";
+  }
+
+  
 }
 </script>
 
@@ -69,16 +91,23 @@ export default class AuthorizedPlayersTable extends Vue {
   display: flex;
   flex-direction: row;
   width: 100%;
+  height: 100%;
 }
 
 #leftSide {
-  width: 70%;
+  width: 65%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 #rightSide {
   width: 10px;
   flex-grow: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #titleRow {
@@ -100,6 +129,7 @@ export default class AuthorizedPlayersTable extends Vue {
 #tableArea {
   display: flex;
   flex-grow: 1;
+  flex-basis: 50px;
   overflow-y: auto;
   width: 100%;
 }
@@ -116,4 +146,13 @@ export default class AuthorizedPlayersTable extends Vue {
 #authorizedPlayersTable td {
   height: 36px;
 }
+
+#newPlayerArea{
+  text-align: center;
+}
+#newAuthorizationPrompt{
+  font-size: 11pt;
+  margin-bottom: 5px;
+}
+
 </style>

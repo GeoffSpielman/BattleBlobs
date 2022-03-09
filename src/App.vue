@@ -139,6 +139,7 @@ export default class App extends Vue {
     this.$store.dispatch("chatStore/initializeDatabaseListeners");
     this.$store.dispatch("powerupStore/initializeDatabaseListeners");
     this.$store.dispatch("mapStore/initializeDatabaseListeners");
+    this.$store.dispatch("authDataStore/initializeDatabaseListeners");
 
     //initialize client instance (player object) in database
     this.$store.dispatch("playerStore/intializeClient").then(() => {

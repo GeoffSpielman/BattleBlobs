@@ -10,6 +10,7 @@ import gameStore from './gameStore'
 import chatStore from './chatStore'
 import powerupStore from './powerupStore'
 import mapStore from './mapStore'
+import authDataStore from './authDataStore'
  
 Vue.use(Vuex)
 
@@ -23,6 +24,7 @@ export default new Vuex.Store<RootState>({
     chatStore: chatStore,
     powerupStore: powerupStore,
     mapStore: mapStore,
+    authDataStore: authDataStore,
   },
 
   state: {
