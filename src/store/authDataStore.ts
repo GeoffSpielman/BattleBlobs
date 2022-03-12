@@ -3,6 +3,10 @@ import {ref, set, push, onChildAdded, onChildRemoved} from "firebase/database";
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 
+function formatEmailForDatabaseKey(recEmail: string): string{
+    //According to firebase: Paths must be non-empty strings and can't contain ".", "#", "$", "[", or "]""
+    return recEmail.replaceAll(new RegExp(/[#$\].[]/g), '')
+}
 
 interface AuthState {
     authorizedPlayerEmails: string[];
@@ -23,6 +27,14 @@ const authDataStore: Module<AuthState, RootState> = {
 
         getAuthorizedHostEmails(state): string[]{
             return state.authorizedHostEmails;
+        },
+
+        getPlayerOnWhitelist: (state) => (recPlayerEmail: string) => {
+            return state.authorizedPlayerEmails.includes(recPlayerEmail)
+        },
+
+        getHostOnWhitelist: (state) => (recHostEmail: string) => {
+            return state.authorizedHostEmails.includes(recHostEmail)
         },
     },
 
@@ -75,11 +87,11 @@ const authDataStore: Module<AuthState, RootState> = {
         },
 
         addAuthorizedPlayerEmail(_, newAuthorizedPlayerEmail: string){
-            set(push(ref(database, 'authData/playersWhiteList')), newAuthorizedPlayerEmail);
+            set((ref(database, 'authData/playersWhiteList/' + formatEmailForDatabaseKey(newAuthorizedPlayerEmail))), newAuthorizedPlayerEmail);
         },
 
-        removeAuthorizedPlayerEmail(_, recPlayerEmail: string){
-            set(ref(database, 'authData/playersWhiteList'), null);
+        removeAuthorizedPlayerEmail(_, removedAuthorizedPlayerEmail: string){
+            set(ref(database, 'authData/playersWhiteList/' + formatEmailForDatabaseKey(removedAuthorizedPlayerEmail)), null);
         }
 
     },

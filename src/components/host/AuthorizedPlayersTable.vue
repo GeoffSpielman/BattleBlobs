@@ -15,7 +15,17 @@
           <tbody>
             <tr v-for="email in authorizedPlayerEmails" :key="email">
               <td>{{ email }}</td>
-              <td class="text-center">Reset Password --- Delete</td>
+              <td class="text-center">
+                 <v-btn
+                  :key="email + 'removeBtn'"
+                  @click="removeBtnClicked(email)"
+                  small
+                  color="error lighten-1"
+                  class="py-1 text-none"
+                  style="color: black"
+                ><v-icon dense class="pr-2"> mdi-delete-forever</v-icon>Revoke
+              </v-btn>
+              </td>
             </tr>
           </tbody>
         </v-simple-table>
@@ -42,13 +52,14 @@
 
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Mixins} from "vue-property-decorator";
+import { EmailAddressFunctionsMixin } from "@/mixins/EmailAddressFunctionsMixin";
 
 @Component({
   name: "AuthorizedPlayersTable",
   components: {},
 })
-export default class AuthorizedPlayersTable extends Vue {
+export default class AuthorizedPlayersTable extends Mixins(EmailAddressFunctionsMixin) {
   email: string = "";
   emailErrorMessage: string = "";
 
@@ -56,21 +67,14 @@ export default class AuthorizedPlayersTable extends Vue {
     return this.$store.getters["authDataStore/getAuthorizedPlayerEmails"];
   }
 
-  validEmailEnterered(): boolean {
-    let emailTestRegex = new RegExp(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-    return emailTestRegex.test(this.email);
-  }
-
-  emailModified() {
-    if (this.emailErrorMessage !== "" && this.validEmailEnterered()) {
+   emailModified() {
+    if (this.emailErrorMessage !== "" && this.validEmailAddress(this.email)) {
       this.emailErrorMessage = "";
     }
   }
 
   authorizeClicked(){
-    if (!this.validEmailEnterered()) {
+    if (!this.validEmailAddress(this.email)) {
       this.emailErrorMessage = "Please enter a valid email address";
       return;
     }
@@ -80,6 +84,10 @@ export default class AuthorizedPlayersTable extends Vue {
     }
     this.$store.dispatch("authDataStore/addAuthorizedPlayerEmail", this.email);
     this.email = "";
+  }
+
+  removeBtnClicked(recEmail: string){
+    this.$store.dispatch("authDataStore/removeAuthorizedPlayerEmail", recEmail);
   }
 
   

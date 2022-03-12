@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import store from "@/store/index";
 import { getCurrentUser } from '@/store/firebase';
+import { getAuth } from "firebase/auth";
 
 import StartPage from '@/pages/Start.vue'
 import InstructionsPage from '@/pages/Instructions.vue'
@@ -84,9 +85,30 @@ router.beforeEach(async (to, from, next) =>{
 
   //all other routes require authentication
   if (await getCurrentUser()){
-    //user is signed in, now check if they're on the whitelist
-    console.log("RouterGuard declares: signed in! TO DO: check if on whitelist")
-    next();
+    
+    console.log("You are signed in! Checking the white list")
+    
+    //user is signed in,  check if they're on the appropriate whitelist
+    const auth = getAuth();
+    const curEmail = auth.currentUser?.email
+    let destinationPageName = store.getters["clientSpecificStore/getSignedInDestination"];
+
+    console.log("checking permissions of " + curEmail + " trying to access " + destinationPageName);
+    console.log("on player list? " + store.getters["authDataStore/getPlayerOnWhitelist"](curEmail));
+    console.log("on host list? " + store.getters["authDataStore/getHostOnWhitelist"](curEmail));
+    
+    if (destinationPageName === "Host" && store.getters["authDataStore/getHostOnWhitelist"](curEmail)){
+      console.log("congradulations host, you're in")
+      next();
+    }
+    else if ((destinationPageName === "Lobby" || destinationPageName === "Game") &&  store.getters["authDataStore/getPlayerOnWhitelist"](curEmail)){
+      console.log("congradulation player, you're in")
+      next();
+    }
+    else{
+      console.log("uh oh, I'll let you in anyways just this once")
+      next();
+    }
   }
   else {
     //user is not signed in. Remember where they were trying to go and redirect them to the sign in page

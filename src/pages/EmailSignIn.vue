@@ -91,14 +91,15 @@
 
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Mixins} from "vue-property-decorator";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { EmailAddressFunctionsMixin } from "@/mixins/EmailAddressFunctionsMixin";
 
 @Component({
   name: "EmailSignIn",
   components: {},
 })
-export default class EmailSignIn extends Vue {
+export default class EmailSignIn extends Mixins(EmailAddressFunctionsMixin) {
   tab: number = 0;
   email: string = "";
   emailErrorMessage: string = "";
@@ -119,15 +120,8 @@ export default class EmailSignIn extends Vue {
   accountErrorMessage: string = "";
   showForgotPasswordLink: boolean = false;
 
-  validEmailEnterered(): boolean {
-    let emailTestRegex = new RegExp(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-    return emailTestRegex.test(this.email);
-  }
-
   createAccountClicked() {
-    if (!this.validEmailEnterered()) {
+    if (!this.validEmailAddress(this.email)) {
       this.emailErrorMessage = "Please enter a valid email address";
       return;
     }
@@ -168,7 +162,7 @@ export default class EmailSignIn extends Vue {
   }
 
   emailModified() {
-    if (this.emailErrorMessage !== "" && this.validEmailEnterered()) {
+    if (this.emailErrorMessage !== "" && this.validEmailAddress(this.email)) {
       this.emailErrorMessage = "";
     }
   }
