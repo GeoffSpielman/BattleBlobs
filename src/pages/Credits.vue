@@ -144,6 +144,12 @@ export default class ImageCredits extends Vue {
       caption: "Dancer by Tippawan Sookruay from The Noun Project",
       link: "https://thenounproject.com/icon/dancer-3925487/",
     },
+
+    {
+      path: require("@/assets/misc/notAuthorizedFingerWave.gif"),
+      caption: "I Don't Think So GIF by Chicago Fire Football Club",
+      link: "https://giphy.com/gifs/chicagofirefc-SZWdIIt7ANPKtFGtRE"
+    },
   ];
 }
 </script>
