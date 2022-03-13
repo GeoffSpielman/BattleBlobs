@@ -1,13 +1,22 @@
 <template>
   <div id="AccessDeniedOutermost">
     <h1 class="pageHeader">Access Denied</h1>
-    <v-img :src="require('@/assets/misc/notAuthorizedFingerWave.gif')" height="450px" contain></v-img>
+    <v-img :src="require('@/assets/misc/notAuthorizedFingerWave.gif')" height="400px" contain></v-img>
+    <div id="textArea">
     <h3 class="instructionHeader">
       If you are trying to <strong> play</strong> the game...
     </h3>
+    <p class="nextStepsExplanation">
+        You account is linked to <code>{{getAuthEmail()}}</code>. Please provide this email to your host and ask them to authorize you.
+    </p>
     <h3 class="instructionHeader">
       If you are trying to <strong> host</strong> the game...
     </h3>
+    <p class="nextStepsExplanation">
+        Please contact Geoff Spielman.
+    </p>
+    </div>
+    <v-btn id="tryAgainBtn" @click="tryAgainClicked"><v-icon class="pr-3"> mdi-sync</v-icon>Try Again</v-btn>
   </div>
 </template>
 
@@ -20,7 +29,14 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class AccessDenied extends Vue {
 
-  
+  getAuthEmail(): string{
+    return this.$store.getters["clientSpecificStore/getAuthEmail"];
+  }
+
+  tryAgainClicked(){
+    console.log("attempting to go to " + this.$store.getters["clientSpecificStore/getSignedInDestination"])
+    this.$router.push({name: this.$store.getters["clientSpecificStore/getSignedInDestination"]}).catch(() => {console.log("User clicked 'Try Again' from the 'Access Denied' page but they are still not authroized.")});
+  }
 }
 </script>
 
@@ -28,16 +44,28 @@ export default class AccessDenied extends Vue {
 #AccessDeniedOutermost {
   width: 100%;
   height: 100%;
+  text-align: center;
 }
-/*
-#contentColumm{
-  height: 100%;
-  width: 100%;
+
+#textArea{
+  width: 65%;
   display: flex;
   flex-direction: column;
+  margin: 30px auto 0px auto;
+  text-align: left;
 }
-*/
+
 .instructionHeader{
   font-weight: normal;
+  font-size: 18pt;
+}
+
+.nextStepsExplanation{
+  font-size: 14pt;
+  margin-left: 15px;
+}
+
+#tryAgainBtn{
+  margin-top: 20px;
 }
 </style>
