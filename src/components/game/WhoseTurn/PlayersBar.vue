@@ -17,7 +17,7 @@ import IndividualPlayerDisplay from "@/components/game/WhoseTurn/IndividualPlaye
 })
 export default class PlayersBar extends Vue {
   get currentPlayers(): string[]{
-    return this.$store.getters["gameStore/getcurrentPlayersList"];
+    return this.$store.getters["gameDataStore/getcurrentPlayersList"];
   }
 
 

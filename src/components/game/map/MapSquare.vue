@@ -55,7 +55,7 @@ export default class MapSquare extends Mixins(
         "mapStore/revealSquare",
         [this.squareData.row, this.squareData.col].join(",")
       );
-      this.$store.dispatch("gameStore/incrementWhoseTurn");
+      this.$store.dispatch("gameDataStore/incrementWhoseTurn");
       let clickedSquareObj: DOMRect = this.$el.getBoundingClientRect();
       this.$emit("powerupRevealed", {'top': clickedSquareObj.top, 'left': clickedSquareObj.left, 'width': clickedSquareObj.width});
       
@@ -69,7 +69,7 @@ export default class MapSquare extends Mixins(
   get itsMyTurn(): boolean {
     return (
       this.$store.getters["playerStore/getMyKey"] ===
-      this.$store.getters["gameStore/getWhoseTurn"]
+      this.$store.getters["gameDataStore/getWhoseTurn"]
     );
   }
 

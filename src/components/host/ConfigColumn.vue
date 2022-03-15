@@ -11,7 +11,7 @@
           <powerup-config
             v-for="(powerup, i) in powerupsList"
             :key="i"
-            :powerupDetails="powerup"
+            :powerupName="powerup.name"
           ></powerup-config>
         </v-card>
     </div>
@@ -39,7 +39,7 @@ export default class ConfigColumn extends Vue {
     this.$store.getters["powerupStore/getPowerupsList"];
 
   get gameStatus(): string {
-    return this.$store.getters["gameStore/getGameStatus"];
+    return this.$store.getters["gameDataStore/getGameStatus"];
   }
 }
 </script>

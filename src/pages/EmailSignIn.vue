@@ -141,7 +141,7 @@ export default class EmailSignIn extends Mixins(EmailAddressFunctionsMixin) {
       .catch((error) => {     
         switch(error.code){
           case "auth/email-already-in-use":
-            this.accountErrorMessage = "A " + this.$store.getters["gameStore/getGameName"] + " account already exists for this email address. Please use the 'Sign In' tab."
+            this.accountErrorMessage = "A " + this.$store.getters["gameDataStore/getGameName"] + " account already exists for this email address. Please use the 'Sign In' tab."
             break;
         
           default:
@@ -188,7 +188,7 @@ export default class EmailSignIn extends Mixins(EmailAddressFunctionsMixin) {
           break;
 
         case "auth/user-not-found":
-          this.accountErrorMessage = "There is no " + this.$store.getters["gameStore/getGameName"] + " account associated with this email address. Please use the 'Create Account' tab to make one."
+          this.accountErrorMessage = "There is no " + this.$store.getters["gameDataStore/getGameName"] + " account associated with this email address. Please use the 'Create Account' tab to make one."
           this.showForgotPasswordLink = false;
           break;
         

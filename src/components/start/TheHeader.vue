@@ -69,7 +69,7 @@ export default class TheHeader extends Vue {
   showSignedInDrawer: boolean = false;
 
   get gameName(): string{
-    return this.$store.getters["gameStore/getGameName"]
+    return this.$store.getters["configDataStore/getGameName"]
   }
 
   get showSignedIn(): boolean{

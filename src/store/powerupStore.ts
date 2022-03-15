@@ -18,6 +18,11 @@ const powerupStore: Module<PowerupState, RootState> = {
         getPowerupsList(state): PowerupEntry[] {
             return state.powerupsList;
         },
+
+        getDeployedCount: (state) => (recPowerupName: string) => {
+            return state.powerupsList.find((powerup)=> powerup.name === recPowerupName)?.deployed;
+        },
+       
     },
 
     mutations: {
@@ -26,27 +31,92 @@ const powerupStore: Module<PowerupState, RootState> = {
             state.powerupsList.sort((a,b) => a.sortOrder - b.sortOrder);
         },
 
+        /*
         modifyPowerup(state, modifiedPowerup: PowerupEntry){
             state.powerupsList.splice(state.powerupsList.findIndex((powerup)=> powerup.name === modifiedPowerup.name), 1,  modifiedPowerup)
             state.powerupsList.sort((a,b) => a.sortOrder - b.sortOrder);
+        }
+        */
+        createUsingConfigData(state, payload){
+            let newPowerup: PowerupEntry = {
+                name: payload.name,
+                deployed: payload.deployed,
+                sortOrder: payload.sortOrder,
+                remaining: 0
+            }
+            state.powerupsList.push(newPowerup);
+            state.powerupsList.sort((a,b) => a.sortOrder - b.sortOrder);
+        },
+
+        overwriteConfigData(state, payload){
+            // eslint-disable-next-line
+            let revisedPowerupData: PowerupEntry = state.powerupsList.find((powerup) => powerup.name === payload.name)!;
+            revisedPowerupData.deployed = payload.deployed;
+            revisedPowerupData.sortOrder = payload.sortOrder;
+            const modifiedPowerupIndex = state.powerupsList.findIndex((powerup) => powerup.name === payload.name);
+            state.powerupsList.splice(modifiedPowerupIndex, 1, revisedPowerupData);
+        },
+
+        createUsingGameData(state, payload){
+            let newPowerup: PowerupEntry = {
+                name: payload.name,
+                deployed: 0,
+                sortOrder: 0,
+                remaining: payload.remaining
+            }
+            state.powerupsList.push(newPowerup);
+            state.powerupsList.sort((a,b) => a.sortOrder - b.sortOrder);
+        },
+
+        overwriteGameData(state, payload){
+            // eslint-disable-next-line
+            let revisedPowerupData: PowerupEntry = state.powerupsList.find((powerup) => powerup.name === payload.name)!;
+            revisedPowerupData.remaining = payload.remaining;
+            const modifiedPowerupIndex = state.powerupsList.findIndex((powerup) => powerup.name === payload.name);
+            state.powerupsList.splice(modifiedPowerupIndex, 1, revisedPowerupData);
         }
     },
 
     actions: {
         //firebase listeners
         initializeDatabaseListeners(context) {
-            onChildAdded(ref(database, 'game/powerups'), (data) => {
-                context.commit('addPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining, 'sortOrder': data.val().sortOrder});
+            //when a new powerup is loaded, either create a new entry in the powerupsList or append the new properties to the existing entry
+            onChildAdded(ref(database, 'configData/powerupsDeployed'), (data) => {
+                //element already exists in array
+                if (context.state.powerupsList.some((powerup) => powerup.name === data.key)){
+                    context.commit('overwriteConfigData', {'name': String(data.key), 'deployed': data.val().deployed, 'sortOrder': data.val().sortOrder});
+                }
+                //otherwise make a new entry in the array
+                else{
+                    context.commit('createUsingConfigData', {'name': String(data.key), 'deployed': data.val().deployed, 'sortOrder': data.val().sortOrder});
+                }
             });
 
-            onChildChanged(ref(database, 'game/powerups'), (data) => {
-                context.commit('modifyPowerup', {'name': String(data.key), 'deployed': data.val().deployed, 'remaining': data.val().remaining, 'sortOrder': data.val().sortOrder});
-            })
+            onChildChanged(ref(database, 'configData/powerupsDeployed'), (data) => {
+                context.commit('overwriteConfigData', {'name': String(data.key), 'deployed': data.val().deployed, 'sortOrder': data.val().sortOrder});
+            });
+
+
+            onChildAdded(ref(database, 'gameData/powerupsRemaining'), (data) => {
+                //element already exists in array
+                if (context.state.powerupsList.some((powerup) => powerup.name === data.key)){
+                    context.commit('overwriteGameData', {'name': String(data.key), 'remaining': data.val()});
+                }
+                //otherwise make a new entry in the array
+                else{
+                    context.commit('createUsingGameData', {'name': String(data.key), 'remaining': data.val()});
+                }
+            });
+
+            onChildChanged(ref(database, 'gameData/powerupsRemaining'), (data) => {
+                context.commit('overwriteGameData', {'name': String(data.key), 'remaining': data.val()});
+            });
+            
 
         },
 
         updatePowerupDeployed(_, payload: {'powerupName': string; 'newDeployedVal': number}){
-            set(ref(database, 'game/powerups/' + payload.powerupName + '/deployed'), payload.newDeployedVal);
+            set(ref(database, 'configData/powerupsDeployed/' + payload.powerupName + '/deployed'), payload.newDeployedVal);
         },
         
     },

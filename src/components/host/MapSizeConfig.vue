@@ -32,16 +32,16 @@ export default class MapSizeConfig extends Vue {
   errorMessage: string = "";
 
   get mapSize(): number {
-    return this.$store.getters["mapStore/getMapSize"];
+    return this.$store.getters["configDataStore/getMapSize"];
   }
 
   get cardDisabled(): boolean{
-    return this.$store.getters["gameStore/getGameStatus"] === GameStatus.GameInProgress
+    return this.$store.getters["gameDataStore/getGameStatus"] === GameStatus.GameInProgress
   }
 
   plusButtonClicked(){
     if (this.mapSize < 24 ){
-       this.$store.dispatch("mapStore/updateMapSize", this.mapSize + 1);
+       this.$store.dispatch("configDataStore/setMapSize", this.mapSize + 1);
     }
     else {
       this.errorMessage = "Max size is 24";
@@ -52,7 +52,7 @@ export default class MapSizeConfig extends Vue {
 
   minusButtonClicked(){
     if (this.mapSize > 8){
-       this.$store.dispatch("mapStore/updateMapSize", this.mapSize - 1);
+       this.$store.dispatch("configDataStore/setMapSize", this.mapSize - 1);
     }
     else {
       this.errorMessage = "Min size is 8"

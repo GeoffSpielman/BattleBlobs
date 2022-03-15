@@ -39,7 +39,7 @@ export default class App extends Vue {
   showDisconnectedDialog: boolean = false;
 
   get gameStatus(): GameStatus {
-    return this.$store.getters["gameStore/getGameStatus"];
+    return this.$store.getters["gameDataStore/getGameStatus"];
   }
 
   @Watch("gameStatus")
@@ -135,11 +135,14 @@ export default class App extends Vue {
     this.$store.dispatch("playerStore/initializeDatabaseListeners");
     this.$store.dispatch("lobbyStore/initializeDatabaseListeners");
     this.$store.dispatch("shipsStore/initializeDatabaseListeners");
-    this.$store.dispatch("gameStore/initializeDatabaseListeners");
+    
     this.$store.dispatch("chatStore/initializeDatabaseListeners");
     this.$store.dispatch("powerupStore/initializeDatabaseListeners");
     this.$store.dispatch("mapStore/initializeDatabaseListeners");
+
     this.$store.dispatch("authDataStore/initializeDatabaseListeners");
+    this.$store.dispatch("gameDataStore/initializeDatabaseListeners");
+    this.$store.dispatch("configDataStore/initializeDatabaseListeners");
 
     //initialize client instance (player object) in database
     this.$store.dispatch("playerStore/intializeClient").then(() => {

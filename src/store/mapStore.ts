@@ -83,7 +83,7 @@ const mapStore: Module<MapState, RootState> = {
             }
             
             //iterate through all active players
-            let activePlayers: string[] = context.rootGetters["gameStore/getcurrentPlayersList"];
+            let activePlayers: string[] = context.rootGetters["gameDataStore/getcurrentPlayersList"];
             activePlayers.forEach(function(playerKey){
 
                 //iterate through each ship belonging to the current player

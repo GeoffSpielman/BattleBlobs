@@ -9,16 +9,18 @@
           <thead>
             <tr>
               <th class="text-left">Email</th>
+              <th class="text-left">UID</th>
               <th class="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="email in authorizedPlayerEmails" :key="email">
-              <td>{{ email }}</td>
+            <tr v-for="player in authorizedPlayers" :key="player.email">
+              <td>{{ player.email }}</td>
+              <td>{{ player.uid }}</td>
               <td class="text-center">
                  <v-btn
                   :key="email + 'removeBtn'"
-                  @click="removeBtnClicked(email)"
+                  @click="removeBtnClicked(player.email)"
                   small
                   color="error lighten-1"
                   class="py-1 text-none"
@@ -54,6 +56,7 @@
 <script lang="ts">
 import { Component, Vue, Mixins} from "vue-property-decorator";
 import { EmailAddressFunctionsMixin } from "@/mixins/EmailAddressFunctionsMixin";
+import { authEntry } from "@/models/interfaces";
 
 @Component({
   name: "AuthorizedPlayersTable",
@@ -63,8 +66,8 @@ export default class AuthorizedPlayersTable extends Mixins(EmailAddressFunctions
   email: string = "";
   emailErrorMessage: string = "";
 
-  get authorizedPlayerEmails(): string[] {
-    return this.$store.getters["authDataStore/getAuthorizedPlayerEmails"];
+  get authorizedPlayers(): authEntry[] {
+    return this.$store.getters["authDataStore/getAuthorizedPlayers"];
   }
 
    emailModified() {
@@ -78,7 +81,7 @@ export default class AuthorizedPlayersTable extends Mixins(EmailAddressFunctions
       this.emailErrorMessage = "Please enter a valid email address";
       return;
     }
-    if (this.authorizedPlayerEmails.includes(this.email)){
+    if (this.authorizedPlayers.some((player) => player.email ===this.email)){
       this.emailErrorMessage = "Email is already authorized";
       return;
     }
@@ -103,7 +106,7 @@ export default class AuthorizedPlayersTable extends Mixins(EmailAddressFunctions
 }
 
 #leftSide {
-  width: 65%;
+  width: 70%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -161,6 +164,10 @@ export default class AuthorizedPlayersTable extends Mixins(EmailAddressFunctions
 #newAuthorizationPrompt{
   font-size: 11pt;
   margin-bottom: 5px;
+}
+
+#tableArea th{
+  z-index: 1;
 }
 
 </style>

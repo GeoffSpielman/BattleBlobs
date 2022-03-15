@@ -1,65 +1,77 @@
+import { authEntry } from "@/models/interfaces";
 import database from "@/store/firebase";
 import {ref, set, push, onChildAdded, onChildRemoved} from "firebase/database";
+import { auth } from "firebaseui";
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 
-function formatEmailForDatabaseKey(recEmail: string): string{
+function formatEmailForKey(recEmail: string): string{
     //According to firebase: Paths must be non-empty strings and can't contain ".", "#", "$", "[", or "]""
     return recEmail.replaceAll(new RegExp(/[#$\].[]/g), '')
 }
 
+function compareAuthEntryEmails(a: authEntry, b: authEntry){
+    return a.email.toUpperCase() < b.email.toUpperCase() ? -1 : 1;
+}
+
 interface AuthState {
-    authorizedPlayerEmails: string[];
-    authorizedHostEmails: string[];
+    authorizedPlayers: authEntry[];
+    authorizedHosts: authEntry[];
 }
 
 const authDataStore: Module<AuthState, RootState> = {
     namespaced: true,
     state: {
-        authorizedPlayerEmails: [],
-        authorizedHostEmails: [],
+        authorizedPlayers: [],
+        authorizedHosts: [],
     },
 
     getters: {
-        getAuthorizedPlayerEmails(state): string[] {
-            return state.authorizedPlayerEmails
+        getAuthorizedPlayers(state): authEntry[] {
+            return state.authorizedPlayers
         },
 
-        getAuthorizedHostEmails(state): string[]{
-            return state.authorizedHostEmails;
+        getAuthorizedHosts(state): authEntry[]{
+            return state.authorizedHosts;
         },
 
         getPlayerOnWhitelist: (state) => (recPlayerEmail: string) => {
-            return state.authorizedPlayerEmails.includes(recPlayerEmail)
+            return state.authorizedPlayers.some((player) => player.email === recPlayerEmail);
+        },
+
+        getPlayerUIDmissing: (state) => (recPlayerEntry: authEntry) => {
+            return state.authorizedPlayers.find((player) => player.email === recPlayerEntry.email)?.uid !== recPlayerEntry.uid;
         },
 
         getHostOnWhitelist: (state) => (recHostEmail: string) => {
-            return state.authorizedHostEmails.includes(recHostEmail)
+            return state.authorizedHosts.some((host) => host.email === recHostEmail);
+        },
+
+        getHostUIDmissing: (state) => (recHostEntry: authEntry) => {
+            return state.authorizedHosts.find((host) => host.email === recHostEntry.email)?.uid !== recHostEntry.uid;
         },
     },
 
     mutations: {
 
-        addAuthorizedPlayerEmail(state, newAuthorizedPlayerEmail: string) {
-            state.authorizedPlayerEmails.push(newAuthorizedPlayerEmail);
-            const tempArray = state.authorizedPlayerEmails
-            tempArray.sort()
-            state.authorizedPlayerEmails = tempArray;
+        addAuthorizedPlayer(state, newAuthorizedPlayer: authEntry) {
+            //keep authorized players list sorted alphabetically by email
+            state.authorizedPlayers.push(newAuthorizedPlayer);
+            const tempArray = state.authorizedPlayers
+            tempArray.sort(compareAuthEntryEmails)
+            state.authorizedPlayers = tempArray;
         },
 
-        removeAuthorizedPlayerEmail(state, removedAuthorizedPlayerEmail: string){
-            state.authorizedPlayerEmails.splice(state.authorizedPlayerEmails.indexOf(removedAuthorizedPlayerEmail), 1);
+        removeAuthorizedPlayer(state, removedAuthorizedPlayer: authEntry){
+            state.authorizedPlayers.splice(state.authorizedPlayers.findIndex((player) => player.email === removedAuthorizedPlayer.email), 1);
         },
 
-        addAuthorizedHostEmail(state, newAuthorizedHostEmail: string) {
-            state.authorizedHostEmails.push(newAuthorizedHostEmail);
-            const tempArray = state.authorizedHostEmails
-            tempArray.sort()
-            state.authorizedHostEmails = tempArray;
+        addAuthorizedHost(state, newAuthorizedHost: authEntry) {
+            state.authorizedHosts.push(newAuthorizedHost);
         },
 
-        removeAuthorizedHostEmail(state, removedAuthorizedHostEmail: string){
-            state.authorizedHostEmails.splice(state.authorizedHostEmails.indexOf(removedAuthorizedHostEmail), 1);
+        removeAuthorizedHost(state, removedAuthorizedHost: authEntry){
+            state.authorizedHosts.splice(state.authorizedHosts.findIndex((host) => host.email === removedAuthorizedHost.email), 1);
         }
 
     },
@@ -70,29 +82,61 @@ const authDataStore: Module<AuthState, RootState> = {
         initializeDatabaseListeners(context) {
 
             onChildAdded(ref(database, 'authData/playersWhiteList'), (data) => {
-                context.commit('addAuthorizedPlayerEmail', data.val());
+                const newPlayer: authEntry = {
+                    uid: String(data.key),
+                    email: data.val()
+                }
+                context.commit('addAuthorizedPlayer', newPlayer);
             });
 
             onChildRemoved(ref(database, 'authData/playersWhiteList'), (data) => {
-                context.commit('removeAuthorizedPlayerEmail', data.val());
+                const removedPlayer: authEntry = {
+                    uid: String(data.key),
+                    email: data.val()
+                }
+                context.commit('removeAuthorizedPlayer', removedPlayer);
             });
 
             onChildAdded(ref(database, 'authData/hostWhiteList'), (data) => {
-                context.commit('addAuthorizedHostEmail', data.val());
+                const newHost: authEntry = {
+                    uid: String(data.key),
+                    email: data.val()
+                }
+                context.commit('addAuthorizedHost', newHost);
             });
 
             onChildRemoved(ref(database, 'authData/hostWhiteList'), (data) => {
-                context.commit('removeAuthorizedHostEmail', data.val());
-            })
+                const removedHost: authEntry = {
+                    uid: String(data.key),
+                    email: data.val()
+                }
+                context.commit('removeAuthorizedHost', removedHost);
+            });
         },
 
         addAuthorizedPlayerEmail(_, newAuthorizedPlayerEmail: string){
-            set((ref(database, 'authData/playersWhiteList/' + formatEmailForDatabaseKey(newAuthorizedPlayerEmail))), newAuthorizedPlayerEmail);
+            set((ref(database, 'authData/playersWhiteList/' + formatEmailForKey(newAuthorizedPlayerEmail))), newAuthorizedPlayerEmail);
         },
 
-        removeAuthorizedPlayerEmail(_, removedAuthorizedPlayerEmail: string){
-            set(ref(database, 'authData/playersWhiteList/' + formatEmailForDatabaseKey(removedAuthorizedPlayerEmail)), null);
-        }
+        removeAuthorizedPlayerEmail(context, removedAuthorizedPlayerEmail: string){
+            //find the entry that has the given email address (key could be email or UID)
+            const keyToRemove = context.state.authorizedPlayers.find((player) => player.email === removedAuthorizedPlayerEmail)?.uid;
+            set(ref(database, 'authData/playersWhiteList/' + keyToRemove), null);
+        },
+
+        addAuthorizedPlayerEntry(_, newAuthorizedPlayer: authEntry){
+            set(ref(database, 'authData/playersWhiteList/' + newAuthorizedPlayer.uid), newAuthorizedPlayer.email);
+        },
+
+        removeAuthorizedHostEmail(context, removedAuthorizedHostEmail: string){
+            //find the entry that has the given email address (key could be email or UID)
+            const keyToRemove = context.state.authorizedHosts.find((host) => host.email === removedAuthorizedHostEmail)?.uid;
+            set(ref(database, 'authData/hostWhiteList/' + keyToRemove), null);
+        },
+
+        addAuthorizedHostEntry(_, newAuthorizedHost: authEntry){
+            set(ref(database, 'authData/hostWhiteList/' + newAuthorizedHost.uid), newAuthorizedHost.email);
+        },
 
     },
 }

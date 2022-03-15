@@ -114,7 +114,7 @@ export default class IndividualPlayerDisplay extends Mixins(
   get itsMyTurn(): boolean {
     return (
       this.playerKey ===
-      this.$store.getters["gameStore/getWhoseTurn"]
+      this.$store.getters["gameDataStore/getWhoseTurn"]
     );
   }
 

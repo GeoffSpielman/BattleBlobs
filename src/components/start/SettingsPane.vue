@@ -42,7 +42,7 @@ export default class SettingsPane extends Vue {
   soundsVolume: number = 50;
   
   get colourAssistanceMode(): boolean {
-    return this.$store.getters["clientSpecificStore.getColourAssistanceMode"];
+    return this.$store.getters["clientSpecificStore/getColourAssistanceMode"];
   }
   set colourAssistanceMode(value: boolean) {
     this.$store.dispatch("clientSpecificStore/setColourAssistanceMode", value);

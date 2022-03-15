@@ -27,7 +27,7 @@ export default class ControlsButtons extends Vue {
     console.log("start the game!");
     this.$store.dispatch("playerStore/addPlayersToGame");
     this.$store.dispatch("mapStore/initializeMap");
-    this.$store.dispatch("gameStore/setGameStatus", GameStatus.GameInProgress);
+    this.$store.dispatch("gameDataStore/setGameStatus", GameStatus.GameInProgress);
   }
 
   resetDatabaseClicked() {
@@ -35,14 +35,12 @@ export default class ControlsButtons extends Vue {
     this.$store.dispatch("playerStore/deleteAllPlayersExceptMe");
     this.$store.dispatch("lobbyStore/resetColoursInDatabase");
     this.$store.dispatch("lobbyStore/resetAliasesInDatabase");
-    this.$store.dispatch(
-      "gameStore/setGameStatus",
-      GameStatus.WaitingOnPlayers
+    this.$store.dispatch("gameDataStore/setGameStatus", GameStatus.WaitingOnPlayers
     );
     this.$store.dispatch("shipsStore/deleteAllShips");
-    this.$store.dispatch("gameStore/setCurrentPlayersList", null);
+    this.$store.dispatch("gameDataStore/setCurrentPlayersList", null);
     this.$store.dispatch("chatStore/deleteAllChats");
-    this.$store.dispatch("gameStore/setWhoseTurn", "TBD");
+    this.$store.dispatch("gameDataStore/setWhoseTurn", "TBD");
   }
 }
 </script>

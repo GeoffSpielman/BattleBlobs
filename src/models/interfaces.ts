@@ -89,3 +89,8 @@ export interface SelectedSquareData{
     left: number; 
     width: number;
 }
+
+export interface authEntry{
+    uid: string;
+    email: string;
+}

@@ -74,7 +74,7 @@ export default class GameMap extends Vue {
   mapCenterLeft: number = -1;
 
   get mapSize(): number {
-    return this.$store.getters["mapStore/getMapSize"];
+    return this.$store.getters["configDataStore/getMapSize"];
   }
 
   get mapData(): { [coords: string]: GridSquare } {

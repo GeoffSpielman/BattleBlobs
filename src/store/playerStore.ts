@@ -245,9 +245,9 @@ const playerStore: Module<PlayerState, RootState> = {
           captainNum ++;
         }
       });
-      context.dispatch('gameStore/setCurrentPlayersList', readyPlayerIDsList, {root: true});
+      context.dispatch('gameDataStore/setCurrentPlayersList', readyPlayerIDsList, {root: true});
       context.dispatch('chatStore/generateChatPairings', readyPlayerIDsList, {root: true});
-      context.dispatch('gameStore/setWhoseTurn', readyPlayerIDsList[0], {root: true});
+      context.dispatch('gameDataStore/setWhoseTurn', readyPlayerIDsList[0], {root: true});
     }
   },
 }

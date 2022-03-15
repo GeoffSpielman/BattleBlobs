@@ -45,10 +45,10 @@ export default class StatusColumn extends Vue {
   GameStatus = GameStatus;
 
   get gameStatus(): string {
-    return this.$store.getters["gameStore/getGameStatus"];
+    return this.$store.getters["gameDataStore/getGameStatus"];
   }
   get whoseTurn(): string {
-    let whoseTurnPlayerKey = this.$store.getters["gameStore/getWhoseTurn"];
+    let whoseTurnPlayerKey = this.$store.getters["gameDataStore/getWhoseTurn"];
     if (whoseTurnPlayerKey === "TBD") {
       return "TBD";
     } else {

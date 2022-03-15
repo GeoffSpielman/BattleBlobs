@@ -81,10 +81,10 @@ export default class CurrentPlayersTable extends Vue {
   removeBtnClicked(playerKey: string) {
     this.$store.dispatch("playerStore/removePlayer", playerKey);
     if (
-      this.$store.getters["gameStore/getGameStatus"] ===
+      this.$store.getters["gameDataStore/getGameStatus"] ===
       GameStatus.GameInProgress
     ) {
-      this.$store.dispatch("gameStore/removeCurrentPlayer", playerKey);
+      this.$store.dispatch("gameDataStore/removeCurrentPlayer", playerKey);
     }
   }
 }
@@ -142,5 +142,9 @@ export default class CurrentPlayersTable extends Vue {
 #toggleLabel{
   margin: 0px 5px 0px 0px;
   font-size: 10pt;
+}
+
+#tableArea th{
+  z-index: 1;
 }
 </style>

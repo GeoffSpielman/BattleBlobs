@@ -1,6 +1,6 @@
 <template>
   <div id="powerupConfigOutermost">
-    <div id="powerupName" class="mb-1">{{ powerupDetails.name }}</div>
+    <div id="powerupName" class="mb-1">{{ powerupName }}</div>
     <div id="picAndQty">
       <img id="iconImg" class="ml-3" :src="myIconPath" />
       <v-text-field class="powerupInput"
@@ -8,8 +8,7 @@
         outlined
         dense
         :rules="[rules.greaterThanZero, rules.lessThanTen, rules.validInteger]"
-        v-model="numValue"
-        @change="valueChanged()"
+        v-model="deployedVal"
       ></v-text-field>
     </div>
   </div>
@@ -17,7 +16,6 @@
 
 
 <script lang="ts">
-import { PowerupEntry } from "@/models/interfaces";
 import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
 import { PowerupIconPathMixin } from "@/mixins/PowerupIconPathMixin";
 
@@ -25,12 +23,11 @@ import { PowerupIconPathMixin } from "@/mixins/PowerupIconPathMixin";
   name: "PowerupConfig",
 })
 export default class PowerupConfig extends Mixins(PowerupIconPathMixin) {
-  @Prop({ required: true }) readonly powerupDetails!: PowerupEntry;
+  @Prop({ required: true }) readonly powerupName!: string;
 
   get myIconPath(): string {
-    return this.iconPath(this.powerupDetails.name) || "Not good";
+    return this.iconPath(this.powerupName) || "Not good";
   }
-  numValue: number = this.powerupDetails.deployed;
 
   rules = {
     greaterThanZero: (value: number) => value >= 0 || "Minimum is 0",
@@ -38,10 +35,17 @@ export default class PowerupConfig extends Mixins(PowerupIconPathMixin) {
     validInteger: (value: number) =>
       Number.isInteger(Number(value)) || "Invalid integer",
   };
-
-  valueChanged(){
-      if (this.numValue >=0 && this.numValue <= 10 && Number.isInteger(Number(this.numValue))){          
-          this.$store.dispatch("powerupStore/updatePowerupDeployed", {'powerupName': this.powerupDetails.name, 'newDeployedVal': Number(this.numValue)});      }
+  
+  get deployedVal(): number {
+    return this.$store.getters["powerupStore/getDeployedCount"](this.powerupName);
+  }
+  set deployedVal(value: number) {
+    if (value >=0 && value <= 10 && Number.isInteger(Number(value))){ 
+    this.$store.dispatch("powerupStore/updatePowerupDeployed", {'powerupName': this.powerupName, 'newDeployedVal': Number(value)});
+    }
+    else{
+      //ToDo someday (maybe) - emit an event so that the "start game" button is disabled until a valid number is input
+    }
   }
 }
 </script>

@@ -14,6 +14,7 @@ import SignInPage from '@/pages/SignIn.vue'
 import EmailSignInPage from '@/pages/EmailSignIn.vue'
 import AccessDenied from '@/pages/AccessDenied.vue'
 import NotFoundPage from '@/pages/NotFound.vue'
+import { authEntry } from '@/models/interfaces';
 
 
 Vue.use(VueRouter)
@@ -84,7 +85,7 @@ function bothWhiteListsHaveLoaded(): Promise<string>{
 
     function waitForWhiteLists(resolve: Function, reject: Function) {
       //store has been initialized
-      if (store.getters["authDataStore/getAuthorizedPlayerEmails"].length > 0 && store.getters["authDataStore/getAuthorizedHostEmails"].length > 0){
+      if (store.getters["authDataStore/getAuthorizedPlayers"].length > 0 && store.getters["authDataStore/getAuthorizedHosts"].length > 0){
         resolve("Both white lists have been initialized");
       }
 
@@ -124,10 +125,35 @@ router.beforeEach(async (to, from, next) =>{
 
       //authorized host
       if (to.name === "Host" && store.getters["authDataStore/getHostOnWhitelist"](curEmail)){
-        next();
+        
+        let authenticatedHost: authEntry = {
+          uid: String(auth.currentUser?.uid),
+          email: String(curEmail)
+        }
+
+        //check if their key in the database is not their UID (they were added manually, this is their first time hosting)
+        if (store.getters["authDataStore/getHostUIDmissing"](authenticatedHost)){
+          //remove the old entry in the whitelist under their email, add a new one under their UID
+          store.dispatch("authDataStore/removeAuthorizedHostEmail", curEmail);          
+          store.dispatch("authDataStore/addAuthorizedHostEntry", authenticatedHost);
+        }        
+        next(); 
       }
+
       //authorized player
       else if ((to.name === "Lobby" || to.name === "Game") &&  store.getters["authDataStore/getPlayerOnWhitelist"](curEmail)){
+      
+        let authenticatedPlayer: authEntry = {
+          uid: String(auth.currentUser?.uid),
+          email: String(curEmail)
+        }
+
+        //check if their key in the database is not their UID (they were added manually by a host, this is their first time playing)
+        if (store.getters["authDataStore/getPlayerUIDmissing"](authenticatedPlayer)){
+          //remove the old entry in the whitelist under their email, add a new one under their UID
+          store.dispatch("authDataStore/removeAuthorizedPlayerEmail", curEmail);          
+          store.dispatch("authDataStore/addAuthorizedPlayerEntry", authenticatedPlayer);
+        }
         next();
       }
       //unauthorized, but authenticated, user -> show them the "contact your host" page
@@ -141,9 +167,6 @@ router.beforeEach(async (to, from, next) =>{
         console.log(errorMessage);
       }
     )
-  
-    
-    
     
   }
   else {
@@ -153,36 +176,6 @@ router.beforeEach(async (to, from, next) =>{
     next({name: 'SignIn'});
   }
 });
-
-
-
-
-
-
-/*
-
-function ensureFooIsSet() {
-  var start = Date.now();
-  return new Promise(waitForPlayersWhiteList); // set the promise object within the ensureFooIsSet object
-
-
-  function waitForPlayersWhiteList(resolve: Function, reject: Function) {
-
-      //store has been initialized
-      if (store.getters["authDataStore/getAuthorizedPlayerEmails"].length > 0)
-          resolve("Loaded");
-
-      //wait 3000 milliseconds before giving up
-      else if ( (Date.now() - start) >= 3000)
-          reject(new Error("timeout"));
-
-      //store is not ready yet, try again in 50 milliseconds
-      else
-          setTimeout(waitForPlayersWhiteList(resolve, reject), 50);
-  }
-}
-
-*/
 
 export default router
 
