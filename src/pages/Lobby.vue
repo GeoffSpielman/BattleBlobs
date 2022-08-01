@@ -51,7 +51,6 @@
             : "Ready to Start"
         }}
       </v-btn>
-      <v-btn @click='getIntoTroubleClicked'>Get into Trouble</v-btn>
 
       <p id="errorMessage">{{ errorMessage }}</p>
       <v-btn
@@ -95,14 +94,6 @@ import ShipEntry from "@/components/lobby/ShipEntry.vue";
   },
 })
 export default class Lobby extends Vue {
-
-
-  getIntoTroubleClicked(){
-    console.log("attempting to set map size to 12")
-    this.$store.dispatch("configDataStore/setMapSize", 12);
-  }
-
-
 
   nameIconPath: string = require("@/assets/lobby/person_icon.png");
   aliasIconPath: string = require("@/assets/lobby/alias_icon.png");

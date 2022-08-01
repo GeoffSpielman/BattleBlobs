@@ -7,7 +7,9 @@
       If you are trying to <strong> play</strong> the game...
     </h3>
     <p class="nextStepsExplanation">
-        You account is linked to <code>{{getAuthEmail()}}</code>. Please provide this email to your host and ask them to authorize you.
+        You Clusterfuck&trade; account is linked to the following email address: <code>{{getAuthEmail()}}</code>
+        <br>
+        Please provide this email address to your host and ask them to authorize you.
     </p>
     <h3 class="instructionHeader">
       If you are trying to <strong> host</strong> the game...
@@ -58,11 +60,12 @@ export default class AccessDenied extends Vue {
 .instructionHeader{
   font-weight: normal;
   font-size: 18pt;
+  margin-top: 10px;
 }
 
 .nextStepsExplanation{
   font-size: 14pt;
-  margin-left: 15px;
+  margin-left: 18px;
 }
 
 #tryAgainBtn{

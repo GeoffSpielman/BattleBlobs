@@ -45,7 +45,7 @@ const chatStore: Module<ChatState, RootState> = {
     actions: {
         //firebase listeners
         initializeDatabaseListeners(context) {
-            onChildAdded(ref(database, 'chat/pairings'), (data) => {
+            onChildAdded(ref(database, 'gameData/chat/pairings'), (data) => {
                 context.commit('addPairing', { 'key': data.key, 'val': data.val() });
             });
         },
@@ -53,13 +53,13 @@ const chatStore: Module<ChatState, RootState> = {
         generateChatPairings(context, recIDsList) {
             for (let i = 0; i < recIDsList.length - 1; i++) {
                 for (let j = i + 1; j < recIDsList.length; j++) {
-                    set(push(ref(database, 'chat/pairings')), [recIDsList[i], recIDsList[j]]); 
+                    set(push(ref(database, 'gameData/chat/pairings')), [recIDsList[i], recIDsList[j]]); 
                 }
             }
         },
 
         deleteAllChats(_) {
-            set(ref(database, 'chat'), null);
+            set(ref(database, 'gameData/chat'), null);
         }
     },
 }

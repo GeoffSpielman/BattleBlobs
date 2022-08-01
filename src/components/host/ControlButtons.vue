@@ -25,7 +25,7 @@ import { GameStatus } from "@/models/enums";
 export default class ControlsButtons extends Vue {
   startBtnClicked() {
     console.log("start the game!");
-    this.$store.dispatch("playerStore/addPlayersToGame");
+    //this.$store.dispatch("playerStore/addPlayersToGame");
     this.$store.dispatch("mapStore/initializeMap");
     this.$store.dispatch("gameDataStore/setGameStatus", GameStatus.GameInProgress);
   }
@@ -41,6 +41,7 @@ export default class ControlsButtons extends Vue {
     this.$store.dispatch("gameDataStore/setCurrentPlayersList", null);
     this.$store.dispatch("chatStore/deleteAllChats");
     this.$store.dispatch("gameDataStore/setWhoseTurn", "TBD");
+    this.$store.dispatch("mapStore/eraseMap");
   }
 }
 </script>

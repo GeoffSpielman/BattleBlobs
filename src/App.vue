@@ -44,9 +44,9 @@ export default class App extends Vue {
 
   @Watch("gameStatus")
   gameStatusChanged(newVal: GameStatus) {
-    //Todo - only move 'locked in' players into the game
+    //Todo - change this so that only 'locked in' players are moved to the game screen, trigger this from the 'locked in players' area of the 'players' store
     if (newVal === GameStatus.GameInProgress && this.$route.name !== "Host") {
-      this.$router.push("/play");
+      //this.$router.push("/play");
     }
   }
 

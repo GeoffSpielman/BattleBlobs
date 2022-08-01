@@ -44,32 +44,32 @@ const mapStore: Module<MapState, RootState> = {
 
         updateMapSquare(state, recSquare: GridSquare){
             state.mapData[recSquare.row + "," + recSquare.col] = recSquare;
-        }
+        },
 
     },
 
     actions: {
         //firebase listeners
         initializeDatabaseListeners(context) {
-            onValue(ref(database, 'map/mapSize'), (snapshot) => {
+            onValue(ref(database, 'configData/mapSize'), (snapshot) => {
                 context.commit('changeMapSize', snapshot.val());
             });
             
-            onChildAdded(ref(database, 'map/mapData'), (data) => {
+            onChildAdded(ref(database, 'gameData/map'), (data) => {
                 context.commit('addSquareToMap', data.val())
             });
 
-            onChildRemoved(ref(database, 'map/mapData'), (data) => {
+            onChildRemoved(ref(database, 'gameData/map'), (data) => {
                 context.commit('removeSquareFromMap', data.key);
             });
 
-            onChildChanged(ref(database, 'map/mapData'), (data) => {
+            onChildChanged(ref(database, 'gameData/map'), (data) => {
                 context.commit('updateMapSquare', data.val());
             });
         },
         
         updateMapSize(_, newMapSize: number){
-            set(ref(database, 'map/mapSize'), newMapSize);
+            set(ref(database, 'configData/mapSize'), newMapSize);
         },
 
         initializeMap(context){
@@ -81,6 +81,8 @@ const mapStore: Module<MapState, RootState> = {
                     newMap[rowIdx + "," + colIdx] = {row: rowIdx, col: colIdx, revealed: false, mapType: MapType.Water, powerup: PowerupName.None, captains: []};
                 }
             }
+
+            console.log("building a map of size " + context.state.mapSize)
             
             //iterate through all active players
             let activePlayers: string[] = context.rootGetters["gameDataStore/getcurrentPlayersList"];
@@ -110,11 +112,15 @@ const mapStore: Module<MapState, RootState> = {
             })
 
             //upload the initialized map
-            set(ref(database, 'map/mapData'), newMap);
+            set(ref(database, 'gameData/map'), newMap);
         },
 
         revealSquare(_, coordString: string){
-            set(ref(database, 'map/mapData/' + + coordString + '/revealed'), true)
+            set(ref(database, 'gameData/map/' + + coordString + '/revealed'), true)
+        },
+
+        eraseMap(_){
+            set(ref(database, 'gameData/map'), null);
         }
     },
 }

@@ -1,7 +1,6 @@
 import { authEntry } from "@/models/interfaces";
 import database from "@/store/firebase";
-import {ref, set, push, onChildAdded, onChildRemoved} from "firebase/database";
-import { auth } from "firebaseui";
+import {ref, set, push, onChildAdded, onChildRemoved, get} from "firebase/database";
 import { Module } from 'vuex'
 import { RootState } from './RootState'
 
@@ -137,6 +136,44 @@ const authDataStore: Module<AuthState, RootState> = {
         addAuthorizedHostEntry(_, newAuthorizedHost: authEntry){
             set(ref(database, 'authData/hostWhiteList/' + newAuthorizedHost.uid), newAuthorizedHost.email);
         },
+
+        manuallyReadWhiteLists(context){
+
+            //first read in hostWhiteList
+            get(ref(database, 'authData/hostWhiteList')).then((snapshot) => {
+                if (snapshot.exists()){
+                    let recList = snapshot.val();
+                    for (let hostUID in recList){                        
+                        const newHost: authEntry = {
+                            uid: hostUID,
+                            email: String(recList[hostUID])
+                        }
+                        context.commit('addAuthorizedHost', newHost);
+                    }
+                }
+                else{
+                    console.log("Manual read of hostWhiteList failed")
+                }
+            })
+
+            //the read in the playerWhiteList
+            //first read in hostWhiteList
+            get(ref(database, 'authData/playersWhiteList')).then((snapshot) => {
+                if (snapshot.exists()){
+                    let recList = snapshot.val();
+                    for (let playerUID in recList){                        
+                        const newPlayer: authEntry = {
+                            uid: playerUID,
+                            email: String(recList[playerUID])
+                        }
+                        context.commit('addAuthorizedPlayer', newPlayer);
+                    }
+                }
+                else{
+                    console.log("Manual read of playerWhiteList failed")
+                }
+            })
+        }
 
     },
 }

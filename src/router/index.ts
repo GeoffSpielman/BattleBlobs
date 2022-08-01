@@ -82,6 +82,7 @@ const router = new VueRouter({
 
 function bothWhiteListsHaveLoaded(): Promise<string>{
     let start = Date.now();
+    let attemptedManualRead: boolean = false;
 
     function waitForWhiteLists(resolve: Function, reject: Function) {
       //store has been initialized
@@ -89,14 +90,22 @@ function bothWhiteListsHaveLoaded(): Promise<string>{
         resolve("Both white lists have been initialized");
       }
 
+      //if it's been an entire second, it's possible the user was not previously authenticated (auth = null) and didn't have permission to read these lists from the database. Try manually reading them now.
+      else if ( (Date.now() - start) >= 1000 && attemptedManualRead === false){
+        store.dispatch("authDataStore/manuallyReadWhiteLists"); 
+        attemptedManualRead = true;
+        //try again after 400 milliseconds
+        setTimeout(waitForWhiteLists, 400, resolve, reject)
+      }
+
       //wait 3000 milliseconds before giving up
       else if ( (Date.now() - start) >= 3000){
         reject("Error: Both white lists could not be loaded from firebase");
       }
 
-      //store is not ready yet, try again in 50 milliseconds
+      //store is not ready yet, try again in 200 milliseconds
       else {
-        setTimeout(waitForWhiteLists, 50, resolve, reject)
+        setTimeout(waitForWhiteLists, 200, resolve, reject)
       }
     }
 
