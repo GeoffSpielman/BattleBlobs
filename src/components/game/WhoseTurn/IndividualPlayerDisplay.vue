@@ -51,9 +51,9 @@ export default class IndividualPlayerDisplay extends Mixins(
 
   get playerAlias(): string {
     if (
-      this.$store.getters["playerStore/getPlayerKeyInDatabase"](this.playerKey)
+      this.$store.getters["playerStore/getUIDinDatabase"](this.playerKey)
     ) {
-      return this.$store.getters["playerStore/getAliasUsingKey"](
+      return this.$store.getters["playerStore/getAliasUsingUID"](
         this.playerKey
       );
     } else {
@@ -63,10 +63,10 @@ export default class IndividualPlayerDisplay extends Mixins(
 
   get playerColour(): string {
     if (
-      this.$store.getters["playerStore/getPlayerKeyInDatabase"](this.playerKey)
+      this.$store.getters["playerStore/getUIDinDatabase"](this.playerKey)
     ) {
       // does not include # before the hex code
-      return this.$store.getters["playerStore/getColourUsingKey"](
+      return this.$store.getters["playerStore/getColourUsingUID"](
         this.playerKey
       );
     } else {
@@ -80,9 +80,9 @@ export default class IndividualPlayerDisplay extends Mixins(
 
   get playerCaptainNum(): number {
     if (
-      this.$store.getters["playerStore/getPlayerKeyInDatabase"](this.playerKey)
+      this.$store.getters["playerStore/getUIDinDatabase"](this.playerKey)
     ) {
-      return this.$store.getters["playerStore/getCaptainNumUsingKey"](
+      return this.$store.getters["playerStore/getCaptainNumUsingUID"](
         this.playerKey
       );
     } else {
@@ -92,11 +92,11 @@ export default class IndividualPlayerDisplay extends Mixins(
 
   get playerPowerups(): string[] {
     if (
-      this.$store.getters["playerStore/getPlayerKeyInDatabase"](this.playerKey)
+      this.$store.getters["playerStore/getUIDinDatabase"](this.playerKey)
     ) {
       let powerupsList: string[] = [];
       let entirePowerupsObject = this.$store.getters[
-        "playerStore/getPowerupsUsingKey"
+        "playerStore/getPowerupsUsingUID"
       ](this.playerKey);
       Object.keys(entirePowerupsObject).forEach((powerup: string) => {
         if (powerup !== PowerupName.None) {

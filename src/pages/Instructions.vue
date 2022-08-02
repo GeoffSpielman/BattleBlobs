@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { PlayerStatus } from "@/models/enums";
 import BabyPartController from "@/pages/BabyPartController.vue"
 
 @Component({
@@ -21,6 +22,12 @@ import BabyPartController from "@/pages/BabyPartController.vue"
 })
 export default class Instructions extends Vue {
 
+  mounted() {
+      this.$store.dispatch(
+        "playerStore/setMyStatus",
+        PlayerStatus.ReadingInstructions
+      );
+    }
 }
 </script>
 

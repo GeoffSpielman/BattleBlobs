@@ -1,7 +1,7 @@
 <template>
   <div id="currentPlayersTableOutermostDiv">
     <div id="titleRow">
-      <h2>Current Players</h2>
+      <h2>Players Database</h2>
       <div id="toggleArea">
         <p id="toggleLabel">
         Debug Mode
@@ -26,20 +26,20 @@
         <tbody>
           <tr
             v-for="player in playersList"
-            :key="player.key"
+            :key="player.uid"
             :style="{
               color:
                 player.status === PlayerStatus.Disconnected ? 'red' : 'black',
             }"
           >
             <td>{{ player.name }}</td>
-            <td class="text-center">{{ player.status }}</td>
-            <td class="text-center">{{ player.key }}</td>
+            <td class="text-center">{{ player.status}}</td>
+            <td class="text-center">{{ player.uid }}</td>
             <td class="text-center">
               <v-btn
-                v-if="player.key !== myKey"
-                :key="player.key + 'removeBtn'"
-                @click="removeBtnClicked(player.key)"
+                v-if="player.uid !== myUID"
+                :key="player.UID + 'removeBtn'"
+                @click="removeBtnClicked(player.uid)"
                 small
                 color="error lighten-1"
                 class="py-1 text-none"
@@ -74,17 +74,17 @@ export default class CurrentPlayersTable extends Vue {
     return this.$store.getters["playerStore/getPlayersList"];
   }
 
-  get myKey(): string {
-    return this.$store.getters["playerStore/getMyKey"];
+  get myUID(): string {
+    return this.$store.getters["playerStore/getMyUID"];
   }
 
-  removeBtnClicked(playerKey: string) {
-    this.$store.dispatch("playerStore/removePlayer", playerKey);
+  removeBtnClicked(playerUID: string) {
+    this.$store.dispatch("playerStore/removePlayer", playerUID);
     if (
       this.$store.getters["gameDataStore/getGameStatus"] ===
       GameStatus.GameInProgress
     ) {
-      this.$store.dispatch("gameDataStore/removeCurrentPlayer", playerKey);
+      this.$store.dispatch("gameDataStore/removeCurrentPlayer", playerUID);
     }
   }
 }
@@ -107,7 +107,7 @@ export default class CurrentPlayersTable extends Vue {
 #titleRow h2 {
   font-size: 20px;
   font-family: "Roboto", sans-serif;
-  margin-left: 10px;
+  margin-left: 12px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.87);
   padding-top: 1px;

@@ -89,7 +89,7 @@ const mapStore: Module<MapState, RootState> = {
             activePlayers.forEach(function(playerKey){
 
                 //iterate through each ship belonging to the current player
-                let shipKeys: string[] = context.rootGetters["playerStore/getShipKeysUsingKey"](playerKey);
+                let shipKeys: string[] = context.rootGetters["playerStore/getShipKeysUsingUID"](playerKey);
                 shipKeys.forEach(function(shipKey){
                     
                     //Compute the spawn ranges for the ship

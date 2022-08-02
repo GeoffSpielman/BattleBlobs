@@ -37,9 +37,12 @@ import { PlayerStatus } from "@/models/enums";
   },
 })
 export default class Host extends Vue {
+
   mounted() {
-    this.$store.dispatch("playerStore/setMyStatus", PlayerStatus.Hosting);
-    this.$store.dispatch("playerStore/setMyName", "== HOST ==");
+    this.$store.dispatch(
+      "playerStore/setMyStatus",
+      PlayerStatus.Hosting
+    );
   }
 }
 </script>

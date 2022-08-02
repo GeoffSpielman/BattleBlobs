@@ -59,7 +59,7 @@ export default class ChatWindow extends Vue {
 
 
   mounted(){
-    this.chatsToShow = this.$store.getters["chatStore/getMyPairings"](this.$store.getters["playerStore/getMyKey"]);
+    this.chatsToShow = this.$store.getters["chatStore/getMyPairings"](this.$store.getters["playerStore/getMyUID"]);
 
     // listen to private chats
     this.chatsToShow.forEach(chat => {

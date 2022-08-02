@@ -8,6 +8,8 @@ export enum PlayerStatus{
     Spectating = "Spectating",
     Disconnected = "Disconnected",
     Hosting = "Hosting",
+    SigningIn = "Signing In",
+    AccessDenied = "Access Denied",
     ErrorUnknown = "Error (Unknown)"
 }
 

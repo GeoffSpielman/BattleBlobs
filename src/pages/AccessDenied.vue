@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { PlayerStatus } from "@/models/enums";
 
 @Component({
   name: "AccessDenied",
@@ -36,8 +37,15 @@ export default class AccessDenied extends Vue {
   }
 
   tryAgainClicked(){
-    console.log("attempting to go to " + this.$store.getters["clientSpecificStore/getSignedInDestination"])
     this.$router.push({name: this.$store.getters["clientSpecificStore/getSignedInDestination"]}).catch(() => {console.log("User clicked 'Try Again' from the 'Access Denied' page but they are still not authroized.")});
+  }
+
+
+  mounted() {
+    this.$store.dispatch(
+      "playerStore/setMyStatus",
+      PlayerStatus.AccessDenied
+    );
   }
 }
 </script>

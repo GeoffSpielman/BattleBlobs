@@ -68,7 +68,7 @@ export default class MapSquare extends Mixins(
 
   get itsMyTurn(): boolean {
     return (
-      this.$store.getters["playerStore/getMyKey"] ===
+      this.$store.getters["playerStore/getMyUID"] ===
       this.$store.getters["gameDataStore/getWhoseTurn"]
     );
   }
@@ -78,7 +78,7 @@ export default class MapSquare extends Mixins(
     if (this.squareData.mapType === MapType.Ship && this.testModeShowAll) {
       return (
         "#" +
-        this.$store.getters["playerStore/getColourUsingKey"](
+        this.$store.getters["playerStore/getColourUsingUID"](
           this.squareData.captains[0]
         )
       );
@@ -89,7 +89,7 @@ export default class MapSquare extends Mixins(
       this.squareData.revealed === false &&
       this.squareData.mapType === MapType.Ship &&
       this.squareData.captains.includes(
-        this.$store.getters["playerStore/getMyKey"]
+        this.$store.getters["playerStore/getMyUID"]
       )
     ) {
       return "#" + this.$store.getters["playerStore/getMyColour"];
@@ -124,7 +124,7 @@ export default class MapSquare extends Mixins(
       this.squareData.revealed === false &&
       this.squareData.mapType === MapType.Ship &&
       this.squareData.captains.includes(
-        this.$store.getters["playerStore/getMyKey"]
+        this.$store.getters["playerStore/getMyUID"]
       )
     ) {
       return 1.0;
@@ -161,7 +161,7 @@ export default class MapSquare extends Mixins(
       this.squareData.revealed === false &&
       this.squareData.mapType === MapType.Ship &&
       this.squareData.captains.includes(
-        this.$store.getters["playerStore/getMyKey"]
+        this.$store.getters["playerStore/getMyUID"]
       )
     ) {
       switch (this.$store.getters["playerStore/getMyColour"]) {
@@ -231,7 +231,7 @@ export default class MapSquare extends Mixins(
     if (
       this.squareData.mapType === MapType.Ship &&
       this.squareData.captains.includes(
-        this.$store.getters["playerStore/getMyKey"]
+        this.$store.getters["playerStore/getMyUID"]
       )
     ) {
       return this.$store.getters["playerStore/getMyCaptainNumber"].toString();
@@ -244,7 +244,7 @@ export default class MapSquare extends Mixins(
     ) {
       //if there is only one ship here
       if (this.squareData.captains.length === 1) {
-        return this.$store.getters["playerStore/getCaptainNumberUsingKey"](
+        return this.$store.getters["playerStore/getCaptainNumberUsingUID"](
           this.squareData.captains[0]
         );
       }
@@ -262,7 +262,7 @@ export default class MapSquare extends Mixins(
     {
       //if there is only one captain
       if (this.squareData.captains.length === 1){
-        return this.textBackgroundClass(this.$store.getters["playerStore/getColourUsingKey"](this.squareData.captains[0]));
+        return this.textBackgroundClass(this.$store.getters["playerStore/getColourUsingUID"](this.squareData.captains[0]));
       }
       //for multiple captains
       else{

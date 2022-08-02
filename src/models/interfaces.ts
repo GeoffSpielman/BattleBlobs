@@ -5,7 +5,7 @@ import { MapType } from "@/models/enums"
 import { PowerupName } from "@/models/enums"
 
 export interface PlayerEntry {
-    key: string | null;
+    uid: string | null;
     status: PlayerStatus;
     name: string;
     alias: string;

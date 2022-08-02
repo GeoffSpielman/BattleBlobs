@@ -48,12 +48,12 @@ export default class StatusColumn extends Vue {
     return this.$store.getters["gameDataStore/getGameStatus"];
   }
   get whoseTurn(): string {
-    let whoseTurnPlayerKey = this.$store.getters["gameDataStore/getWhoseTurn"];
-    if (whoseTurnPlayerKey === "TBD") {
+    let whoseTurnPlayerUID = this.$store.getters["gameDataStore/getWhoseTurn"];
+    if (whoseTurnPlayerUID === "TBD") {
       return "TBD";
     } else {
-      return this.$store.getters["playerStore/getAliasUsingKey"](
-        whoseTurnPlayerKey
+      return this.$store.getters["playerStore/getAliasUsingUID"](
+        whoseTurnPlayerUID
       );
     }
   }

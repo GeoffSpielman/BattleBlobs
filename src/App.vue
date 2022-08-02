@@ -52,10 +52,6 @@ export default class App extends Vue {
 
   created() {
 
-
-    
-
-
     /*
     //put the user back on the home page if they clicked 'refresh'
     if (this.$route.name !== "Start" && this.$route.name !== "Host") {
@@ -64,8 +60,7 @@ export default class App extends Vue {
     */
 
 
-
-    //react to disconnection/reconnection
+//react to disconnection/reconnection
     onValue(ref(database, ".info/connected"), (snapshot) => {
       //reconnect
       if (snapshot.val() === true) {
@@ -116,6 +111,23 @@ export default class App extends Vue {
             );
             break;
           }
+
+          case "SignIn": {
+            this.$store.dispatch(
+              "playerStore/setMyStatus",
+              PlayerStatus.SigningIn
+            );
+            break;
+          }
+
+          case "AccessDenied": {
+            this.$store.dispatch(
+              "playerStore/setMyStatus",
+              PlayerStatus.AccessDenied
+            );
+            break;
+          }
+          
           default: {
             this.$store.dispatch(
               "playerStore/setMyStatus",
@@ -126,7 +138,7 @@ export default class App extends Vue {
         }
       }
       //disconnected
-      else if (this.$store.getters["playerStore/getMyKey"] !== "") {
+      else if (this.$store.getters["playerStore/getMyUID"] !== "") {
         this.showDisconnectedDialog = true;
       }
     });
@@ -135,21 +147,12 @@ export default class App extends Vue {
     this.$store.dispatch("playerStore/initializeDatabaseListeners");
     this.$store.dispatch("lobbyStore/initializeDatabaseListeners");
     this.$store.dispatch("shipsStore/initializeDatabaseListeners");
-    
     this.$store.dispatch("chatStore/initializeDatabaseListeners");
     this.$store.dispatch("powerupStore/initializeDatabaseListeners");
     this.$store.dispatch("mapStore/initializeDatabaseListeners");
-
     this.$store.dispatch("authDataStore/initializeDatabaseListeners");
     this.$store.dispatch("gameDataStore/initializeDatabaseListeners");
     this.$store.dispatch("configDataStore/initializeDatabaseListeners");
-
-    //initialize client instance (player object) in database
-    this.$store.dispatch("playerStore/intializeClient").then(() => {
-      //if the user gets disconnected, the database needs to be aware to inform the host and other players
-     onDisconnect(ref(database, "players/" + this.$store.getters["playerStore/getMyKey"] + "/status")).set(PlayerStatus.Disconnected);
-     onDisconnect(ref(database, "players/" + this.$store.getters["playerStore/getMyKey"] + "/key")).set(this.$store.getters["playerStore/getMyKey"]);
-    });
   }
 }
 </script>

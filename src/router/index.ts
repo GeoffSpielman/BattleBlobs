@@ -82,7 +82,6 @@ const router = new VueRouter({
 
 function bothWhiteListsHaveLoaded(): Promise<string>{
     let start = Date.now();
-    let attemptedManualRead: boolean = false;
 
     function waitForWhiteLists(resolve: Function, reject: Function) {
       //store has been initialized
@@ -90,16 +89,8 @@ function bothWhiteListsHaveLoaded(): Promise<string>{
         resolve("Both white lists have been initialized");
       }
 
-      //if it's been an entire second, it's possible the user was not previously authenticated (auth = null) and didn't have permission to read these lists from the database. Try manually reading them now.
-      else if ( (Date.now() - start) >= 1000 && attemptedManualRead === false){
-        store.dispatch("authDataStore/manuallyReadWhiteLists"); 
-        attemptedManualRead = true;
-        //try again after 400 milliseconds
-        setTimeout(waitForWhiteLists, 400, resolve, reject)
-      }
-
-      //wait 3000 milliseconds before giving up
-      else if ( (Date.now() - start) >= 3000){
+      //wait 2500 milliseconds before giving up
+      else if ( (Date.now() - start) >= 2500){
         reject("Error: Both white lists could not be loaded from firebase");
       }
 
@@ -159,6 +150,14 @@ router.beforeEach(async (to, from, next) =>{
 
         //check if their key in the database is not their UID (they were added manually by a host, this is their first time playing)
         if (store.getters["authDataStore/getPlayerUIDmissing"](authenticatedPlayer)){
+
+
+          //TODO - LEFT OFF HERE
+          console.log("YOU ARE ON THE WHITELIST BUT YOUR KEY NEEDS TO BE REPLACED BY YOUR UID")
+
+
+          //Need to change the structure of my database
+
           //remove the old entry in the whitelist under their email, add a new one under their UID
           store.dispatch("authDataStore/removeAuthorizedPlayerEmail", curEmail);          
           store.dispatch("authDataStore/addAuthorizedPlayerEntry", authenticatedPlayer);
@@ -167,7 +166,6 @@ router.beforeEach(async (to, from, next) =>{
       }
       //unauthorized, but authenticated, user -> show them the "contact your host" page
       else{
-        console.log("Access denied, re-rounting you");
         store.dispatch("clientSpecificStore/setSignedInDestination", to.name);
         next({name: 'AccessDenied'});
       }
@@ -180,7 +178,6 @@ router.beforeEach(async (to, from, next) =>{
   }
   else {
     //user is not signed in. Remember where they were trying to go and redirect them to the sign in page
-    console.log("RouterGuard declares: not signed in. Redirecting to sign in")
     store.dispatch("clientSpecificStore/setSignedInDestination", to.name);
     next({name: 'SignIn'});
   }

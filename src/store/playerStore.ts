@@ -7,20 +7,25 @@ import { PlayerStatus } from '@/models/enums'
 import { PowerupName } from '@/models/enums'
 
 interface PlayerState {
-  myKey: string;
+  myUID: string;
   players: PlayerEntry[];
 }
 
 const playerStore: Module<PlayerState, RootState> = {
   namespaced: true,
   state: {
-    myKey: "",
+    myUID: "",
     players: [],
   },
 
   getters: {
-    getMyKey(state): string{
-      return state.myKey;
+
+    getUIDinDatabase: (state) => (recUID: string) => {
+      return state.players.some((player) => player.uid === recUID);
+    },
+    
+    getMyUID(state): string{
+      return state.myUID;
     },
 
     getPlayersList(state): PlayerEntry[] {
@@ -36,19 +41,19 @@ const playerStore: Module<PlayerState, RootState> = {
     },
 
     getMyName(state): string | undefined{
-      return state.players.find((player) => player.key === state.myKey)?.name;
+      return state.players.find((player) => player.uid === state.myUID)?.name;
     },
 
     getMyAlias(state): string | undefined{      
-      return state.players.find((player) => player.key === state.myKey)?.alias;
+      return state.players.find((player) => player.uid === state.myUID)?.alias;
     },
 
     getMyColour(state): string | undefined{
-      return state.players.find((player) => player.key === state.myKey)?.colour;
+      return state.players.find((player) => player.uid === state.myUID)?.colour;
     },
 
     getMyShipKey: (state) => (recShipNum: number) => {
-      const playerObj = state.players.find((player) => player.key === state.myKey);
+      const playerObj = state.players.find((player) => player.uid === state.myUID);
       if (recShipNum === 1){
         return playerObj?.shipOneKey;
       }
@@ -58,7 +63,7 @@ const playerStore: Module<PlayerState, RootState> = {
     },
 
     getMyCaptainNumber(state): number | undefined{
-      return state.players.find((player) => player.key === state.myKey)?.captainNum;
+      return state.players.find((player) => player.uid === state.myUID)?.captainNum;
     },
 
     getPlayersReadyCount(state): number{
@@ -71,32 +76,28 @@ const playerStore: Module<PlayerState, RootState> = {
       return counter;
     },
 
-    getPlayerKeyInDatabase: (state) => (recKey: string) => {
-      return (state.players.findIndex((player) => player.key === recKey) === -1) ? false : true;
+    getAliasUsingUID: (state) => (recUID: string) => {
+      return state.players.find((player) => player.uid === recUID)?.alias;
     },
 
-    getAliasUsingKey: (state) => (recKey: string) => {
-      return state.players.find((player) => player.key === recKey)?.alias;
+    getColourUsingUID: (state) => (recUID: string) => {
+      return state.players.find((player) => player.uid === recUID)?.colour;
     },
 
-    getColourUsingKey: (state) => (recKey: string) => {
-      return state.players.find((player) => player.key === recKey)?.colour;
+    getCaptainNumUsingUID: (state) => (recUID: string) => {
+      return state.players.find((player) => player.uid === recUID)?.captainNum;
     },
 
-    getCaptainNumUsingKey: (state) => (recKey: string) => {
-      return state.players.find((player) => player.key === recKey)?.captainNum;
+    getPowerupsUsingUID: (state) => (recUID: string) => {
+      return state.players.find((player) => player.uid === recUID)?.powerups;
     },
 
-    getPowerupsUsingKey: (state) => (recKey: string) => {
-      return state.players.find((player) => player.key === recKey)?.powerups;
+    getShipKeysUsingUID: (state) => (recUID: string) => {
+      return [state.players.find((player) => player.uid === recUID)?.shipOneKey, state.players.find((player) => player.uid === recUID)?.shipTwoKey]
     },
 
-    getShipKeysUsingKey: (state) => (recKey: string) => {
-      return [state.players.find((player) => player.key === recKey)?.shipOneKey, state.players.find((player) => player.key === recKey)?.shipTwoKey]
-    },
-
-    getCaptainNumberUsingKey: (state) => (recKey: string) => {
-      return state.players.find((player) => player.key === recKey)?.captainNum;
+    getCaptainNumberUsingUID: (state) => (recUID: string) => {
+      return state.players.find((player) => player.uid === recUID)?.captainNum;
     },
 
   },
@@ -107,18 +108,18 @@ const playerStore: Module<PlayerState, RootState> = {
       state.players.push(newPlayerEntry);
     },
     
-    removePlayer(state, removedPlayerKey: string){
-      const removedPlayerIndex = state.players.findIndex((playerObj) => (playerObj.key === removedPlayerKey));
+    removePlayer(state, removedPlayerUID: string){
+      const removedPlayerIndex = state.players.findIndex((playerObj) => (playerObj.uid === removedPlayerUID));
       state.players.splice(removedPlayerIndex, 1);
     },
 
     modifyPlayer(state, updatedPlayer: PlayerEntry){
-      const modifiedPlayerIndex = state.players.findIndex((playerObj) => (playerObj.key === updatedPlayer.key));
+      const modifiedPlayerIndex = state.players.findIndex((playerObj) => (playerObj.uid === updatedPlayer.uid));
       state.players.splice(modifiedPlayerIndex, 1, updatedPlayer);
     },
 
-    setMyKey(state, recKey: string) {
-      state.myKey = recKey;
+    setMyUID(state, recUID: string) {
+      state.myUID = recUID;
     },
   
   },
@@ -146,74 +147,71 @@ const playerStore: Module<PlayerState, RootState> = {
       set(push(ref(database, 'players')), newPlayer);
     },
 
-    removePlayer(_, recKey: string) {
-      set(ref(database, 'players/' + recKey), null);
+    removePlayer(_, recUID: string) {
+      set(ref(database, 'players/' + recUID), null);
     },
 
     modifyPlayer(_, modifiedPlayer: PlayerEntry){
-      set(ref(database, 'players/' + modifiedPlayer.key), modifiedPlayer);
+      set(ref(database, 'players/' + modifiedPlayer.uid), modifiedPlayer);
     },
 
-    intializeClient(context) {
-      const newClientRef = push(ref(database, 'players'));
-      if (newClientRef.key === null) {
-        console.log("Error initializing new client. Firebase returned a 'null' key")
+    intializePlayer(context, payload: {'uid': string; 'name': string}) {
+      
+      const newPlayerEntry: PlayerEntry = {
+        'uid': payload.uid,
+        'status': PlayerStatus.StartScreen,
+        'name': payload.name === null ? '' : payload.name,
+        'alias': '',
+        'colour': '',
+        'captainNum': -1,
+        'shipOneKey': '',
+        'shipTwoKey': '',
+        'powerups': {[PowerupName.None]: -1},
       }
-      else {
-        const newPlayerEntry: PlayerEntry = {
-          'key': newClientRef.key,
-          'status': PlayerStatus.StartScreen,
-          'name': '',
-          'alias': '',
-          'colour': '',
-          'captainNum': -1,
-          'shipOneKey': '',
-          'shipTwoKey': '',
-          'powerups': {[PowerupName.None]: -1},
-        }
-        context.commit('setMyKey', newClientRef.key)
-        set(newClientRef, newPlayerEntry);
-      }
-    },
 
-    setMyKey(context, recKey: string){
-      context.commit('setMyKey', recKey);  
+      context.commit('setMyUID', payload.uid);
+      set(ref(database, 'players/' + payload.uid), newPlayerEntry);
+    },
+    
+
+    setMyUID(context, recUID: string){
+      context.commit('setMyUID', recUID);  
     },
 
     setMyStatus(context, recStatus: PlayerStatus){
       //first make sure you haven't been removed from the database
-      if (context.state.players.findIndex((playerObj) => (playerObj.key === context.state.myKey)) !== -1){
-        set(ref(database, 'players/' + context.state.myKey + '/status'), recStatus);
-      }      
+      if (context.state.players.some((playerObj) => (playerObj.uid === context.state.myUID))){
+        set(ref(database, 'players/' + context.state.myUID + '/status'), recStatus);
+      }
     },
 
     setMyName(context, recName: string){
-      set(ref(database, 'players/' + context.state.myKey + '/name'), recName);
+      set(ref(database, 'players/' + context.state.myUID + '/name'), recName);
     },
 
     setMyAlias(context, recAlias: string){
-      set(ref(database, 'players/' + context.state.myKey + '/alias'), recAlias);
+      set(ref(database, 'players/' + context.state.myUID + '/alias'), recAlias);
     },
 
     setMyShipKey(context, payload: {'shipKey': string; 'shipNum': number}){
       if (payload.shipNum === 1){
-        set(ref(database, 'players/' + context.state.myKey + '/shipOneKey'), payload.shipKey);
+        set(ref(database, 'players/' + context.state.myUID + '/shipOneKey'), payload.shipKey);
 
       }
       else if (payload.shipNum === 2){
-        set(ref(database, 'players/' + context.state.myKey + '/shipTwoKey'), payload.shipKey);
+        set(ref(database, 'players/' + context.state.myUID + '/shipTwoKey'), payload.shipKey);
       }
     },
 
 
     lockedInUploadData(context){
       //set the colour hex code
-      set(ref(database, 'players/' + context.state.myKey + '/colour'), context.rootGetters['clientSpecificStore/getSelectedColourHex'].substring(1));
+      set(ref(database, 'players/' + context.state.myUID + '/colour'), context.rootGetters['clientSpecificStore/getSelectedColourHex'].substring(1));
       
       for (let i = 1; i < 3; i++){
         //If client's ship key has never been set, create a new entry in ships store
         if (context.getters.getMyShipKey(i) === ""){
-          const payloadForCreation = {'offsets': context.rootGetters['clientSpecificStore/getShipOffsets'](i), 'captainKey': context.state.myKey, 'shipNum': i}
+          const payloadForCreation = {'offsets': context.rootGetters['clientSpecificStore/getShipOffsets'](i), 'captainKey': context.state.myUID, 'shipNum': i}
           context.dispatch('shipsStore/createShipOffsetsOnly', payloadForCreation, {root: true});
           
           //otherwise modify the entry in the ships store
@@ -225,9 +223,9 @@ const playerStore: Module<PlayerState, RootState> = {
     },
    
     deleteAllPlayersExceptMe(context){
-      const myPlayerObj = context.state.players.find((player) => player.key === context.state.myKey);
+      const myPlayerObj = context.state.players.find((player) => player.uid === context.state.myUID);
       if (myPlayerObj !== undefined){
-        set(ref(database, 'players/'), {[context.state.myKey]: myPlayerObj});
+        set(ref(database, 'players/'), {[context.state.myUID]: myPlayerObj});
       }
       else{
         console.log("Couldn't find host's own entry in the players database");
@@ -235,19 +233,19 @@ const playerStore: Module<PlayerState, RootState> = {
     },
 
     addPlayersToGame(context){
-      let readyPlayerIDsList: string[] = [];
+      let readyPlayerUIDsList: string[] = [];
       let captainNum: number = 1;
       context.state.players.forEach(playerObj => {
         if (playerObj.status === PlayerStatus.ReadyToStart){
-          readyPlayerIDsList.push(String(playerObj.key));
-          set(ref(database, 'players/' + playerObj.key + '/status'), PlayerStatus.InGame);
-          set(ref(database, 'players/' + playerObj.key + '/captainNum'), captainNum);
+          readyPlayerUIDsList.push(String(playerObj.uid));
+          set(ref(database, 'players/' + playerObj.uid + '/status'), PlayerStatus.InGame);
+          set(ref(database, 'players/' + playerObj.uid + '/captainNum'), captainNum);
           captainNum ++;
         }
       });
-      context.dispatch('gameDataStore/setCurrentPlayersList', readyPlayerIDsList, {root: true});
-      context.dispatch('chatStore/generateChatPairings', readyPlayerIDsList, {root: true});
-      context.dispatch('gameDataStore/setWhoseTurn', readyPlayerIDsList[0], {root: true});
+      context.dispatch('gameDataStore/setCurrentPlayersList', readyPlayerUIDsList, {root: true});
+      context.dispatch('chatStore/generateChatPairings', readyPlayerUIDsList, {root: true});
+      context.dispatch('gameDataStore/setWhoseTurn', readyPlayerUIDsList[0], {root: true});
     }
   },
 }

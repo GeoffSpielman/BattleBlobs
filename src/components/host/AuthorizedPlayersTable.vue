@@ -131,7 +131,7 @@ export default class AuthorizedPlayersTable extends Mixins(EmailAddressFunctions
 #titleRow h2 {
   font-size: 20px;
   font-family: "Roboto", sans-serif;
-  margin-left: 10px;
+  margin-left: 12px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.87);
   padding-top: 1px;

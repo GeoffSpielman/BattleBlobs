@@ -26,8 +26,8 @@ const chatStore: Module<ChatState, RootState> = {
                     const otherPlayerKey = participantsList[0] === recKey ? participantsList[1] : participantsList[0];
                     pairingList.push({
                         'pairingKey': pairingKey, 
-                        'otherPlayerAlias': rootGetters['playerStore/getAliasUsingKey'](otherPlayerKey),
-                        'otherPlayerColour': rootGetters['playerStore/getColourUsingKey'](otherPlayerKey), 
+                        'otherPlayerAlias': rootGetters['playerStore/getAliasUsingUID'](otherPlayerKey),
+                        'otherPlayerColour': rootGetters['playerStore/getColourUsingUID'](otherPlayerKey), 
                         'showNotification': false
                     });
                 }

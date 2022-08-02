@@ -117,7 +117,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
 
 
     reserveAlias(context, recAlias: string) {
-      set(ref(database, 'gameData/lobby/aliases/' + recAlias), context.rootGetters['playerStore/getMyKey']);
+      set(ref(database, 'gameData/lobby/aliases/' + recAlias), context.rootGetters['playerStore/getMyUID']);
     },
 
     releaseAlias(_, recAlias: string) {
@@ -169,7 +169,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
         context.commit('overwriteColourEntry', localColourObj);
       }
       else if (payload.status !== "available") {
-        if (payload.status === context.rootGetters["playerStore/getMyKey"]) {
+        if (payload.status === context.rootGetters["playerStore/getMyUID"]) {
           localColourObj.status = ColourStatus.Mine;
           context.dispatch('clientSpecificStore/setSelectedColourHex', "#" + payload.hexCode, { root: true });
           
@@ -240,7 +240,7 @@ const lobbyStore: Module<LobbyState, RootState> = {
         }
 
         //reserve the new colour selection
-        set(ref(database, 'gameData/lobby/colours/' + recHexCode.substring(1)), context.rootGetters['playerStore/getMyKey']);
+        set(ref(database, 'gameData/lobby/colours/' + recHexCode.substring(1)), context.rootGetters['playerStore/getMyUID']);
       }
     },
 

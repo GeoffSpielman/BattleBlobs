@@ -94,6 +94,7 @@
 import { Component, Vue, Mixins} from "vue-property-decorator";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { EmailAddressFunctionsMixin } from "@/mixins/EmailAddressFunctionsMixin";
+import { PlayerStatus } from "@/models/enums";
 
 @Component({
   name: "EmailSignIn",
@@ -172,10 +173,12 @@ export default class EmailSignIn extends Mixins(EmailAddressFunctionsMixin) {
     signInWithEmailAndPassword(auth, this.email, this.passwordSignIn)
     .then((userCredential) => {
       // Successfully signed in
+      /*
       const user = userCredential.user;
       console.log("successfully signed in!")
       console.log("display name: " + user.displayName);
       console.log("email: " + user.email);
+      */
       this.$router.push("/lobby");
       // ...
     })
@@ -231,6 +234,13 @@ export default class EmailSignIn extends Mixins(EmailAddressFunctionsMixin) {
     .catch((error) => {
       this.accountErrorMessage = "A password reset email could not be sent to " + this.email + " due to " + error.errorCode + ".  Please let Geoff know."
   });
+  }
+  
+  mounted() {
+    this.$store.dispatch(
+      "playerStore/setMyStatus",
+      PlayerStatus.SigningIn
+    );
   }
 }
 </script>

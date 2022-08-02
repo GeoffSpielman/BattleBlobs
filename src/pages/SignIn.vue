@@ -21,6 +21,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword} from "firebase/auth";
+import { PlayerStatus } from "@/models/enums";
 
 @Component({
   name: "SignIn",
@@ -51,6 +52,13 @@ export default class SignIn extends Vue {
 
   facebookSignIn(){
     console.log("Sign in with facebook");
+  }
+
+  mounted() {
+    this.$store.dispatch(
+      "playerStore/setMyStatus",
+      PlayerStatus.SigningIn
+    );
   }
 }
 </script>
